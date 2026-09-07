@@ -5,7 +5,14 @@
     "tel": " "
   },
   "img": {},
-  "text": {},
+  "text": {
+    "programs.dance.11": "한국예술영재교육원 광주캠퍼스",
+    "programs.art.69": "대전 한국과학기술원 산업디자인학과동",
+    "programs.sched.135": "한국예술영재교육원 광주캠퍼스",
+    "programs.sched.136": "한국예술종합학교 서초동캠퍼스",
+    "programs.sched.137": "한국과학기술원(대전) 일대",
+    "programs.sched.138": "<span style=\"letter-spacing: -0.32px;\">한국예술종합학교 석관동캠퍼스</span>"
+  },
   "list": {
     "cards": [
       {
