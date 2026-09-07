@@ -7,7 +7,7 @@
   --img-hero3:var(--none);  /* 히어로 3 : 전통예술 */
   --img-news :var(--none);  /* 다크 섹션 우측 컷 */
   --img-p1:var(--none); --img-p2:var(--none); --img-p3:var(--none);
-  --img-p4:var(--none); --img-p5:var(--none);   /* 프로그램 카드 5컷 */
+  --img-p4:var(--none);                         /* 프로그램 카드 4컷 */
 }
 
 /* ============ HERO ============ */
@@ -65,14 +65,13 @@
 .arrows button:hover{background:var(--teal-dp);transform:translateY(-2px)}
 .rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
 .rail::-webkit-scrollbar{display:none}
-.card{flex:0 0 calc((100% - 80px)/5);min-width:250px;scroll-snap-align:start}
+.card{flex:0 0 calc((100% - 60px)/4);min-width:250px;scroll-snap-align:start}
 .card .thumb{position:relative;aspect-ratio:292/262;overflow:hidden;background:#DDE3E6}
 .card .thumb i{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .8s cubic-bezier(.22,1,.36,1)}
 .card:nth-child(1) .thumb i{background-image:var(--img-p1),linear-gradient(150deg,#5B2130,#2A0F17)}
 .card:nth-child(2) .thumb i{background-image:var(--img-p2),linear-gradient(150deg,#3F2E7E,#171041)}
 .card:nth-child(3) .thumb i{background-image:var(--img-p3),linear-gradient(150deg,#7A3D8C,#2B1236)}
 .card:nth-child(4) .thumb i{background-image:var(--img-p4),linear-gradient(150deg,#1E6C7E,#0B2F38)}
-.card:nth-child(5) .thumb i{background-image:var(--img-p5),linear-gradient(150deg,#8A6B2E,#2E220D)}
 .card:hover .thumb i{transform:scale(1.07)}
 .card .ko{margin-top:20px;font-size:16px;font-weight:700;letter-spacing:-.02em}
 .card .en{font-family:"Playfair Display",serif;font-size:12.5px;color:var(--gray-lt);margin-top:3px}

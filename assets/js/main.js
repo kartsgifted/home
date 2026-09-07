@@ -12,6 +12,13 @@
   play();
 
   var rail=document.getElementById('rail');
+  /* 카드가 모두 보이면 좌우 화살표 숨김 */
+  function syncArrows(){
+    var over = rail.scrollWidth - rail.clientWidth > 4;
+    var box = document.querySelector('.arrows');
+    if(box) box.style.visibility = over ? 'visible' : 'hidden';
+  }
+  window.addEventListener('resize', syncArrows); setTimeout(syncArrows, 300);
   document.querySelectorAll('[data-rail]').forEach(function(b){
     b.addEventListener('click',function(){
       var step=rail.querySelector('.card').offsetWidth+20;
