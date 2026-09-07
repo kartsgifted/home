@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>콘텐츠 관리 | 2026 K예술영재 프로젝트</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--teal:#176C86;--teal-dp:#0F4A5C;--cream:#FAF9F5;--ink:#212326;--gray:#5A6065;--gray-lt:#8A8F94;
+  --line:#DDD;--line-lt:#EAEAEA;--coral:#E84958;--ok:#2E9E5B}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;color:var(--ink);background:var(--cream);
+  font-size:15px;word-break:keep-all;display:flex;min-height:100vh}
+a{color:inherit;text-decoration:none} li{list-style:none} button{font-family:inherit}
+
+/* 사이드 */
+#side{width:250px;flex:0 0 250px;background:var(--teal-dp);color:#fff;padding:30px 0;position:sticky;top:0;height:100vh;overflow-y:auto}
+#side h1{font-size:17px;padding:0 26px 6px}
+#side .sub{font-size:12px;color:rgba(255,255,255,.55);padding:0 26px 26px;border-bottom:1px solid rgba(255,255,255,.16)}
+#side nav{margin-top:18px}
+#side nav button{display:block;width:100%;text-align:left;padding:13px 26px;background:none;border:0;color:rgba(255,255,255,.78);
+  font-size:15px;cursor:pointer;border-left:3px solid transparent}
+#side nav button:hover{color:#fff;background:rgba(255,255,255,.06)}
+#side nav button.on{color:#fff;font-weight:700;border-left-color:#F0D9A8;background:rgba(255,255,255,.09)}
+#side .go{margin:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,.16);font-size:13px;line-height:2}
+#side .go a{color:rgba(255,255,255,.72);display:block}
+#side .go a:hover{color:#fff;text-decoration:underline}
+
+/* 본문 */
+#main{flex:1;min-width:0;padding:36px 44px 140px}
+h2{font-size:26px;font-weight:700;letter-spacing:-.02em}
+h2 span{display:block;font-size:14px;font-weight:400;color:var(--gray-lt);margin-top:8px}
+.pane{display:none}.pane.on{display:block}
+.card{background:#fff;border:1px solid var(--line-lt);padding:26px 28px;margin-top:22px}
+.card h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.card .cap{font-size:13.5px;color:var(--gray-lt);margin-bottom:20px}
+.row{margin-bottom:18px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:7px;color:#3A4046}
+label em{font-style:normal;font-weight:400;color:var(--gray-lt);margin-left:8px;font-size:12px}
+input,textarea,select{width:100%;padding:11px 13px;border:1px solid var(--line);font-size:14px;font-family:inherit;background:#fff}
+textarea{min-height:78px;line-height:1.7;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--teal);outline-offset:-1px}
+.grid{display:grid;gap:14px}
+.grid.c2{grid-template-columns:1fr 1fr}.grid.c3{grid-template-columns:1fr 1fr 1fr}
+.hint{background:#EAF2F5;border-left:3px solid var(--teal);padding:16px 20px;font-size:13.5px;line-height:1.85;color:#2C4A54;margin-top:18px}
+.hint b{color:var(--teal-dp)}
+.warn{background:#FDECEE;border-left-color:var(--coral);color:#7A2731}
+
+/* 목록 에디터 */
+.item{border:1px solid var(--line-lt);padding:18px 20px;margin-bottom:12px;background:#fff;position:relative}
+.item .ctl{position:absolute;top:12px;right:12px;display:flex;gap:5px}
+.item .ctl button{width:28px;height:28px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:12px;border-radius:4px}
+.item .ctl button:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.item .n{font-size:12px;color:var(--gray-lt);margin-bottom:12px;letter-spacing:.1em}
+.addbtn{border:1px dashed var(--teal);background:none;color:var(--teal);padding:12px 20px;font-size:14px;cursor:pointer;width:100%}
+
+/* 텍스트 편집 */
+.pgpick{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 4px}
+.pgpick button{padding:9px 18px;border:1px solid var(--line);background:#fff;font-size:14px;cursor:pointer}
+.pgpick button.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+.grp{margin-top:26px}
+.grp > h4{font-size:13px;letter-spacing:.12em;color:var(--teal);padding-bottom:9px;border-bottom:1px solid var(--line-lt);margin-bottom:16px}
+.fld{margin-bottom:16px}
+.fld .k{font-size:12px;color:var(--gray);margin-bottom:6px;font-weight:600}
+
+/* 하단 바 */
+#bar{position:fixed;left:250px;right:0;bottom:0;background:#141413;color:#fff;padding:14px 44px;display:flex;
+  align-items:center;gap:10px;z-index:50;flex-wrap:wrap}
+#bar .st{font-size:13px;color:rgba(255,255,255,.62);margin-right:auto}
+#bar .st b{color:#7BD8A0}
+#bar button{border:1px solid rgba(255,255,255,.32);background:none;color:#fff;padding:10px 18px;font-size:13.5px;border-radius:4px;cursor:pointer}
+#bar button:hover{background:rgba(255,255,255,.14)}
+#bar button.pri{background:var(--teal);border-color:var(--teal);font-weight:600}
+#bar button.dan:hover{background:var(--coral);border-color:var(--coral)}
+@media(max-width:900px){
+  body{display:block} #side{width:100%;height:auto;position:static;flex:none}
+  #side nav{display:flex;overflow-x:auto} #side nav button{white-space:nowrap;border-left:0;border-bottom:3px solid transparent}
+  #side nav button.on{border-left:0;border-bottom-color:#F0D9A8}
+  #main{padding:24px 20px 160px} #bar{left:0;padding:14px 20px}
+  .grid.c2,.grid.c3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<aside id="side">
+  <h1>콘텐츠 관리</h1>
+  <p class="sub">2026 K예술영재 프로젝트</p>
+  <nav>
+    <button data-p="site" class="on">사이트 공통</button>
+    <button data-p="img">이미지</button>
+    <button data-p="list">목록 관리</button>
+    <button data-p="text">페이지 텍스트</button>
+    <button data-p="help">사용 방법</button>
+  </nav>
+  <div class="go">
+    <a href="index.html" target="_blank">↗ 사이트 보기</a>
+    <a href="index.html?edit=1" target="_blank">↗ 메인 인라인 편집</a>
+    <a href="about.html?edit=1" target="_blank">↗ 사업소개 인라인 편집</a>
+    <a href="programs.html?edit=1" target="_blank">↗ 프로그램 인라인 편집</a>
+    <a href="course.html?edit=1" target="_blank">↗ 심화과정 인라인 편집</a>
+    <a href="news.html?edit=1" target="_blank">↗ 소식 인라인 편집</a>
+  </div>
+</aside>
+
+<div id="main">
+  <!-- 사이트 공통 -->
+  <section class="pane on" id="p-site">
+    <h2>사이트 공통<span>푸터와 메인 연락처에 함께 반영됩니다.</span></h2>
+    <div class="card">
+      <div class="grid c2">
+        <div class="row"><label>대표 전화</label><input data-site="tel" placeholder="02-0000-0000"></div>
+        <div class="row"><label>이메일</label><input data-site="mail"></div>
+      </div>
+      <div class="row"><label>푸터 기관 표기</label><input data-site="addr"></div>
+    </div>
+  </section>
+
+  <!-- 이미지 -->
+  <section class="pane" id="p-img">
+    <h2>이미지<span>파일을 assets/img/ 폴더에 넣고 주소를 적어주세요. 비워두면 기본 그라디언트가 표시됩니다.</span></h2>
+    <div class="card"><h3>서브 페이지 상단</h3><div class="grid c2" id="img-sub"></div></div>
+    <div class="card"><h3>메인 히어로 · 다크 섹션</h3><div class="grid c2" id="img-hero"></div></div>
+    <div class="card"><h3>메인 프로그램 카드</h3><div class="grid c3" id="img-card"></div></div>
+  </section>
+
+  <!-- 목록 -->
+  <section class="pane" id="p-list">
+    <h2>목록 관리<span>항목 추가·삭제와 순서 변경이 가능합니다.</span></h2>
+    <div id="lists"></div>
+  </section>
+
+  <!-- 텍스트 -->
+  <section class="pane" id="p-text">
+    <h2>페이지 텍스트<span>각 페이지의 문구를 한 화면에서 수정합니다.</span></h2>
+    <div class="pgpick" id="pgpick"></div>
+    <div id="textbox"></div>
+  </section>
+
+  <!-- 도움말 -->
+  <section class="pane" id="p-help">
+    <h2>사용 방법<span>정적 사이트라 저장은 content.json 파일로 이루어집니다.</span></h2>
+    <div class="card">
+      <h3>편집 → 반영까지</h3>
+      <div class="hint">
+        <b>1.</b> 이 관리자 화면이나 각 페이지의 <b>?edit=1</b> 인라인 편집 모드에서 내용을 고칩니다.<br>
+        <b>2.</b> <b>임시 저장</b>을 누르면 이 브라우저에만 저장되어 나만 미리 볼 수 있습니다.<br>
+        <b>3.</b> <b>content.json 내보내기</b>로 파일을 받아 사이트 최상위 폴더(index.html 옆)에 덮어씁니다.<br>
+        <b>4.</b> GitHub에 올리면 모든 방문자에게 반영됩니다.
+      </div>
+      <div class="hint warn">
+        <b>주의</b> — 임시 저장은 이 브라우저에만 남습니다. 다른 PC나 시크릿 창에서는 보이지 않으니, 작업이 끝나면 반드시 content.json 을 내보내 올려주세요.
+      </div>
+      <div class="hint">
+        <b>파일을 열 때</b> — 로컬에서 <b>파일 더블클릭(file://)</b>으로 열면 브라우저 보안 정책 때문에 페이지 텍스트를 불러오지 못합니다.
+        VS Code Live Server 같은 로컬 서버나 GitHub Pages 주소로 열어주세요.
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="bar">
+  <span class="st" id="st">불러오는 중…</span>
+  <button type="button" id="b-load">JSON 불러오기</button>
+  <button type="button" class="dan" id="b-reset">초기화</button>
+  <button type="button" id="b-save">임시 저장</button>
+  <button type="button" class="pri" id="b-exp">content.json 내보내기</button>
+  <input type="file" id="b-file" accept="application/json" hidden>
+</div>
+
+<script>
+/* ===================== 데이터 ===================== */
+var DRAFT_KEY='kag_content_draft';
+var PAGES=[['index','메인'],['about','사업소개'],['programs','분야별 프로그램'],['course','심화과정'],['news','소식·아카이브']];
+var IMG={sub:[['sub-about','사업소개'],['sub-programs','분야별 프로그램'],['sub-course','심화과정'],['sub-news','소식·아카이브']],
+         hero:[['hero1','히어로 1'],['hero2','히어로 2'],['hero3','히어로 3'],['news','다크 섹션']],
+         card:[['p1','카드 1'],['p2','카드 2'],['p3','카드 3'],['p4','카드 4'],['p5','카드 5']]};
+var LIST={
+  cards :{label:'메인 프로그램 카드',page:'index.html',sel:'#rail .card',
+          f:[['ko','분야'],['en','분야(영문)'],['tt','제목'],['ttEn','제목(영문)'],['meta','일정·장소'],['href','링크'],['img','이미지 주소']],
+          read:function(el){return{ko:T(el,'.ko'),en:T(el,'.en'),tt:T(el,'.tt'),ttEn:T(el,'.tt-en'),meta:T(el,'.meta'),href:el.getAttribute('href')||'#',img:''}}},
+  nwNotice:{label:'메인 · 공지사항',page:'index.html',sel:'[data-list="nwNotice"] li',
+          f:[['t','제목'],['d','날짜'],['href','링크']],
+          read:function(el){return{t:T(el,'.t'),d:T(el,'.d'),href:A(el)}}},
+  nwArchive:{label:'메인 · 아카이브',page:'index.html',sel:'[data-list="nwArchive"] li',
+          f:[['t','제목'],['d','날짜'],['href','링크']],
+          read:function(el){return{t:T(el,'.t'),d:T(el,'.d'),href:A(el)}}},
+  bbs   :{label:'공지사항 목록 (소식 페이지)',page:'news.html',sel:'[data-list="bbs"] li',
+          f:[['cat','분류'],['t','제목'],['d','날짜'],['href','링크']],
+          read:function(el){return{cat:T(el,'.cat'),t:T(el,'.t'),d:T(el,'.d'),href:A(el)}}},
+  gal   :{label:'갤러리',page:'news.html',sel:'[data-list="gal"] figure',
+          f:[['t','제목'],['m','촬영 정보'],['img','이미지 주소']],
+          read:function(el){return{t:T(el,'figcaption'),m:T(el,'.m'),img:''}}}
+};
+function T(el,s){var e=el.querySelector(s);return e?e.innerHTML.trim():''}
+function A(el){var a=el.querySelector('a');return a?a.getAttribute('href'):'#'}
+
+var data={site:{},img:{},text:{},list:{}}, docs={}, dirty=0;
+var st=document.getElementById('st');
+function say(m,ok){st.innerHTML=ok?'<b>'+m+'</b>':m}
+function mark(){dirty++;say('수정 '+dirty+'건 — 저장하지 않으면 사라집니다.')}
+function merge(b,a){['site','img','text','list'].forEach(function(k){if(a&&a[k])Object.keys(a[k]).forEach(function(p){b[k][p]=a[k][p]})});return b}
+
+/* ===================== 로드 ===================== */
+function loadDocs(){
+  return Promise.all(PAGES.map(function(p){
+    return fetch(p[0]+'.html',{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).catch(function(){return ''})
+      .then(function(html){ docs[p[0]] = html ? new DOMParser().parseFromString(html,'text/html') : null; });
+  }));
+}
+function boot(){
+  var draft=null; try{draft=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null')}catch(e){}
+  return fetch('content.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():{}}).catch(function(){return{}})
+    .then(function(pub){ merge(data,pub); if(draft) merge(data,draft); return loadDocs(); })
+    .then(function(){
+      renderSite(); renderImg(); renderLists(); renderPick(); renderText(PAGES[0][0]);
+      var missing = PAGES.filter(function(p){return !docs[p[0]]}).length;
+      say(missing ? '페이지 파일을 읽지 못했습니다 — 로컬 서버(또는 GitHub Pages)로 열어주세요.' : '준비되었습니다.', !missing);
+    });
+}
+
+/* ===================== 렌더 ===================== */
+function renderSite(){
+  document.querySelectorAll('[data-site]').forEach(function(i){
+    var k=i.getAttribute('data-site');
+    i.value=data.site[k]||'';
+    i.addEventListener('input',function(){data.site[k]=i.value;mark()});
+  });
+}
+function renderImg(){
+  Object.keys(IMG).forEach(function(g){
+    document.getElementById('img-'+g).innerHTML = IMG[g].map(function(k){
+      return '<div class="row"><label>'+k[1]+'<em>--img-'+k[0]+'</em></label>'+
+             '<input data-img="'+k[0]+'" placeholder="assets/img/'+k[0]+'.jpg"></div>';
+    }).join('');
+  });
+  document.querySelectorAll('[data-img]').forEach(function(i){
+    var k=i.getAttribute('data-img'); i.value=data.img[k]||'';
+    i.addEventListener('input',function(){data.img[k]=i.value.trim();mark()});
+  });
+}
+function seed(name){
+  var t=LIST[name], d=docs[t.page.replace('.html','')];
+  if(!d) return [];
+  return [].map.call(d.querySelectorAll(t.sel), t.read);
+}
+function renderLists(){
+  var box=document.getElementById('lists');
+  box.innerHTML = Object.keys(LIST).map(function(n){
+    return '<div class="card"><h3>'+LIST[n].label+'</h3><p class="cap">'+LIST[n].page+'</p><div id="L-'+n+'"></div>'+
+           '<button class="addbtn" data-add="'+n+'">+ 항목 추가</button></div>';
+  }).join('');
+  Object.keys(LIST).forEach(function(n){
+    if(!data.list[n]) data.list[n]=seed(n);
+    drawList(n);
+  });
+  box.addEventListener('click',function(e){
+    var n=e.target.getAttribute('data-add'); if(!n) return;
+    var o={}; LIST[n].f.forEach(function(f){o[f[0]]=f[0]==='href'?'#':''});
+    o[LIST[n].f[0][0]]='새 항목'; data.list[n].push(o); drawList(n); mark();
+  });
+}
+function drawList(n){
+  var t=LIST[n], arr=data.list[n], host=document.getElementById('L-'+n);
+  host.innerHTML = arr.map(function(o,i){
+    return '<div class="item"><p class="n">'+String(i+1).padStart(2,'0')+'</p>'+
+      '<div class="ctl"><button data-a="up" data-i="'+i+'">↑</button><button data-a="dn" data-i="'+i+'">↓</button><button data-a="del" data-i="'+i+'">✕</button></div>'+
+      '<div class="grid c2">'+ t.f.map(function(f){
+        return '<div class="row"><label>'+f[1]+'</label><input data-n="'+n+'" data-i="'+i+'" data-f="'+f[0]+'" value="'+String(o[f[0]]||'').replace(/"/g,'&quot;')+'"></div>';
+      }).join('') +'</div></div>';
+  }).join('') || '<p class="cap">항목이 없습니다.</p>';
+  host.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input',function(){ arr[+inp.dataset.i][inp.dataset.f]=inp.value; mark(); });
+  });
+  host.querySelectorAll('.ctl button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var i=+b.dataset.i, a=b.dataset.a;
+      if(a==='del'){ if(!confirm('삭제할까요?')) return; arr.splice(i,1); }
+      if(a==='up'&&i>0) arr.splice(i-1,0,arr.splice(i,1)[0]);
+      if(a==='dn'&&i<arr.length-1) arr.splice(i+1,0,arr.splice(i,1)[0]);
+      drawList(n); mark();
+    });
+  });
+}
+function renderPick(){
+  document.getElementById('pgpick').innerHTML = PAGES.map(function(p,i){
+    return '<button data-pg="'+p[0]+'"'+(i?'':' class="on"')+'>'+p[1]+'</button>';
+  }).join('');
+  document.getElementById('pgpick').addEventListener('click',function(e){
+    var pg=e.target.getAttribute('data-pg'); if(!pg) return;
+    this.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-pg')===pg)});
+    renderText(pg);
+  });
+}
+function renderText(pg){
+  var d=docs[pg], box=document.getElementById('textbox');
+  if(!d){ box.innerHTML='<div class="hint warn">'+pg+'.html 을 읽지 못했습니다. 로컬 서버나 GitHub Pages 주소로 열어주세요.</div>'; return; }
+  var groups={}, order=[];
+  d.querySelectorAll('[data-k]').forEach(function(el){
+    var sec = el.closest('.panel') || el.closest('section') || el.closest('#sv');
+    var name = sec ? (sec.id||'본문') : '본문';
+    var btn = sec && sec.classList.contains('panel') ? d.querySelector('[data-tab="'+sec.id+'"]') : null;
+    var label = btn ? btn.textContent : ({hero:'메인 비주얼',programs:'PROGRAMS 섹션',about:'소개 섹션',course:'심화과정 섹션',news:'소식 섹션',sv:'상단 서브비주얼'}[name]||name);
+    if(!groups[label]){ groups[label]=[]; order.push(label); }
+    groups[label].push(el);
+  });
+  box.innerHTML = order.map(function(g){
+    return '<div class="card grp"><h4>'+g+'</h4>'+ groups[g].map(function(el){
+      var k=el.getAttribute('data-k'), v=data.text[k]!=null?data.text[k]:el.innerHTML.trim();
+      var one = v.length<60 && v.indexOf('<')<0;
+      var plain = v.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+      var lab = plain.length>34 ? plain.slice(0,34)+'…' : (plain||'(빈 항목)');
+      return '<div class="fld"><p class="k">'+lab+'  ·  '+k+'</p>'+
+        (one ? '<input data-t="'+k+'" value="'+v.replace(/"/g,'&quot;')+'">'
+             : '<textarea data-t="'+k+'">'+v.replace(/</g,'&lt;')+'</textarea>')+'</div>';
+    }).join('') +'</div>';
+  }).join('');
+  box.querySelectorAll('[data-t]').forEach(function(f){
+    f.addEventListener('input',function(){ data.text[f.getAttribute('data-t')]=f.value; mark(); });
+  });
+}
+
+/* ===================== 탭 / 버튼 ===================== */
+document.querySelector('#side nav').addEventListener('click',function(e){
+  var p=e.target.getAttribute('data-p'); if(!p) return;
+  this.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-p')===p)});
+  document.querySelectorAll('.pane').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p)});
+});
+document.getElementById('b-save').addEventListener('click',function(){
+  try{ localStorage.setItem(DRAFT_KEY,JSON.stringify(data)); dirty=0;
+       say('이 브라우저에 임시 저장했습니다. 확정하려면 content.json 을 내보내세요.',true); }
+  catch(e){ say('저장 실패 — 브라우저 저장소를 사용할 수 없습니다.'); }
+});
+document.getElementById('b-exp').addEventListener('click',function(){
+  try{ localStorage.setItem(DRAFT_KEY,JSON.stringify(data)); }catch(e){}
+  var b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='content.json'; a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+  dirty=0; say('content.json 을 내려받았습니다. 사이트 최상위 폴더에 덮어쓰면 확정됩니다.',true);
+});
+document.getElementById('b-load').addEventListener('click',function(){document.getElementById('b-file').click()});
+document.getElementById('b-file').addEventListener('change',function(e){
+  var f=e.target.files[0]; if(!f) return;
+  var fr=new FileReader();
+  fr.onload=function(){ try{ merge(data,JSON.parse(fr.result));
+    try{localStorage.setItem(DRAFT_KEY,JSON.stringify(data))}catch(x){} location.reload();
+  }catch(err){ say('불러오기 실패 — JSON 형식을 확인해주세요.'); } };
+  fr.readAsText(f);
+});
+document.getElementById('b-reset').addEventListener('click',function(){
+  if(!confirm('임시 저장한 편집 내용을 모두 지우고 content.json 기준으로 되돌립니다.')) return;
+  try{localStorage.removeItem(DRAFT_KEY)}catch(e){} location.reload();
+});
+window.addEventListener('beforeunload',function(e){ if(dirty){e.preventDefault();e.returnValue=''} });
+
+boot();
+</script>
+</body>
+</html>
