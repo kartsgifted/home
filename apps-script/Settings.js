@@ -1,0 +1,41 @@
+/**
+ * 「설정」 탭(항목-값 구조)에서 운영 값을 읽는다. 값이 없으면 fallback을 쓴다 —
+ * 담당자가 시트에 행을 안 넣어도 기본값으로 동작하고, 넣으면 코드 수정 없이 바뀐다 (docs/sheet-schema.md 2-5).
+ * 한 번의 실행 안에서는 처음 읽은 값을 재사용한다.
+ */
+
+var settingsMap_ = null;
+
+function getSetting_(key, fallback) {
+  if (!settingsMap_) {
+    settingsMap_ = {};
+    readTab_('설정').forEach(function (row) { settingsMap_[String(row['항목']).trim()] = row['값']; });
+  }
+  var value = settingsMap_[key];
+  return (value === '' || value == null) ? fallback : value;
+}
+
+function getCategories_() {
+  return String(getSetting_('공지 분류', '공지,워크숍,심화과정,아카이브'))
+    .split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+}
+
+/**
+ * 업로드·글 한도 (docs/sheet-schema.md 2·4절). 관리자 화면도 list 응답으로 같은 값을 받아 미리 막지만,
+ * 관문이 다시 확인한다. 개수·용량은 임시값(확인 필요)이라 바꾸기 쉽게 한곳에 둔다.
+ */
+var LIMITS_ = {
+  noticeTitle: 200,
+  noticeBody: 5000,
+  galleryTitle: 100,
+  galleryDesc: 100,
+  link: 500,
+  noticePhotos: 10,
+  noticeFiles: 10,
+  galleryPhotos: 50,
+  photoBytes: 5 * 1024 * 1024,
+  fileBytes: 10 * 1024 * 1024,
+  fileName: 150,
+  photoTypes: ['image/jpeg', 'image/png', 'image/webp'],
+  fileExts: ['hwp', 'hwpx', 'doc', 'docx', 'pdf', 'xls', 'xlsx', 'ppt', 'pptx']
+};

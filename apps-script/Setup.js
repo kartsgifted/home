@@ -1,0 +1,112 @@
+/**
+ * 처음 한 번 Apps Script 편집기에서 setup을 골라 ▶로 실행한다. 이때 구글이 권한 승인 창을 띄운다.
+ * 탭 · 머리글 · 선택 목록 · 기본 설정값 · 드라이브 폴더 · 서명 키 · 발행 설정을 만든다 (docs/sheet-schema.md 2절).
+ * 머리글을 손으로 입력하면 오타가 나기 쉬워(관문은 머리글 글자로 열을 찾음) 여기서만 만든다.
+ * 이미 있는 탭 · 폴더 · 값은 건드리지 않으므로 여러 번 실행해도 안전하다.
+ */
+
+var TAB_HEADERS_ = {
+  '읽어보기': [],
+  '공지':     ['글ID', '분류', '제목', '본문', '게시일', '상단고정', '사진위치', '사진링크', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
+  '갤러리':   ['글ID', '제목', '설명', '게시일', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
+  '첨부':     ['첨부ID', '글ID', '구분', '순서', '파일ID', '파일명', '크기', '가로', '세로', '공유', '올린사람', '올린시각'],
+  '접근코드': ['코드', '이름', '상태', '사용기한', '버전', '비고'],
+  '설정':     ['항목', '값', '설명'],
+  '로그':     ['일시', '결과', '코드', '이름', '기기ID', '요청', '대상']
+};
+
+// 시트가 날짜·숫자처럼 보이는 값을 마음대로 바꾸지 않도록 일반 텍스트로 둘 열
+var TEXT_COLUMNS_ = {
+  '공지': ['글ID', '게시일', '사진링크'],
+  '갤러리': ['글ID', '게시일'],
+  '첨부': ['첨부ID', '글ID', '파일ID'],
+  '접근코드': ['코드', '사용기한']
+};
+
+var DROPDOWNS_ = {
+  '접근코드': { '상태': ['사용', '정지'] }
+};
+
+var DEFAULT_SETTINGS_ = [
+  ['공지 분류', '공지,워크숍,심화과정,아카이브', '쉼표로 구분. 관리자 페이지의 분류 선택 목록'],
+  ['메인 아카이브 분류', '아카이브', '메인 오른쪽 「아카이브」 칸에 모을 공지 분류'],
+  ['기기별 실패 잠금 기준', '5', '로그인 실패가 이 횟수가 되면 그 기기를 잠근다'],
+  ['기기별 잠금 시간(분)', '10', ''],
+  ['운영진 알림 메일', '', '로그인 실패 급증 · 사이트 반영 실패 때 메일. 비우면 보내지 않음']
+];
+
+var README_LINES_ = [
+  ['K예술영재 홍보 사이트 — 게시글 관리 시트'],
+  [''],
+  ['• 공지 · 갤러리 · 첨부 탭은 관리자 페이지가 씁니다. 여기서 직접 고치지 마세요.'],
+  ['• 접근코드 탭: 관리자 로그인 코드. 코드가 새면 「버전」 숫자를 올리면 모든 접속이 끊깁니다.'],
+  ['• 설정 탭: 공지 분류 등 운영 값. 값을 비우면 기본값으로 동작합니다.'],
+  ['• 로그 탭: 자동 기록입니다.'],
+  ['• 탭 이름과 1행 머리글은 바꾸지 마세요. 관문이 이 이름으로 값을 찾습니다.']
+];
+
+function setup() {
+  setupTabs_();
+  setupDriveFolder_();
+  setupScriptProperties_();
+  Logger.log('완료. 접근코드 탭에 코드를 한 줄 넣고, 스크립트 속성 GITHUB_TOKEN을 넣으세요.');
+}
+
+function setupTabs_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  Object.keys(TAB_HEADERS_).forEach(function (name) {
+    if (ss.getSheetByName(name)) { Logger.log(name + ': 이미 있어 건드리지 않음'); return; }
+    var sheet = ss.insertSheet(name, ss.getSheets().length);
+    var headers = TAB_HEADERS_[name];
+    if (headers.length) {
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
+      sheet.setFrozenRows(1);
+    }
+    (TEXT_COLUMNS_[name] || []).forEach(function (h) {
+      sheet.getRange(2, headers.indexOf(h) + 1, sheet.getMaxRows() - 1, 1).setNumberFormat('@');
+    });
+    var dropdowns = DROPDOWNS_[name] || {};
+    Object.keys(dropdowns).forEach(function (h) {
+      var rule = SpreadsheetApp.newDataValidation().requireValueInList(dropdowns[h], true).setAllowInvalid(false).build();
+      sheet.getRange(2, headers.indexOf(h) + 1, sheet.getMaxRows() - 1, 1).setDataValidation(rule);
+    });
+    if (name === '설정') sheet.getRange(2, 1, DEFAULT_SETTINGS_.length, 3).setValues(DEFAULT_SETTINGS_);
+    if (name === '읽어보기') sheet.getRange(1, 1, README_LINES_.length, 1).setValues(README_LINES_);
+    Logger.log(name + ': 만듦');
+  });
+
+  // 새 시트를 만들 때 생기는 빈 기본 탭(시트1 / Sheet1)은 지운다. 지운 탭은 이름을 읽을 수 없으므로 먼저 읽어 둔다.
+  ss.getSheets().forEach(function (sheet) {
+    var name = sheet.getName();
+    if (!TAB_HEADERS_.hasOwnProperty(name) && sheet.getLastRow() === 0 && ss.getSheets().length > 1) {
+      ss.deleteSheet(sheet);
+      Logger.log(name + ': 빈 기본 탭이라 지움');
+    }
+  });
+}
+
+function setupDriveFolder_() {
+  var props = PropertiesService.getScriptProperties();
+  var id = props.getProperty('DRIVE_FOLDER_ID');
+  if (id) {
+    try { DriveApp.getFolderById(id); Logger.log('드라이브 폴더: 이미 있음'); return; } catch (err) { /* 지워졌으면 새로 만든다 */ }
+  }
+  var folder = DriveApp.createFolder('K예술영재 홍보 사이트 첨부');
+  props.setProperty('DRIVE_FOLDER_ID', folder.getId());
+  Logger.log('드라이브 폴더: 만듦 (내 드라이브 › K예술영재 홍보 사이트 첨부, 공유 안 함)');
+}
+
+function setupScriptProperties_() {
+  var props = PropertiesService.getScriptProperties();
+  // 서명 키는 이미 있으면 다시 만들지 않는다 — 바뀌면 발급된 토큰이 전부 무효가 된다.
+  if (!props.getProperty('TOKEN_SECRET')) {
+    props.setProperty('TOKEN_SECRET', Utilities.getUuid() + Utilities.getUuid());
+    Logger.log('TOKEN_SECRET: 만듦');
+  }
+  // 발행 대상 기본값. 개발 중에는 data-test, 운영 전환 때 GITHUB_BRANCH만 main으로 바꾼다 (docs/decisions.md 3절).
+  var defaults = { GITHUB_REPO: 'kartsgifted/home', GITHUB_BRANCH: 'data-test', GITHUB_PATH: 'data/posts.json' };
+  Object.keys(defaults).forEach(function (key) {
+    if (!props.getProperty(key)) { props.setProperty(key, defaults[key]); Logger.log(key + ': ' + defaults[key]); }
+  });
+  if (!props.getProperty('GITHUB_TOKEN')) Logger.log('GITHUB_TOKEN: 비어 있음 — 프로젝트 설정 › 스크립트 속성에서 직접 넣을 것');
+}
