@@ -1,6 +1,18 @@
 {
-  "updatedAt": "2026-10-13T17:57:19+09:00",
+  "updatedAt": "2026-10-13T17:57:26+09:00",
   "notices": [
+    {
+      "id": "N-0005",
+      "category": "워크숍",
+      "title": "8월 전통예술 집중 워크숍 운영 일정 안내",
+      "body": "",
+      "date": "2026-07-24",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    },
     {
       "id": "N-0004",
       "category": "공지",
