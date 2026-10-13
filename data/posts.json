@@ -1,0 +1,30 @@
+{
+  "updatedAt": "2026-10-13T17:08:24+09:00",
+  "notices": [
+    {
+      "id": "N-0001",
+      "category": "공지",
+      "title": "[시험] 관문 연결 확인 — 곧 지웁니다",
+      "body": "관문 시험 글입니다.\nhttps://kartsgifted.github.io/home/",
+      "date": "2026-10-13",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [
+        {
+          "fileId": "1D-6wyUtW2R2K-Jr_dXrsGCnMLYKQdF_g",
+          "w": 16,
+          "h": 16
+        }
+      ],
+      "files": [
+        {
+          "fileId": "1Kb7eUGrkYr6NVi4vApYeEOQaSVh_ZR1K",
+          "name": "[시험] 첨부.pdf",
+          "size": 25
+        }
+      ]
+    }
+  ],
+  "gallery": []
+}
