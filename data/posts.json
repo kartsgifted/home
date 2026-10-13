@@ -1,6 +1,18 @@
 {
-  "updatedAt": "2026-10-13T17:57:13+09:00",
+  "updatedAt": "2026-10-13T17:57:19+09:00",
   "notices": [
+    {
+      "id": "N-0004",
+      "category": "공지",
+      "title": "2026 K예술영재 프로젝트 참여 학생 반 배정 결과 안내",
+      "body": "",
+      "date": "2026-06-30",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    },
     {
       "id": "N-0003",
       "category": "공지",
