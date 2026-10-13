@@ -1,5 +1,30 @@
 {
-  "updatedAt": "2026-10-13T17:08:37+09:00",
-  "notices": [],
+  "updatedAt": "2026-10-13T17:39:51+09:00",
+  "notices": [
+    {
+      "id": "N-0002",
+      "category": "공지",
+      "title": "[시험] 관리자 페이지 확인 — 곧 지웁니다",
+      "body": "신청 기간은 **9월 12일까지**입니다.\n{빨강:기한 이후 접수 불가}\n{강조:참여 대상}: 워크숍 수료생\n자세한 안내: https://kartsgifted.github.io/home/",
+      "date": "2026-10-13",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [
+        {
+          "fileId": "14u_P7RE14f7GaxoVnoeLZ_5NDXN7VlO1",
+          "w": 400,
+          "h": 300
+        }
+      ],
+      "files": [
+        {
+          "fileId": "1cUJ14l2dM4EtgJJmBGMOBr57tecz3BWw",
+          "name": "[시험] 신청서.pdf",
+          "size": 18
+        }
+      ]
+    }
+  ],
   "gallery": []
 }
