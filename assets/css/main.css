@@ -38,7 +38,7 @@
 .h-list .grp h3{font-family:"Playfair Display","Nanum Myeongjo",serif;font-size:19px;font-weight:600;color:#F0D9A8;margin-bottom:10px}
 .h-list .grp h3 em{font-style:normal;color:#fff;font-family:Pretendard,sans-serif;font-size:15px;font-weight:600;margin-right:8px;letter-spacing:-.02em}
 .h-list .grp.line h3{border-top:1.5px solid #F0D9A8;padding-top:8px;display:inline-block}
-.h-list li{font-size:15.5px;line-height:1.72;letter-spacing:-.02em;opacity:.94}
+.h-list li{font-size:16.5px;line-height:1.72;letter-spacing:-.02em;opacity:.94}
 .h-list li a:hover{text-decoration:underline;text-underline-offset:4px}
 .h-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:8;width:54px;height:54px;border-radius:50%;
   border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.08);backdrop-filter:blur(6px);color:#fff;font-size:18px;
@@ -77,7 +77,7 @@
 .card .en{font-family:"Playfair Display",serif;font-size:12.5px;color:var(--gray-lt);margin-top:3px}
 .card .tt{margin-top:14px;font-size:18px;font-weight:700;letter-spacing:-.03em;line-height:1.35}
 .card .tt-en{font-family:"Playfair Display",serif;font-size:13px;color:var(--gray-lt);margin-top:3px}
-.card .meta{margin-top:14px;font-size:13.5px;color:var(--gray);line-height:1.65;letter-spacing:-.02em}
+.card .meta{margin-top:14px;font-size:15px;color:var(--gray);line-height:1.65;letter-spacing:-.02em}
 
 /* ============ ABOUT ============ */
 #about{background:var(--cream);padding:var(--pad-sec) 0}
@@ -88,7 +88,7 @@
 .stat dt{font-family:"Playfair Display",serif;font-size:13px;letter-spacing:.14em;color:var(--gray-lt)}
 .stat dd{font-family:"GmarketSans",Pretendard,sans-serif;font-size:42px;font-weight:700;color:var(--teal);margin-top:10px;line-height:1}
 .stat dd small{font-size:16px;font-weight:500;color:var(--ink);margin-left:4px}
-.stat .cap{font-size:14px;color:var(--gray);margin-top:10px;letter-spacing:-.02em}
+.stat .cap{font-size:15px;color:var(--gray);margin-top:10px;letter-spacing:-.02em}
 
 /* ============ COURSE BAND ============ */
 #course{background:var(--teal);color:#fff;padding:var(--pad-sec) 0}
@@ -101,7 +101,7 @@
 .cs .box2 h3{font-size:28px;font-weight:700;letter-spacing:-.03em;margin-top:14px}
 .cs .box2 .en{font-family:"Playfair Display",serif;font-size:14px;opacity:.7;margin-top:4px}
 .cs .box2 ul{margin-top:26px;border-top:1px solid var(--line-dk);padding-top:22px}
-.cs .box2 li{display:flex;gap:18px;font-size:15.5px;line-height:2;letter-spacing:-.02em}
+.cs .box2 li{display:flex;gap:18px;font-size:16.5px;line-height:2;letter-spacing:-.02em}
 .cs .box2 li b{flex:0 0 88px;font-weight:600;color:#F0D9A8}
 .cs .more{margin-top:26px;display:inline-flex;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.5);padding-bottom:4px}
 

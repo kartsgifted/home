@@ -18,7 +18,7 @@
   --teal:#176C86;  --teal-dk:#1C6077;  --teal-dp:#0F4A5C;  --teal-lt:#E7F0F3;
   --cream:#FAF9F5; --ink:#212326;      --ink-dp:#141413;
   --coral:#E84958; --gold:#C9A227;     --sand:#EFE3D7;
-  --gray:#5A6065;  --gray-lt:#8A8F94;
+  --gray:#5A6065;  --gray-lt:#6B7075;
   --line:#DDDDDD;  --line-lt:#EAEAEA;  --line-dk:rgba(255,255,255,.22);
 
   /* ---- 레이아웃 ---- */
@@ -125,13 +125,13 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .h-sub:first-child{margin-top:0}
 .lead{font-family:"Nanum Myeongjo","Playfair Display",serif;font-size:clamp(24px,2.2vw,34px);line-height:1.6;letter-spacing:-.02em}
 .lead b{color:var(--teal);font-weight:700}
-.txt{font-size:16.5px;line-height:1.95;color:#4A4F54;letter-spacing:-.02em}
+.txt{font-size:17px;line-height:1.95;color:#4A4F54;letter-spacing:-.02em}
 .txt p+p{margin-top:16px}
 .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:70px;align-items:start}
 
 /* 정보 테이블 */
 .tbl{border-top:2px solid var(--ink)}
-.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:18px 22px;font-size:16px;text-align:left;letter-spacing:-.02em;vertical-align:top;line-height:1.7}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:18px 22px;font-size:17px;text-align:left;letter-spacing:-.02em;vertical-align:top;line-height:1.7}
 .tbl th{background:var(--cream);font-weight:700;width:190px}
 .tbl.center td,.tbl.center th{text-align:center}
 .tbl thead th{background:var(--teal);color:#fff;width:auto;border-bottom:0}
@@ -146,16 +146,16 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .box .no{font-family:"Playfair Display",serif;font-size:12px;letter-spacing:.2em;color:var(--teal)}
 .box h4{font-size:20px;font-weight:700;letter-spacing:-.03em;margin-top:12px}
 .box .en{font-family:"Playfair Display",serif;font-size:13px;color:var(--gray-lt);margin-top:4px}
-.box p{font-size:15.5px;line-height:1.8;color:var(--gray);margin-top:14px;letter-spacing:-.02em}
+.box p{font-size:16.5px;line-height:1.8;color:var(--gray);margin-top:14px;letter-spacing:-.02em}
 .box.fill{background:var(--cream);border-color:transparent}
 
 /* 도트 리스트 */
-.dot li{position:relative;padding-left:16px;font-size:16px;line-height:1.95;color:#4A4F54;letter-spacing:-.02em}
+.dot li{position:relative;padding-left:16px;font-size:17px;line-height:1.95;color:#4A4F54;letter-spacing:-.02em}
 .dot li::before{content:"";position:absolute;left:0;top:13px;width:5px;height:5px;border-radius:50%;background:var(--teal)}
 .dot li+li{margin-top:4px}
 
 /* 안내 배너 */
-.note{background:var(--teal-lt);border-left:3px solid var(--teal);padding:24px 28px;font-size:15.5px;line-height:1.85;color:#2C4A54;letter-spacing:-.02em}
+.note{background:var(--teal-lt);border-left:3px solid var(--teal);padding:24px 28px;font-size:16.5px;line-height:1.85;color:#2C4A54;letter-spacing:-.02em}
 .note b{color:var(--teal-dp)}
 
 /* 버튼 */
@@ -173,7 +173,7 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .tl li:last-child{padding-bottom:0}
 .tl .d{font-family:"Playfair Display",serif;font-size:14px;letter-spacing:.08em;color:var(--teal);font-weight:600}
 .tl h4{font-size:19px;font-weight:700;margin-top:8px;letter-spacing:-.03em}
-.tl p{font-size:15.5px;color:var(--gray);margin-top:6px;line-height:1.8}
+.tl p{font-size:16.5px;color:var(--gray);margin-top:6px;line-height:1.8}
 
 /* 게시판 리스트 */
 .bbs{border-top:2px solid var(--ink)}
