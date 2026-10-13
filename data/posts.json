@@ -1,5 +1,18 @@
 {
-  "updatedAt": "2026-10-13T17:40:01+09:00",
-  "notices": [],
+  "updatedAt": "2026-10-13T17:57:13+09:00",
+  "notices": [
+    {
+      "id": "N-0003",
+      "category": "공지",
+      "title": "분야별 정규 워크숍 사전 준비물 안내",
+      "body": "",
+      "date": "2026-06-18",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    }
+  ],
   "gallery": []
 }
