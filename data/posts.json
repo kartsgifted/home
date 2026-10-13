@@ -1,6 +1,18 @@
 {
-  "updatedAt": "2026-10-13T17:57:42+09:00",
+  "updatedAt": "2026-10-13T17:57:49+09:00",
   "notices": [
+    {
+      "id": "N-0008",
+      "category": "심화과정",
+      "title": "2026 K예술영재 프로젝트 심화과정 참여 수요조사 안내",
+      "body": "",
+      "date": "2026-09-02",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    },
     {
       "id": "N-0007",
       "category": "워크숍",
