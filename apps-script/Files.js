@@ -35,10 +35,17 @@ function handleUpload_(req) {
   var maxBytes = kind === 'photo' ? LIMITS_.photoBytes : LIMITS_.fileBytes;
   if (!bytes.length || bytes.length > maxBytes) return jsonResponse_(false, 'FILE_REJECTED', null);
 
-  return withLock_(function () {
-    var file = getUploadFolder_().createFile(Utilities.newBlob(bytes, mimeType, name));
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  // 드라이브 저장은 오래 걸려(수 초) 잠금 밖에서 한다 — 관리자 화면이 여러 장을 동시에 올릴 수 있게.
+  // 번호 매기기와 시트 기록만 잠근다. 잠금을 못 잡으면 올린 파일을 버리고 BUSY.
+  var file = getUploadFolder_().createFile(Utilities.newBlob(bytes, mimeType, name));
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) {
+    discardFile_(file.getId());
+    return jsonResponse_(false, 'BUSY', null);
+  }
+  try {
     var id = nextId_('A', 5, readTab_('첨부').map(function (r) { return r['첨부ID']; }));
     writeRow_('첨부', {
       '첨부ID': id, '글ID': '', '구분': kind === 'photo' ? '사진' : '파일', '순서': '',
@@ -46,9 +53,11 @@ function handleUpload_(req) {
       '가로': width || '', '세로': height || '', '공유': '공유',
       '올린사람': auth.name, '올린시각': new Date()
     });
-    logAccess_('성공', auth.code, auth.name, '', 'upload', id);
-    return jsonResponse_(true, null, { attachmentId: id, fileId: file.getId(), size: bytes.length });
-  });
+  } finally {
+    lock.releaseLock();
+  }
+  logAccess_('성공', auth.code, auth.name, '', 'upload', id);
+  return jsonResponse_(true, null, { attachmentId: id, fileId: file.getId(), size: bytes.length });
 }
 
 // 경로 문자와 제어 문자를 빼고 길이를 줄인다. 드라이브에 이 이름으로 저장돼 내려받을 때 그대로 쓰인다.

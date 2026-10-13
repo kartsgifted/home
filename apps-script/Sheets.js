@@ -29,16 +29,23 @@ function headersOf_(name) {
 }
 
 // obj({ 머리글: 값 })를 머리글 순서의 배열로 바꿔 rowNumber 행에 쓰고, rowNumber가 없으면 맨 아래에 붙인다.
+// 글자 값은 칸을 일반 텍스트(@)로 지정한 뒤 쓴다 — 그러지 않으면 시트가 "2026.10"을 숫자 2026.1로,
+// "3/4"를 날짜로 바꿔 저장한다(2026-10-13 갤러리 설명에서 실제로 발생).
 function writeRow_(name, obj, rowNumber) {
   var sheet = getSheet_(name);
   var headers = headersOf_(name);
+  var formats = [];
   var row = headers.map(function (h) {
     var v = obj[h];
-    if (v instanceof Date || typeof v === 'number') return v;
+    if (v instanceof Date) { formats.push('yyyy-mm-dd hh:mm:ss'); return v; }
+    if (typeof v === 'number') { formats.push('0'); return v; }
+    formats.push('@');
     return sanitizeForSheet_(v);
   });
   var target = rowNumber || sheet.getLastRow() + 1;
-  sheet.getRange(target, 1, 1, row.length).setValues([row]);
+  var range = sheet.getRange(target, 1, 1, row.length);
+  range.setNumberFormats([formats]);
+  range.setValues([row]);
 }
 
 // 행 번호 목록을 지운다. 위에서부터 지우면 아래 행 번호가 밀리므로 아래부터 지운다.

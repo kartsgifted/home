@@ -214,6 +214,25 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .top.on{opacity:1;pointer-events:auto}
 .top:hover{transform:translateY(-3px)}
 
+/* ============ 게시글 (board.js — 관리자 미리보기 · 방문자 화면 공용) ============ */
+.post{border-top:2px solid var(--ink)}
+.post-head{padding:30px 0 26px;border-bottom:1px solid var(--line)}
+.post-cat{display:inline-block;font-size:12.5px;font-weight:600;color:var(--teal);border:1px solid var(--teal);padding:4px 11px;letter-spacing:-.02em}
+.post-title{font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1.4;margin-top:14px}
+.post-date{font-family:"Playfair Display",serif;font-size:14px;color:var(--gray-lt);margin-top:10px}
+.post-photos{display:grid;gap:16px;margin-top:36px}
+.post-photos img{width:auto;max-width:100%;height:auto;margin:0 auto}
+.post-body{font-size:17px;line-height:1.95;color:#3A3F44;letter-spacing:-.02em;margin-top:36px;overflow-wrap:anywhere}
+.post-body a{color:var(--teal);text-decoration:underline;text-underline-offset:3px}
+.post-body strong{font-weight:700;color:var(--ink)}
+.em-key{color:var(--teal);font-weight:600}
+.em-warn{color:#C8323F;font-weight:600}
+.post-files{margin-top:44px;background:var(--cream);padding:22px 26px}
+.post-files h4{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.post-files li a{display:flex;flex-wrap:wrap;gap:4px 8px;padding:8px 0;font-size:15.5px;letter-spacing:-.02em}
+.post-files li a:hover .nm{text-decoration:underline;text-underline-offset:3px}
+.post-files .sz{color:var(--gray-lt)}
+
 /* ============ RESPONSIVE ============ */
 @media(max-width:1280px){
   .inner{width:calc(100% - 60px)}
