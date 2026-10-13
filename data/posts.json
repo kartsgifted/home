@@ -1,6 +1,18 @@
 {
-  "updatedAt": "2026-10-13T17:57:35+09:00",
+  "updatedAt": "2026-10-13T17:57:42+09:00",
   "notices": [
+    {
+      "id": "N-0007",
+      "category": "워크숍",
+      "title": "분야별 워크숍 만족도조사 링크 오픈 안내",
+      "body": "",
+      "date": "2026-08-21",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    },
     {
       "id": "N-0006",
       "category": "아카이브",
