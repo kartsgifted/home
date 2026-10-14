@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T16:56:22+09:00",
+  "updatedAt": "2026-10-14T16:56:28+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -63,6 +63,13 @@
     }
   ],
   "press": [
+    {
+      "id": "P-0004",
+      "source": "이투뉴스",
+      "title": "K예술영재 프로젝트, 광주 무용 워크숍 마무리...참가자 전원 겨울 심화캠프 진출",
+      "date": "2026-07-23",
+      "url": "https://www.e2news.com/news/articleView.html?idxno=332571"
+    },
     {
       "id": "P-0003",
       "source": "피앤피뉴스",
