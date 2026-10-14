@@ -141,14 +141,18 @@ var SITEMAP = [
       if(window.scrollY>y) window.scrollTo({top:y,behavior:'smooth'});
     });
   });
-  var hash=location.hash.replace('#','');
-  var valid = hash && document.getElementById(hash);
-  open(valid ? hash : btns[0].dataset.tab,false);
-  if(valid){ /* 해시로 들어와도 서브비주얼부터 보이도록 위치 보정 */
+  /* 해시의 / 앞부분이 탭 이름 (#notice/N-0003 → 공지사항 탭 안의 글 상세, news.js) */
+  function tabOf(){
+    var h=location.hash.replace('#','').split('/')[0];
+    return h && document.getElementById(h) ? h : '';
+  }
+  var hash=tabOf();
+  open(hash || btns[0].dataset.tab,false);
+  if(hash){ /* 해시로 들어와도 서브비주얼부터 보이도록 위치 보정 */
     window.scrollTo(0, Math.max(0, tabs.offsetTop - 1));
   }
   window.addEventListener('hashchange',function(){
-    var h=location.hash.replace('#','');
-    if(document.getElementById(h)) open(h,false);
+    var h=tabOf();
+    if(h) open(h,false);
   });
 })();

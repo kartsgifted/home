@@ -112,7 +112,7 @@
   background-size:cover;background-position:center}
 #news::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--ink-dp) 30%,rgba(20,20,19,.72) 52%,rgba(20,20,19,.15))}
 #news .inner{position:relative;z-index:3}
-.nw-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr);gap:44px;align-items:start}
+.nw-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,.8fr);gap:44px;align-items:start}
 .nw h3{font-size:26px;font-weight:700;letter-spacing:-.03em;display:flex;align-items:baseline;justify-content:space-between;
   padding-bottom:16px;border-bottom:1px solid var(--line-dk)}
 .nw h3 a{font-size:11px;letter-spacing:.16em;font-weight:500;opacity:.6}
@@ -120,6 +120,9 @@
 .nw li a{display:flex;gap:20px;align-items:baseline;justify-content:space-between;padding:15px 0;
   border-bottom:1px solid rgba(255,255,255,.1);font-size:16px;letter-spacing:-.02em;transition:color .3s}
 .nw li a:hover{color:#F0D9A8}
+.nw li a:not([href]){cursor:default}
+.nw li a:not([href]):hover{color:inherit}
+.nw .bd-msg{padding:28px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:15px;color:rgba(255,255,255,.6);letter-spacing:-.02em}
 .nw li .d{flex:0 0 auto;font-size:13.5px;color:rgba(255,255,255,.45);font-family:"Playfair Display",serif}
 .nw li .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .contact{text-align:right}

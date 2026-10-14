@@ -32,15 +32,8 @@
 <main>
 <section class="panel" id="notice"><div class="inner">
 <h2 class="h-sec" data-k="news.notice.4" data-rv="">NOTICE<span class="ko">공지사항</span></h2>
-<ul class="bbs" data-list="bbs" data-rv="" style="margin-top:44px">
-<li><a href="#"><span class="cat">심화과정</span><span class="t">2026 K예술영재 프로젝트 심화과정 참여 수요조사 안내</span><span class="d">2026-09-02</span></a></li>
-<li><a href="#"><span class="cat">워크숍</span><span class="t">분야별 워크숍 만족도조사 링크 오픈 안내</span><span class="d">2026-08-21</span></a></li>
-<li><a href="#"><span class="cat">아카이브</span><span class="t">워크숍 영상 아카이브 접속코드 안내</span><span class="d">2026-08-05</span></a></li>
-<li><a href="#"><span class="cat">워크숍</span><span class="t">8월 전통예술 집중 워크숍 운영 일정 안내</span><span class="d">2026-07-24</span></a></li>
-<li><a href="#"><span class="cat">공지</span><span class="t">2026 K예술영재 프로젝트 참여 학생 반 배정 결과 안내</span><span class="d">2026-06-30</span></a></li>
-<li><a href="#"><span class="cat">공지</span><span class="t">분야별 정규 워크숍 사전 준비물 안내</span><span class="d">2026-06-18</span></a></li>
-</ul>
-<div class="paging"><a class="on" href="#">1</a><a href="#">2</a><a href="#">3</a><a href="#">›</a></div>
+<!-- 공지 목록 · 상세는 assets/js/news.js가 data/posts.json으로 채운다 -->
+<div data-board="notice" style="margin-top:44px"></div>
 </div></section>
 <section class="panel" id="archive"><div class="inner">
 <h2 class="h-sec" data-k="news.archive.5" data-rv="">ARCHIVE<span class="ko">아카이브 · 자료실</span></h2>
@@ -64,20 +57,13 @@
 </div></section>
 <section class="panel" id="gallery"><div class="inner">
 <h2 class="h-sec" data-k="news.gallery.24" data-rv="">GALLERY<span class="ko">현장 갤러리</span></h2>
-<div class="gal" data-list="gal" style="margin-top:44px">
-<figure data-d="0" data-rv=""><div class="th"><i></i></div><figcaption>무용 워크숍 현장</figcaption><p class="m">2026.07 · 광주캠퍼스</p></figure>
-<figure data-d="1" data-rv=""><div class="th"><i></i></div><figcaption>음악 마스터클래스</figcaption><p class="m">2026.07 · 서초동캠퍼스</p></figure>
-<figure data-d="2" data-rv=""><div class="th"><i></i></div><figcaption>미술 창작 스튜디오</figcaption><p class="m">2026.08 · 한국과학기술원</p></figure>
-<figure data-d="3" data-rv=""><div class="th"><i></i></div><figcaption>전통예술 집중 워크숍</figcaption><p class="m">2026.08 · 석관동캠퍼스</p></figure>
-<figure data-d="0" data-rv=""><div class="th"><i></i></div><figcaption>앙상블 리허설</figcaption><p class="m">2026.08 · 서초동캠퍼스</p></figure>
-<figure data-d="1" data-rv=""><div class="th"><i></i></div><figcaption>미술 결과전시</figcaption><p class="m">2026.08 · 한국과학기술원</p></figure>
-<figure data-d="2" data-rv=""><div class="th"><i></i></div><figcaption>분야별 평가회의</figcaption><p class="m">2026.09</p></figure>
-<figure data-d="3" data-rv=""><div class="th"><i></i></div><figcaption>심화 멘토링 첫 회차</figcaption><p class="m">2026.10</p></figure>
-</div>
-<div class="paging"><a class="on" href="#">1</a><a href="#">2</a><a href="#">›</a></div>
+<!-- 갤러리 앨범은 assets/js/news.js가 data/posts.json으로 채운다 -->
+<div data-board="gallery" style="margin-top:44px"></div>
 </div></section>
 </main>
 <footer id="footer"></footer>
 <script src="assets/js/common.js"></script>
+<script src="assets/js/board.js"></script>
+<script src="assets/js/news.js"></script>
 </body>
 </html>

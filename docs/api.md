@@ -212,6 +212,6 @@
 |---|---|
 | `news.html` 공지 탭 | `notices` 목록 · 페이지 나누기 · `#notice/글ID` 상세 |
 | `news.html` 갤러리 탭 | `gallery` 목록 · 사이트 안 확대 보기 |
-| `index.html` 소식 | `notices` 최신 3개 / 분류 「아카이브」 최신 3개 |
+| `index.html` 소식 | `notices` 앞쪽 3개 (고정 글 → 최신순, `decisions.md` 4절) |
 
 사진 · 첨부 주소 만드는 규칙은 `decisions.md` 5절.

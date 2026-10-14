@@ -1,4 +1,4 @@
-/* 메인 페이지 전용 — 히어로 슬라이더 / 프로그램 레일 */
+/* 메인 페이지 전용 — 히어로 슬라이더 / 프로그램 레일 / 한 번 스크롤 / 소식(공지 최신 3개) */
 (function(){
   var slides=document.querySelectorAll('#hero .slide'),dots=document.querySelectorAll('.dots button'),idx=0,timer;
   if(!slides.length) return;
@@ -98,5 +98,20 @@
     if(e.target.closest && e.target.closest('input,textarea,select,button,[contenteditable]')) return;
     if(busy){ e.preventDefault(); return; }
     if(step(dir)) e.preventDefault();
+  });
+})();
+
+/* 메인 맨 아래 공지사항 — data/posts.json의 공지 앞쪽 3개(관문이 고정 글 → 최신순으로 정렬해 둠).
+   본문·사진·첨부가 없는 공지는 누를 수 없다. 불러오지 못해도 나머지 화면은 그대로. */
+(function(){
+  var ul=document.querySelector('[data-board="latest"]');
+  if(!ul||!window.Board) return;
+  Board.load().then(function(d){
+    var list=d?d.notices.slice(0,3):[];
+    if(!list.length){
+      var li=document.createElement('li');li.className='bd-msg';
+      li.textContent=d?Board.MSG.empty:Board.MSG.fail;ul.appendChild(li);return;
+    }
+    list.forEach(function(n){ ul.appendChild(Board.noticeItem(n,'news.html#notice/'+encodeURIComponent(n.id),false)); });
   });
 })();

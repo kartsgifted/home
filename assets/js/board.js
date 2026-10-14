@@ -91,6 +91,7 @@ window.Board = (function(){
   /* ---------- 공지 상세 ---------- */
   // 사진 → 글 → 첨부 (photoPosition이 bottom이면 글 → 사진 → 첨부). 비어 있는 칸은 그리지 않는다.
   // opts.localPhoto(photo): 관리자 화면이 아직 드라이브에 없는 사진의 미리보기 주소를 줄 때 쓴다.
+  // opts.onPhoto(index): 사진링크가 없을 때 사진을 누르면 부른다 (방문자 화면의 확대 보기).
   function renderNotice(post, opts){
     opts = opts || {};
     var art = el('article', 'post');
@@ -100,18 +101,23 @@ window.Board = (function(){
     if(post.date) head.appendChild(el('p', 'post-date', post.date));
     art.appendChild(head);
 
-    var photos = null;
+    var photos = null, link = /^https?:\/\//i.test(post.photoLink || '') ? post.photoLink : '';   // 관문도 검사하지만 시트를 직접 고친 경우까지 막는다
     if(post.photos && post.photos.length){
       photos = el('div', 'post-photos');
-      post.photos.forEach(function(p){
+      post.photos.forEach(function(p, i){
         var img = el('img');
         img.src = (opts.localPhoto && opts.localPhoto(p)) || photoUrl(p.fileId, 1600);
         img.alt = post.title || '';
         img.loading = 'lazy';
         if(p.w && p.h){ img.width = p.w; img.height = p.h; }
-        if(post.photoLink){
-          var a = el('a'); a.href = post.photoLink; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        if(link){
+          var a = el('a'); a.href = link; a.target = '_blank'; a.rel = 'noopener noreferrer';
           a.appendChild(img); photos.appendChild(a);
+        }else if(opts.onPhoto){
+          var zb = el('button', 'post-zoom'); zb.type = 'button';
+          zb.setAttribute('aria-label', '사진 크게 보기 (' + (i + 1) + '/' + post.photos.length + ')');
+          zb.addEventListener('click', function(){ opts.onPhoto(i); });
+          zb.appendChild(img); photos.appendChild(zb);
         }else photos.appendChild(img);
       });
     }
@@ -136,5 +142,114 @@ window.Board = (function(){
     return art;
   }
 
-  return { photoUrl:photoUrl, fileUrl:fileUrl, formatSize:formatSize, renderBody:renderBody, renderNotice:renderNotice };
+  /* ---------- 공개 글 읽기 (방문자 화면) ----------
+     관문이 발행한 data/posts.json을 한 번만 읽는다. no-cache: 바뀌었는지 서버에 확인하고, 그대로면 가진 것을 쓴다.
+     파일이 아직 없으면(첫 발행 전) 빈 목록, 그 밖의 실패는 null. */
+  var MSG = { empty:'등록된 글이 없습니다.', fail:'소식을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' };
+  var loading = null;
+  function arr(v){ return Array.isArray(v) ? v : []; }
+  function fix(p){ p.photos = arr(p.photos); p.files = arr(p.files); return p; }
+  function load(){
+    if(!loading) loading = fetch('data/posts.json', { cache:'no-cache' }).then(function(r){
+      if(r.status === 404) return {};
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(d){
+      d = d || {};
+      return { notices:arr(d.notices).map(fix), gallery:arr(d.gallery).map(fix) };
+    }).catch(function(){ return null; });
+    return loading;
+  }
+
+  // 본문 · 사진 · 첨부가 모두 없는 공지는 목록에 보이되 누를 수 없다 (docs/decisions.md 4절)
+  function hasContent(post){
+    return !!(String(post.body || '').trim() || (post.photos && post.photos.length) || (post.files && post.files.length));
+  }
+
+  // 공지 목록 한 줄. 누를 수 없는 글은 href 없는 <a>로 두어 모양은 같고 링크만 빠진다.
+  function noticeItem(post, href, withCat){
+    var li = el('li'), a = el('a');
+    if(hasContent(post)) a.href = href;
+    if(withCat && post.category) a.appendChild(el('span', 'cat', post.category));
+    a.appendChild(el('span', 't', post.title || ''));
+    a.appendChild(el('span', 'd', post.date || ''));
+    li.appendChild(a);
+    return li;
+  }
+
+  /* ---------- 사진 확대 보기 (갤러리 앨범 · 공지 사진) ----------
+     좌우 버튼 · ←→ 키 · 휴대폰 밀어 넘기기, Esc · 바깥 누르기로 닫는다. */
+  var V = null;
+  function button(cls, label, text){
+    var b = el('button', cls, text); b.type = 'button'; b.setAttribute('aria-label', label); return b;
+  }
+  function buildViewer(){
+    V = { box:el('div', 'lb'), img:el('img', 'lb-img'), cap:el('p', 'lb-cap'), num:el('p', 'lb-num'),
+          prev:button('lb-prev', '이전 사진', '‹'), next:button('lb-next', '다음 사진', '›'), x:button('lb-x', '닫기', '×'),
+          photos:[], i:0, back:null };
+    V.box.hidden = true;
+    V.box.setAttribute('role', 'dialog'); V.box.setAttribute('aria-modal', 'true'); V.box.setAttribute('aria-label', '사진 확대 보기');
+    V.img.alt = '';
+    var stage = el('figure', 'lb-stage');
+    stage.appendChild(V.img); stage.appendChild(V.cap);
+    [stage, V.num, V.prev, V.next, V.x].forEach(function(n){ V.box.appendChild(n); });
+    document.body.appendChild(V.box);
+
+    V.prev.addEventListener('click', function(){ show(V.i - 1); });
+    V.next.addEventListener('click', function(){ show(V.i + 1); });
+    V.x.addEventListener('click', closeViewer);
+    V.box.addEventListener('click', function(e){ if(e.target === V.box || e.target === stage) closeViewer(); });
+    document.addEventListener('keydown', function(e){
+      if(V.box.hidden) return;
+      if(e.key === 'Escape') closeViewer();
+      else if(e.key === 'ArrowLeft') show(V.i - 1);
+      else if(e.key === 'ArrowRight') show(V.i + 1);
+      else if(e.key === 'Tab'){   // 열려 있는 동안 포커스를 안에 둔다
+        var bs = [V.prev, V.next, V.x].filter(function(b){ return !b.hidden; }),
+            k = bs.indexOf(document.activeElement);
+        e.preventDefault();
+        bs[(k + (e.shiftKey ? -1 : 1) + bs.length) % bs.length].focus();
+      }
+    });
+    var sx = null;
+    V.box.addEventListener('touchstart', function(e){ sx = e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive:true });
+    V.box.addEventListener('touchend', function(e){
+      if(sx === null) return;
+      var dx = e.changedTouches[0].clientX - sx; sx = null;
+      if(Math.abs(dx) > 50) show(V.i + (dx < 0 ? 1 : -1));
+    });
+  }
+  function show(i){
+    var n = V.photos.length;
+    V.i = (i + n) % n;
+    var p = V.photos[V.i];
+    V.img.removeAttribute('src');
+    if(p.w && p.h){ V.img.width = p.w; V.img.height = p.h; }
+    else{ V.img.removeAttribute('width'); V.img.removeAttribute('height'); }
+    V.img.src = photoUrl(p.fileId, 1600);
+    V.num.textContent = (V.i + 1) + ' / ' + n;
+    [V.i - 1, V.i + 1].forEach(function(k){   // 옆 사진을 미리 받아 넘길 때 덜 기다리게 한다
+      if(n > 1) new Image().src = photoUrl(V.photos[(k + n) % n].fileId, 1600);
+    });
+  }
+  function viewer(photos, start, caption){
+    if(!photos || !photos.length) return;
+    if(!V) buildViewer();
+    V.photos = photos;
+    V.back = document.activeElement;
+    V.cap.textContent = caption || '';
+    V.prev.hidden = V.next.hidden = V.num.hidden = photos.length < 2;
+    show(start || 0);
+    V.box.hidden = false;
+    document.documentElement.classList.add('lb-open');
+    V.x.focus();
+  }
+  function closeViewer(){
+    V.box.hidden = true;
+    document.documentElement.classList.remove('lb-open');
+    if(V.back && V.back.focus) V.back.focus();
+  }
+
+  return { photoUrl:photoUrl, fileUrl:fileUrl, formatSize:formatSize, renderBody:renderBody, renderNotice:renderNotice,
+           MSG:MSG, load:load, hasContent:hasContent, noticeItem:noticeItem, viewer:viewer };
 })();
