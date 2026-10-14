@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T16:47:52+09:00",
+  "updatedAt": "2026-10-14T16:56:43+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -62,7 +62,43 @@
       "files": []
     }
   ],
-  "press": [],
+  "press": [
+    {
+      "id": "P-0006",
+      "source": "월간조선",
+      "title": "\"코드도 시(詩)다\"…MIT 미디어랩 잭 리버먼, 한국 예술영재들 직접 가르친다",
+      "date": "2026-08-10",
+      "url": "https://monthly.chosun.com/news/articleView.html?idxno=70995"
+    },
+    {
+      "id": "P-0005",
+      "source": "월간조선",
+      "title": "\"범 내려온다\" 안이호부터 국내 최고 해금 명인 정수년까지…K예술영재 프로젝트 전통예술 워크숍 개막",
+      "date": "2026-07-30",
+      "url": "https://monthly.chosun.com/news/articleView.html?idxno=70903"
+    },
+    {
+      "id": "P-0004",
+      "source": "이투뉴스",
+      "title": "K예술영재 프로젝트, 광주 무용 워크숍 마무리...참가자 전원 겨울 심화캠프 진출",
+      "date": "2026-07-23",
+      "url": "https://www.e2news.com/news/articleView.html?idxno=332571"
+    },
+    {
+      "id": "P-0003",
+      "source": "피앤피뉴스",
+      "title": "K예술영재 프로젝트, 광주 무용 워크숍 17일 개막…3일간 예술영재 성장 프로그램 운영",
+      "date": "2026-07-16",
+      "url": "https://www.gosiweek.com/article/1065594314405811"
+    },
+    {
+      "id": "P-0002",
+      "source": "월간조선",
+      "title": "보스턴발레단·헝가리 국립발레단·워싱턴발레단 무용수가 광주에 모인 이유…한예종, 'K예술영재 프로젝트' 무용 워크숍 17일 개막",
+      "date": "2026-07-15",
+      "url": "https://monthly.chosun.com/news/articleView.html?idxno=70694"
+    }
+  ],
   "gallery": [
     {
       "id": "G-0008",
