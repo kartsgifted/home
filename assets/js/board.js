@@ -184,13 +184,13 @@ window.Board = (function(){
     var b = el('button', cls, text); b.type = 'button'; b.setAttribute('aria-label', label); return b;
   }
   function buildViewer(){
-    V = { box:el('div', 'lb'), img:el('img', 'lb-img'), cap:el('p', 'lb-cap'), num:el('p', 'lb-num'),
-          prev:button('lb-prev', '이전 사진', '‹'), next:button('lb-next', '다음 사진', '›'), x:button('lb-x', '닫기', '×'),
+    V = { box:el('div', 'zv'), img:el('img', 'zv-img'), cap:el('p', 'zv-cap'), num:el('p', 'zv-num'),
+          prev:button('zv-prev', '이전 사진', '‹'), next:button('zv-next', '다음 사진', '›'), x:button('zv-x', '닫기', '×'),
           photos:[], i:0, back:null };
     V.box.hidden = true;
     V.box.setAttribute('role', 'dialog'); V.box.setAttribute('aria-modal', 'true'); V.box.setAttribute('aria-label', '사진 확대 보기');
     V.img.alt = '';
-    var stage = el('figure', 'lb-stage');
+    var stage = el('figure', 'zv-stage');
     stage.appendChild(V.img); stage.appendChild(V.cap);
     [stage, V.num, V.prev, V.next, V.x].forEach(function(n){ V.box.appendChild(n); });
     document.body.appendChild(V.box);
@@ -241,12 +241,12 @@ window.Board = (function(){
     V.prev.hidden = V.next.hidden = V.num.hidden = photos.length < 2;
     show(start || 0);
     V.box.hidden = false;
-    document.documentElement.classList.add('lb-open');
+    document.documentElement.classList.add('zv-open');
     V.x.focus();
   }
   function closeViewer(){
     V.box.hidden = true;
-    document.documentElement.classList.remove('lb-open');
+    document.documentElement.classList.remove('zv-open');
     if(V.back && V.back.focus) V.back.focus();
   }
 
