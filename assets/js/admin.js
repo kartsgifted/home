@@ -7,7 +7,8 @@
    ============================================================ */
 (function(){
   var GATEWAY = 'https://script.google.com/macros/s/AKfycbzfrJrDmXwhRAb62MEVCiWFDLU2e-HzFy5R9RWTkw0uatO9BMlYgCi5dPlNfUgIxAEITQ/exec';
-  var K = { token:'hp_admin_token', exp:'hp_admin_exp', name:'hp_admin_name', device:'hp_admin_device' };
+  var K = { token:'hp_admin_token', exp:'hp_admin_exp', device:'hp_admin_device' };
+  try{ localStorage.removeItem('hp_admin_name'); }catch(e){}   // 예전에 저장하던 이름 (2026-10-14부터 쓰지 않음)
   var UPLOAD_PARALLEL = 3;     /* 사진을 동시에 올리는 수 (관문은 시트 기록만 잠근다) */
   var PHOTO_MAX_SIDE = 1600;   /* 올리기 전 긴 변 (docs/decisions.md 5절) */
 
@@ -96,21 +97,23 @@
     });
   }
 
-  /* ---------- 로그인 ---------- */
+  /* ---------- 로그인 ----------
+     접근코드만 입력한다. 관문은 이름을 받아 작성자 · 수정자 · 로그에 남기므로 늘 「운영자」로 보낸다
+     (2026-10-14 차장님 요청. 로그 탭에는 어떤 접근코드로 들어왔는지가 함께 남는다) */
+  var OPERATOR = '운영자';
   var loginWaiters = [];
   function setSession(d){
     S.token = d.token; S.exp = d.expiresAt; S.name = d.name;
     ss(K.token, d.token); ss(K.exp, String(d.expiresAt));
-    $('who').textContent = d.name + ' 님';
+    $('who').textContent = OPERATOR + ' 님';
     $('user').hidden = false;
   }
   function showLogin(message){
-    $('loginSub').textContent = message || '운영진 접근코드와 이름을 입력해 주세요.';
+    $('loginSub').textContent = message || '운영진 접근코드를 입력해 주세요.';
     $('loginErr').textContent = '';
     $('code').value = '';
-    $('name').value = ls(K.name) || '';
     $('login').hidden = false;
-    ($('name').value ? $('code') : $('name')).focus();
+    $('code').focus();
   }
   function relogin(){
     return new Promise(function(resolve){
@@ -120,12 +123,11 @@
   }
   $('loginForm').addEventListener('submit', function(ev){
     ev.preventDefault();
-    var code = $('code').value.trim(), name = $('name').value.trim();
-    if(!code || !name){ $('loginErr').textContent = '접근코드와 이름을 모두 입력해 주세요.'; return; }
+    var code = $('code').value.trim();
+    if(!code){ $('loginErr').textContent = '접근코드를 입력해 주세요.'; return; }
     $('loginBtn').disabled = true; $('loginErr').textContent = '';
-    call({ action:'auth', code:code, name:name, deviceId:deviceId(), requestId:Date.now() + '-' + Math.random().toString(16).slice(2) }, 30000)
+    call({ action:'auth', code:code, name:OPERATOR, deviceId:deviceId(), requestId:Date.now() + '-' + Math.random().toString(16).slice(2) }, 30000)
       .then(function(d){
-        ls(K.name, name);
         setSession(d);
         $('login').hidden = true;
         var w = loginWaiters; loginWaiters = [];
@@ -604,8 +606,8 @@
   S.token = ss(K.token); S.exp = Number(ss(K.exp)) || 0;
   if(S.token && Date.now() < S.exp){
     $('user').hidden = false;
-    $('who').textContent = (ls(K.name) || '') + ' 님';
-    S.name = ls(K.name) || '';
+    $('who').textContent = OPERATOR + ' 님';
+    S.name = OPERATOR;
     load();
   }else{
     relogin().then(load);
