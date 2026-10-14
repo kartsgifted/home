@@ -29,10 +29,13 @@ var LIMITS_ = {
   noticeBody: 5000,
   galleryTitle: 100,
   galleryDesc: 100,
+  pressTitle: 200,
+  pressSource: 50,
   link: 500,
   noticePhotos: 10,
   noticeFiles: 10,
   galleryPhotos: 50,
+  heroPhotoSide: 2400,   // 표지 사진은 넓은 화면용이라 올리기 전 긴 변을 더 크게 (공지 · 갤러리는 화면이 1600으로 줄임)
   photoBytes: 5 * 1024 * 1024,
   fileBytes: 10 * 1024 * 1024,
   fileName: 150,

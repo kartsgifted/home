@@ -1,20 +1,76 @@
-/* 메인 페이지 전용 — 히어로 슬라이더 / 프로그램 레일 / 한 번 스크롤 / 소식(공지 최신 3개) */
-(function(){
-  var slides=document.querySelectorAll('#hero .slide'),dots=document.querySelectorAll('.dots button'),idx=0,timer;
-  if(!slides.length) return;
-  function go(n){idx=(n+slides.length)%slides.length;
-    slides.forEach(function(s,i){s.classList.toggle('on',i===idx)});
-    dots.forEach(function(d,i){d.classList.toggle('on',i===idx)});}
-  function play(){clearInterval(timer);timer=setInterval(function(){go(idx+1)},6000)}
-  document.querySelector('.h-nav.next').addEventListener('click',function(){go(idx+1);play()});
-  document.querySelector('.h-nav.prev').addEventListener('click',function(){go(idx-1);play()});
-  dots.forEach(function(d,i){d.addEventListener('click',function(){go(i);play()})});
-  play();
-  /* 첫 화면을 그린 뒤 사진 움직임을 켠다 (바로 켜면 첫 장은 움직임이 끝난 모습으로 시작함) */
-  var hero=document.getElementById('hero');
-  requestAnimationFrame(function(){requestAnimationFrame(function(){hero.classList.add('ready')})});
+/* 메인 페이지 전용 — 표지 슬라이드 / 워크숍 레일 / 한 번 스크롤 / 소식(공지 · 언론홍보 최신 3개) */
 
+/* 표지 — 분야마다 한 장씩 무용 → 음악 → 미술 → 전통예술 순서로 넘어간다 (docs/decisions.md 2절).
+   관리자 페이지에서 올린 사진(data/posts.json의 hero)이 있으면 그 사진, 없으면 기본 사진(main.css --img-hero-*),
+   둘 다 없는 칸은 건너뛴다. 기본 사진이 올린 사진으로 바뀌며 깜박이지 않도록 #hero.wait 동안은 사진을 숨겨 두고
+   목록을 받은 뒤(첫 장이 올린 사진이면 그 사진까지 받은 뒤, 최대 2초) 서서히 보인다. */
+(function(){
+  var hero=document.getElementById('hero');
+  if(!hero) return;
+  var SLOTS=['dance','music','art','trad'],
+      dotsBox=hero.querySelector('.dots'), anchor=hero.querySelector('.hero-in'),
+      slides=[], dots=[], idx=0, timer, shown=false;
+
+  function hasDefault(k){
+    return getComputedStyle(document.documentElement).getPropertyValue('--img-hero-'+k).indexOf('url(')>-1;
+  }
+  function photoWidth(){ return window.innerWidth*(window.devicePixelRatio||1)>1600 ? 2400 : 1600; }
+
+  function build(custom){
+    var list=SLOTS.filter(function(k){ return custom[k] || hasDefault(k); });
+    if(!list.length) list=['music'];   /* 사진이 하나도 없으면 음악 칸의 바탕색만 */
+    [].slice.call(hero.querySelectorAll('.slide')).forEach(function(s){ s.parentNode.removeChild(s); });
+    dotsBox.textContent='';
+    slides=list.map(function(k,i){
+      var s=document.createElement('div');
+      s.className='slide s-'+k+(i===0?' on':'');
+      /* 파일ID는 관문이 만든 영숫자라 따옴표가 들어갈 일이 없고, photoUrl이 한 번 더 인코딩한다 */
+      if(custom[k]) s.style.setProperty('--img-hero-'+k,'url("'+Board.photoUrl(custom[k].fileId,photoWidth())+'")');
+      hero.insertBefore(s,anchor);   /* .slide가 #hero의 첫 div들이어야 main.css의 nth-of-type(확대 · 축소 번갈아)이 맞는다 */
+      return s;
+    });
+    dots=list.map(function(_,i){
+      var b=document.createElement('button');
+      b.type='button'; b.setAttribute('aria-label',(i+1)+'번째 사진'); if(i===0) b.className='on';
+      b.addEventListener('click',function(){go(i);play()});
+      dotsBox.appendChild(b);
+      return b;
+    });
+    var one=list.length<2;
+    [dotsBox,hero.querySelector('.h-nav.prev'),hero.querySelector('.h-nav.next')].forEach(function(e){ e.hidden=one; });
+    idx=0;
+    return list[0];
+  }
+  function go(n){ if(!slides.length) return; idx=(n+slides.length)%slides.length;
+    slides.forEach(function(s,i){s.classList.toggle('on',i===idx)});
+    dots.forEach(function(d,i){d.classList.toggle('on',i===idx)}); }
+  function play(){ clearInterval(timer); if(slides.length>1) timer=setInterval(function(){go(idx+1)},6000); }
+  hero.querySelector('.h-nav.next').addEventListener('click',function(){go(idx+1);play()});
+  hero.querySelector('.h-nav.prev').addEventListener('click',function(){go(idx-1);play()});
+
+  /* 사진을 보이고 움직임을 켠다 (바로 켜면 첫 장은 움직임이 끝난 모습으로 시작함) */
+  function show(){
+    if(shown) return; shown=true;
+    hero.classList.remove('wait');
+    requestAnimationFrame(function(){requestAnimationFrame(function(){hero.classList.add('ready')})});
+    play();
+  }
+  var started=false;
+  function start(custom){
+    if(started) return; started=true;
+    var first=build(custom||{});
+    if(!custom || !custom[first]) return show();
+    var img=new Image(); img.onload=img.onerror=show; img.src=Board.photoUrl(custom[first].fileId,photoWidth());
+    setTimeout(show,2000);
+  }
+  if(window.Board) Board.load().then(function(d){ start(d&&d.hero); });
+  else start(null);
+  setTimeout(function(){ start(null); },3000);   /* 목록이 너무 늦으면 기본 사진으로 (이미 시작했으면 무시) */
+})();
+
+(function(){
   var rail=document.getElementById('rail');
+  if(!rail) return;
   /* 카드가 모두 보이면 좌우 화살표 숨김 */
   function syncArrows(){
     var over = rail.scrollWidth - rail.clientWidth > 4;
@@ -104,17 +160,21 @@
   });
 })();
 
-/* 메인 맨 아래 공지사항 — data/posts.json의 공지 앞쪽 3개(관문이 고정 글 → 최신순으로 정렬해 둠).
-   본문·사진·첨부가 없는 공지는 누를 수 없다. 불러오지 못해도 나머지 화면은 그대로. */
+/* 메인 맨 아래 공지사항 · 언론홍보 — data/posts.json의 앞쪽 3개씩(관문이 공지는 고정 글 → 최신순, 언론홍보는 최신순으로 정렬해 둠).
+   본문·사진·첨부가 없는 공지는 누를 수 없고, 언론홍보는 기사가 새 탭으로 열린다. 불러오지 못해도 나머지 화면은 그대로. */
 (function(){
-  var ul=document.querySelector('[data-board="latest"]');
-  if(!ul||!window.Board) return;
-  Board.load().then(function(d){
-    var list=d?d.notices.slice(0,3):[];
+  if(!window.Board) return;
+  function fill(ul,list,make,d){
+    if(!ul) return;
     if(!list.length){
       var li=document.createElement('li');li.className='bd-msg';
       li.textContent=d?Board.MSG.empty:Board.MSG.fail;ul.appendChild(li);return;
     }
-    list.forEach(function(n){ ul.appendChild(Board.noticeItem(n,'news.html#notice/'+encodeURIComponent(n.id),false)); });
+    list.forEach(function(p){ ul.appendChild(make(p)); });
+  }
+  Board.load().then(function(d){
+    fill(document.querySelector('[data-board="latest"]'),d?d.notices.slice(0,3):[],
+      function(n){ return Board.noticeItem(n,'news.html#notice/'+encodeURIComponent(n.id),false); },d);
+    fill(document.querySelector('[data-board="latest-press"]'),d?d.press.slice(0,3):[],Board.pressItem,d);
   });
 })();

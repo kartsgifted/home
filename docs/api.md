@@ -81,9 +81,11 @@
 | 응답 `data` | 설명 |
 |---|---|
 | `notices` | 「공지」 전체(비공개 포함) + 각 글의 `photos` · `files` + 관리용 값(`visibility` · `author` · `updatedAt` 등) |
+| `press` | 「언론홍보」 전체(비공개 포함) + 관리용 값 (2026-10-14) |
 | `gallery` | 「갤러리」 전체 + `photos` |
+| `hero` | 「표지」 4칸 `{ id, slot, label, photos(0~1장), updatedBy, updatedAt }` (2026-10-14) |
 | `categories` | 공지 분류 목록 (「설정」) |
-| `limits` | 업로드 형식 · 크기 · 개수 한도 (`sheet-schema.md` 4절) — 화면이 미리 막는 데 쓴다 |
+| `limits` | 업로드 형식 · 크기 · 개수 한도 (`sheet-schema.md` 4절) — 화면이 미리 막는 데 쓴다. 표지 사진을 줄일 크기 `heroPhotoSide`(2400)도 여기 |
 | `lastPublish` | 마지막 발행 결과 `{ ok, at }` — 실패 상태면 화면이 [다시 반영] 버튼을 보인다 |
 
 ### 3-4. upload
@@ -113,10 +115,10 @@
 | 요청 필드 | 설명 |
 |---|---|
 | `action` · `token` | |
-| `board` | `notice` · `gallery` |
-| `id` | 고칠 글ID. 새 글이면 빈 값 → 관문이 만든다 |
-| `post` | 공지: `category` · `title` · `body` · `date` · `pinned` · `photoPosition` · `photoLink` · `visibility` / 갤러리: `title` · `desc` · `date` · `visibility` |
-| `photos` | 첨부ID 배열 — **이 순서가 화면 순서** |
+| `board` | `notice` · `press` · `gallery` · `hero` |
+| `id` | 고칠 글ID. 새 글이면 빈 값 → 관문이 만든다. **표지는 늘 칸 ID(`H-dance` 등)** — 새로 만들 수 없음 |
+| `post` | 공지: `category` · `title` · `body` · `date` · `pinned` · `photoPosition` · `photoLink` · `visibility` / 언론홍보: `source` · `title` · `date` · `url` · `visibility` / 갤러리: `title` · `desc` · `date` · `visibility` / 표지: `{}` |
+| `photos` | 첨부ID 배열 — **이 순서가 화면 순서**. 언론홍보는 빈 배열, 표지는 0~1개(빈 배열이면 기본 사진으로) |
 | `files` | 첨부ID 배열 (공지만) |
 
 처리 순서:
@@ -137,13 +139,13 @@
 |---|---|
 | `action` · `token` · `board` · `id` | |
 
-글 행을 지우고, 첨부 파일의 공유를 끊어 휴지통으로 보내고, 발행한다. 응답 `data`: `published`.
+글 행을 지우고, 첨부 파일의 공유를 끊어 휴지통으로 보내고, 발행한다. 응답 `data`: `published`. **표지 칸은 지울 수 없다**(`INVALID_INPUT`) — 사진을 빼려면 `save`에 빈 `photos`.
 
 ### 3-7. publish
 
 `save` · `remove` 끝에서 자동으로 하고, 실패했을 때만 화면이 따로 부른다.
 
-1. 「공지」 · 「갤러리」에서 공개 글만 모아 `data/posts.json`을 만든다 (`sheet-schema.md` 3절)
+1. 「공지」 · 「언론홍보」 · 「갤러리」에서 공개 글만, 「표지」에서 사진을 올린 칸만 모아 `data/posts.json`을 만든다 (`sheet-schema.md` 3절)
 2. GitHub API로 현재 파일의 `sha`를 받아 새 내용으로 커밋한다. 커밋 메시지: `[Data]: 게시글 발행 - {이름}`
 3. 결과를 Script Properties(`LAST_PUBLISH`)와 「로그」에 남긴다
 
@@ -211,7 +213,9 @@
 | 화면 | 사용 |
 |---|---|
 | `news.html` 공지 탭 | `notices` 목록 · 페이지 나누기 · `#notice/글ID` 상세 |
+| `news.html` 언론홍보 탭 | `press` 목록 · 페이지 나누기 · 누르면 기사 주소를 새 탭으로 |
 | `news.html` 갤러리 탭 | `gallery` 목록 · 사이트 안 확대 보기 |
-| `index.html` 소식 | `notices` 앞쪽 3개 (고정 글 → 최신순, `decisions.md` 4절) |
+| `index.html` 표지 | `hero` — 올린 사진이 있는 칸은 그 사진, 없으면 기본 사진, 둘 다 없으면 건너뜀 |
+| `index.html` 소식 | `notices` · `press` 앞쪽 3개씩 (`decisions.md` 4절) |
 
 사진 · 첨부 주소 만드는 규칙은 `decisions.md` 5절.

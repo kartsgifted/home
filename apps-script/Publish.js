@@ -54,18 +54,27 @@ function getLastPublish_() {
   }
 }
 
-// docs/sheet-schema.md 3절 모양. 공개 글만, 관리용 값(작성자·시각·첨부ID)은 넣지 않는다.
+// docs/sheet-schema.md 3절 모양. 공개 글만(표지는 늘 공개), 관리용 값(작성자·시각·첨부ID)은 넣지 않는다.
 function buildPublicPosts_() {
   var attachments = readTab_('첨부');
   var isPublic = function (r) { return r['공개여부'] === '공개'; };
   var notices = sortNotices_(readTab_('공지').filter(isPublic).map(function (r) { return noticeFromRow_(r, attachments, false); }));
-  var gallery = sortGallery_(readTab_('갤러리').filter(isPublic).map(function (r) { return galleryFromRow_(r, attachments, false); }));
+  var press = sortByDate_(readTab_('언론홍보').filter(isPublic).map(function (r) { return pressFromRow_(r, false); }));
+  var gallery = sortByDate_(readTab_('갤러리').filter(isPublic).map(function (r) { return galleryFromRow_(r, attachments, false); }));
+  // 표지: 사진을 올린 칸만 { dance: { fileId, w, h }, … }. 빈 칸은 화면이 기본 사진을 쓰거나 건너뛴다
+  var hero = {};
+  readTab_('표지').forEach(function (r) {
+    var photo = attachmentsOf_(r['글ID'], '사진', attachments, false)[0];
+    if (photo) hero[String(r['글ID']).replace(/^H-/, '')] = photo;
+  });
   return {
-    compareKey: JSON.stringify({ notices: notices, gallery: gallery }),
+    compareKey: JSON.stringify({ notices: notices, press: press, gallery: gallery, hero: hero }),
     posts: {
       updatedAt: Utilities.formatDate(new Date(), 'Asia/Seoul', "yyyy-MM-dd'T'HH:mm:ssXXX"),
       notices: notices,
-      gallery: gallery
+      press: press,
+      gallery: gallery,
+      hero: hero
     }
   };
 }

@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>소식 | 2026 K예술영재 프로젝트</title>
-<meta content="공지사항과 현장 갤러리를 확인할 수 있습니다." name="description"/>
+<meta content="공지사항, 언론홍보, 현장 갤러리를 확인할 수 있습니다." name="description"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=Nanum+Myeongjo:wght@400;700&amp;display=swap" rel="stylesheet"/>
@@ -20,12 +20,13 @@
 <div class="inner in">
 <p class="en" data-k="news.sv.1">NEWS</p>
 <h1 data-k="news.sv.2">소식</h1>
-<p class="desc" data-k="news.sv.3">공지사항과 현장 갤러리를 확인할 수 있습니다.</p>
+<p class="desc" data-k="news.sv.3">공지사항, 언론홍보, 현장 갤러리를 확인할 수 있습니다.</p>
 </div>
 </section>
 <nav id="crumb"><div class="inner"><ol><li><a href="index.html">HOME</a></li><li>소식</li><li>공지사항</li></ol></div></nav>
 <div id="tabs"><div class="inner"><ul>
 <li><button data-tab="notice" type="button">공지사항</button></li>
+<li><button data-tab="press" type="button">언론홍보</button></li>
 <li><button data-tab="gallery" type="button">갤러리</button></li>
 </ul></div></div>
 <main>
@@ -33,6 +34,11 @@
 <h2 class="h-sec" data-k="news.notice.4" data-rv="">NOTICE<span class="ko">공지사항</span></h2>
 <!-- 공지 목록 · 상세는 assets/js/news.js가 data/posts.json으로 채운다 -->
 <div data-board="notice" style="margin-top:44px"></div>
+</div></section>
+<section class="panel" id="press"><div class="inner">
+<h2 class="h-sec" data-rv="">PRESS<span class="ko">언론홍보</span></h2>
+<!-- 언론홍보 목록은 assets/js/news.js가 data/posts.json으로 채운다. 누르면 기사가 새 탭으로 열린다 -->
+<div data-board="press" style="margin-top:44px"></div>
 </div></section>
 <section class="panel" id="gallery"><div class="inner">
 <h2 class="h-sec" data-k="news.gallery.24" data-rv="">GALLERY<span class="ko">현장 갤러리</span></h2>

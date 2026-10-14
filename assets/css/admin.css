@@ -65,6 +65,12 @@ main.mg-in{padding:34px 0 120px}
 .mg-card .t{font-weight:700;letter-spacing:-.02em;font-size:15.5px}
 .mg-card .m{font-size:13px;color:var(--gray-lt);margin-top:4px}
 .mg-card:hover .t{text-decoration:underline}
+/* 표지 사진 칸 — 넓은 사진이라 16:9로 보인다 */
+.mg-cards.hero .th{aspect-ratio:16/9}
+.badge.def{background:#fff;color:var(--ink)}
+.mg-note{background:#fff;border-left:3px solid var(--teal);padding:14px 18px;margin:0 0 18px;font-size:14.5px;line-height:1.7;color:var(--gray);letter-spacing:-.02em}
+.mg-edit .mg-note{margin-top:18px}
+.mg-hero-def{display:block;width:100%;max-width:480px;aspect-ratio:16/9;object-fit:cover;margin-top:8px}
 
 /* ---------- 작성 화면 ---------- */
 .mg-edit{background:#fff;padding:30px 34px 40px}
@@ -110,6 +116,7 @@ main.mg-in{padding:34px 0 120px}
 .ph .ctl button:hover:not(:disabled){background:var(--teal-lt)}
 .ph .ctl button:disabled{opacity:.35;cursor:default}
 .ph .ctl .x{color:#B42B38;flex:0 0 32px}
+.ph .ctl .x:only-child{margin-left:auto}   /* 표지 사진(한 장)은 빼기 버튼만 */
 .ph .state{position:absolute;inset:0 0 40px;display:grid;place-items:center;background:rgba(255,255,255,.78);font-size:13px;font-weight:600;text-align:center;padding:8px}
 .ph .state.err{color:#B42B38}
 .add{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}

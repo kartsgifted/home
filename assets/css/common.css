@@ -183,6 +183,11 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .bbs .t{flex:1;font-size:17px;font-weight:500;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bbs .d{flex:0 0 auto;font-family:"Playfair Display",serif;font-size:14px;color:var(--gray-lt)}
 .bbs li a.empty{cursor:pointer}  /* 내용 없는 공지: 반응은 같고 이동만 없음 */
+/* 언론홍보: 언론사는 분류 자리, 제목 바로 뒤에 새 창 표시 */
+.bbs .press .cat{min-width:86px;text-align:center}   /* 언론사 이름 길이가 달라도 제목 시작 위치를 맞춘다 */
+.bbs .press .t{flex:0 1 auto}
+.bbs .press.empty .ext{visibility:hidden}   /* 자리는 남겨 날짜를 오른쪽에 둔다 */
+.bbs .press .ext{flex:0 0 auto;margin:0 auto 0 -14px;font-size:14px;color:var(--gray-lt)}
 .paging{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:50px}
 .paging button{width:40px;height:40px;display:grid;place-items:center;font-size:15px;color:var(--gray);border:1px solid var(--line);background:#fff;cursor:pointer}
 .paging button:hover{border-color:var(--teal);color:var(--teal)}
@@ -213,8 +218,11 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .ft-col h4{font-size:16px;font-weight:700;margin-bottom:18px;letter-spacing:-.02em}
 .ft-col li a{display:block;padding:4px 0;font-size:14.5px;color:rgba(255,255,255,.82);letter-spacing:-.02em}
 .ft-col li a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}
-.ft-link .fbtn{border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:10px 22px;font-size:13.5px;
-  display:inline-flex;gap:14px;align-items:center;cursor:pointer;background:none;color:#fff}
+/* SNS 아이콘 — 주소가 없는 아이콘(href 없음)도 마우스 반응은 같고 이동만 없다 */
+.ft-sns{display:flex;gap:22px;align-items:center;align-self:flex-start}
+.ft-sns a{display:block;color:#fff;opacity:.85;cursor:pointer;transition:opacity .25s,transform .25s}
+.ft-sns a:hover,.ft-sns a:focus-visible{opacity:1;transform:translateY(-2px)}
+.ft-sns svg{display:block;width:24px;height:24px}
 .ft-bot{margin-top:62px;padding-top:26px;border-top:1px solid rgba(255,255,255,.18)}
 .ft-nav{display:flex;gap:26px;font-size:13.5px;margin-bottom:20px}
 .ft-bot address{font-style:normal;font-size:13.5px;line-height:1.85;color:rgba(255,255,255,.72)}
@@ -288,7 +296,8 @@ html.zv-open{overflow:hidden}
   .boxes.c2,.boxes.c3,.boxes.c4{grid-template-columns:1fr}
   .gal{grid-template-columns:1fr}
   .bbs li a{flex-wrap:wrap;gap:10px}
-  .bbs .t{flex:1 0 100%;white-space:normal}
+  .bbs .t,.bbs .press .t{flex:1 0 100%;white-space:normal}
+  .bbs .press .ext{display:none}
   .zv-stage{padding:64px 12px 72px}
   .zv-prev,.zv-next{top:auto;bottom:8px;transform:none;width:60px;height:60px;font-size:44px}
   .ft-top{gap:34px}

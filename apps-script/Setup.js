@@ -9,6 +9,8 @@ var TAB_HEADERS_ = {
   '읽어보기': [],
   '공지':     ['글ID', '분류', '제목', '본문', '게시일', '상단고정', '사진위치', '사진링크', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
   '갤러리':   ['글ID', '제목', '설명', '게시일', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
+  '언론홍보': ['글ID', '언론사', '제목', '게시일', '기사주소', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
+  '표지':     ['글ID', '칸', '작성자', '작성시각', '수정자', '수정시각'],
   '첨부':     ['첨부ID', '글ID', '구분', '순서', '파일ID', '파일명', '크기', '가로', '세로', '공유', '올린사람', '올린시각'],
   '접근코드': ['코드', '이름', '상태', '사용기한', '버전', '비고'],
   '설정':     ['항목', '값', '설명'],
@@ -19,6 +21,8 @@ var TAB_HEADERS_ = {
 var TEXT_COLUMNS_ = {
   '공지': ['글ID', '게시일', '사진링크'],
   '갤러리': ['글ID', '게시일'],
+  '언론홍보': ['글ID', '게시일', '기사주소'],
+  '표지': ['글ID'],
   '첨부': ['첨부ID', '글ID', '파일ID'],
   '접근코드': ['코드', '사용기한']
 };
@@ -26,6 +30,15 @@ var TEXT_COLUMNS_ = {
 var DROPDOWNS_ = {
   '접근코드': { '상태': ['사용', '정지'] }
 };
+
+// 표지 사진 칸 — 분야마다 한 장, 이 순서로 넘어간다 (2026-10-14 사용자 결정). 칸은 고정이라 글처럼 새로 만들거나 지우지 않는다.
+// id의 H- 뒤가 data/posts.json의 hero 키 · 화면의 슬라이드 이름(main.css .s-dance 등)과 같다.
+var HERO_SLOTS_ = [
+  { id: 'H-dance', label: '무용' },
+  { id: 'H-music', label: '음악' },
+  { id: 'H-art',   label: '미술' },
+  { id: 'H-trad',  label: '전통예술' }
+];
 
 var DEFAULT_SETTINGS_ = [
   ['공지 분류', '공지,워크숍,심화과정', '쉼표로 구분. 관리자 페이지의 분류 선택 목록'],
@@ -37,7 +50,7 @@ var DEFAULT_SETTINGS_ = [
 var README_LINES_ = [
   ['K예술영재 홍보 사이트 — 게시글 관리 시트'],
   [''],
-  ['• 공지 · 갤러리 · 첨부 탭은 관리자 페이지가 씁니다. 여기서 직접 고치지 마세요.'],
+  ['• 공지 · 언론홍보 · 갤러리 · 표지 · 첨부 탭은 관리자 페이지가 씁니다. 여기서 직접 고치지 마세요.'],
   ['• 접근코드 탭: 관리자 로그인 코드. 코드가 새면 「버전」 숫자를 올리면 모든 접속이 끊깁니다.'],
   ['• 설정 탭: 공지 분류 등 운영 값. 값을 비우면 기본값으로 동작합니다.'],
   ['• 로그 탭: 자동 기록입니다.'],
@@ -70,6 +83,7 @@ function setupTabs_() {
       sheet.getRange(2, headers.indexOf(h) + 1, sheet.getMaxRows() - 1, 1).setDataValidation(rule);
     });
     if (name === '설정') sheet.getRange(2, 1, DEFAULT_SETTINGS_.length, 3).setValues(DEFAULT_SETTINGS_);
+    if (name === '표지') sheet.getRange(2, 1, HERO_SLOTS_.length, 2).setValues(HERO_SLOTS_.map(function (h) { return [h.id, h.label]; }));
     if (name === '읽어보기') sheet.getRange(1, 1, README_LINES_.length, 1).setValues(README_LINES_);
     Logger.log(name + ': 만듦');
   });

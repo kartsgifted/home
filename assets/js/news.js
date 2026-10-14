@@ -1,15 +1,16 @@
 /* ============================================================
    2026 K예술영재 프로젝트 — news.js
-   소식 페이지: 공지 목록 · 상세(#notice/글ID) · 갤러리를 data/posts.json으로 채운다.
+   소식 페이지: 공지 목록 · 상세(#notice/글ID) · 언론홍보 · 갤러리를 data/posts.json으로 채운다.
    ▣ 글 모양은 board.js(관리자 미리보기와 같은 함수)가 만든다. 운영진이 입력한 값은 textContent로만 넣는다.
    ============================================================ */
 (function(){
-  var NOTICE_PER = 10, GALLERY_PER = 8;   // 한 쪽에 보일 개수 (docs/decisions.md 4절)
+  var NOTICE_PER = 10, PRESS_PER = 10, GALLERY_PER = 8;   // 한 쪽에 보일 개수 (docs/decisions.md 4절)
   var nBox = document.querySelector('[data-board="notice"]'),
+      pBox = document.querySelector('[data-board="press"]'),
       gBox = document.querySelector('[data-board="gallery"]');
-  if(!nBox || !gBox || !window.Board) return;
+  if(!nBox || !pBox || !gBox || !window.Board) return;
 
-  var data = null, nPage = 1, gPage = 1, view = '', baseTitle = document.title,
+  var data = null, nPage = 1, pPage = 1, gPage = 1, view = '', baseTitle = document.title,
       fromList = false, listY = null;   // 목록에서 글을 열었으면 「목록」이 뒤로 가기로 돌아가 보던 자리를 찾는다
 
   function el(tag, cls, text){
@@ -109,6 +110,20 @@
   var tab = document.querySelector('#tabs [data-tab="notice"]');
   if(tab) tab.addEventListener('click', function(){ if(data && view === 'detail'){ listY = null; noticeList(); } });
 
+  /* ---------- 언론홍보 ---------- 누르면 기사 주소가 새 탭으로 열린다 (사이트 안 상세 화면 없음) */
+  function press(){
+    var list = data.press;
+    if(!list.length) return msg(pBox, Board.MSG.empty);
+    var pages = Math.ceil(list.length / PRESS_PER);
+    pPage = Math.min(Math.max(1, pPage), pages);
+    pBox.textContent = '';
+    var ul = el('ul', 'bbs');
+    list.slice((pPage - 1) * PRESS_PER, pPage * PRESS_PER).forEach(function(p){ ul.appendChild(Board.pressItem(p)); });
+    pBox.appendChild(ul);
+    var pg = paging(pages, pPage, function(p){ pPage = p; press(); toTop(); });
+    if(pg) pBox.appendChild(pg);
+  }
+
   /* ---------- 갤러리 ---------- */
   function gallery(){
     var list = data.gallery;
@@ -142,10 +157,11 @@
 
   /* ---------- 시작 ---------- */
   Board.load().then(function(d){
-    if(!d){ msg(nBox, Board.MSG.fail); msg(gBox, Board.MSG.fail); return; }
+    if(!d){ msg(nBox, Board.MSG.fail); msg(pBox, Board.MSG.fail); msg(gBox, Board.MSG.fail); return; }
     data = d;
     var id = hashId();
     if(id !== null) noticeDetail(id); else noticeList();
+    press();
     gallery();
     window.addEventListener('hashchange', route);
   });

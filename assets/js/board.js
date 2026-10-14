@@ -1,6 +1,6 @@
 /* ============================================================
    2026 K예술영재 프로젝트 — board.js
-   게시글(공지 · 갤러리) 표시 공통 모듈. 관리자 미리보기와 방문자 화면이 같이 쓴다.
+   게시글(공지 · 언론홍보 · 갤러리 · 표지 사진) 표시 공통 모듈. 관리자 미리보기와 방문자 화면이 같이 쓴다.
    ▣ 운영진이 입력한 값은 모두 textContent로 넣는다 (innerHTML 금지 — CLAUDE.md 보안 5).
    ▣ 본문 서식 (docs/decisions.md 4절)
        **굵게**   {강조:청록 글자}   {빨강:빨간 글자}   주소(https://…)는 자동 링크
@@ -156,7 +156,8 @@ window.Board = (function(){
       return r.json();
     }).then(function(d){
       d = d || {};
-      return { notices:arr(d.notices).map(fix), gallery:arr(d.gallery).map(fix) };
+      var hero = d.hero && typeof d.hero === 'object' && !Array.isArray(d.hero) ? d.hero : {};
+      return { notices:arr(d.notices).map(fix), press:arr(d.press), gallery:arr(d.gallery).map(fix), hero:hero };
     }).catch(function(){ return null; });
     return loading;
   }
@@ -172,6 +173,23 @@ window.Board = (function(){
     if(hasContent(post)) a.href = href; else a.className = 'empty';
     if(withCat && post.category) a.appendChild(el('span', 'cat', post.category));
     a.appendChild(el('span', 't', post.title || ''));
+    a.appendChild(el('span', 'd', post.date || ''));
+    li.appendChild(a);
+    return li;
+  }
+
+  // 언론홍보 목록 한 줄 — 누르면 기사 주소를 새 탭으로. 공지 목록과 같은 칸(언론사는 분류 자리)을 쓴다.
+  // 주소가 http(s)가 아니면(관문이 막지만 시트를 직접 고친 경우) 이동하지 않는다.
+  function pressItem(post){
+    var li = el('li'), a = el('a', 'press');
+    if(/^https?:\/\//i.test(post.url || '')){
+      a.href = post.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.title = '새 창에서 기사 보기';
+    }else a.className = 'press empty';
+    if(post.source) a.appendChild(el('span', 'cat', post.source));
+    a.appendChild(el('span', 't', post.title || ''));
+    var ext = el('span', 'ext', '↗'); ext.setAttribute('aria-hidden', 'true');
+    a.appendChild(ext);
     a.appendChild(el('span', 'd', post.date || ''));
     li.appendChild(a);
     return li;
@@ -251,5 +269,5 @@ window.Board = (function(){
   }
 
   return { photoUrl:photoUrl, fileUrl:fileUrl, formatSize:formatSize, renderBody:renderBody, renderNotice:renderNotice,
-           MSG:MSG, load:load, hasContent:hasContent, noticeItem:noticeItem, viewer:viewer };
+           MSG:MSG, load:load, hasContent:hasContent, noticeItem:noticeItem, pressItem:pressItem, viewer:viewer };
 })();
