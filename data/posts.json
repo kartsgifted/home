@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T16:56:35+09:00",
+  "updatedAt": "2026-10-14T16:56:43+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -63,6 +63,13 @@
     }
   ],
   "press": [
+    {
+      "id": "P-0006",
+      "source": "월간조선",
+      "title": "\"코드도 시(詩)다\"…MIT 미디어랩 잭 리버먼, 한국 예술영재들 직접 가르친다",
+      "date": "2026-08-10",
+      "url": "https://monthly.chosun.com/news/articleView.html?idxno=70995"
+    },
     {
       "id": "P-0005",
       "source": "월간조선",
