@@ -59,7 +59,7 @@ main.ad-in{padding:34px 0 120px}
 
 .ad-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .ad-card{background:#fff;border:0;padding:0;text-align:left;cursor:pointer}
-.ad-card .th{aspect-ratio:4/3;background:linear-gradient(150deg,#1E6C7E,#0B2F38) center/cover no-repeat;position:relative}
+.ad-card .th{display:block;aspect-ratio:4/3;background:linear-gradient(150deg,#1E6C7E,#0B2F38) center/cover no-repeat;position:relative}
 .ad-card .th .badge{position:absolute;left:10px;top:10px}
 .ad-card .tx{padding:14px 14px 16px}
 .ad-card .t{font-weight:700;letter-spacing:-.02em;font-size:15.5px}
@@ -129,8 +129,8 @@ main.ad-in{padding:34px 0 120px}
 .ad-actions .r{display:flex;gap:10px;margin-left:auto}
 
 /* ---------- 로그인 · 처리 중 · 알림 ---------- */
-.ad-modal{position:fixed;inset:0;z-index:400;background:rgba(15,74,92,.55);display:grid;place-items:center;padding:20px}
-.ad-login{background:#fff;width:min(400px,100%);padding:34px 32px 30px}
+.ad-modal{position:fixed;inset:0;z-index:400;background:rgba(15,74,92,.55);display:grid;grid-template-columns:minmax(0,1fr);place-items:center;padding:20px}
+.ad-login{background:#fff;width:100%;max-width:400px;padding:34px 32px 30px}
 .ad-login h1{font-size:21px;font-weight:700;letter-spacing:-.03em}
 .ad-login .sub{font-size:14px;color:var(--gray);margin-top:8px}
 .ad-login label{display:block;font-size:14px;font-weight:700;margin-top:18px}

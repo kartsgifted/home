@@ -227,6 +227,7 @@
 
   function openEditor(board, post){
     var lim = S.data.limits;
+    listY = window.scrollY;
     var copyAtt = function(a){ return Object.assign({}, a); };
     S.edit = {
       board:board, id:post ? post.id : null, dirty:false, preview:false,
@@ -238,6 +239,7 @@
       maxPhotos: board === 'notice' ? lim.noticePhotos : lim.galleryPhotos
     };
     renderEditor();
+    history.pushState({ adEdit:1 }, '');
     window.scrollTo(0, 0);
   }
 
@@ -251,6 +253,16 @@
     if(S.edit && (S.edit.dirty || pending())){ ev.preventDefault(); ev.returnValue = ''; }
   });
 
+  /* 작성 화면을 열 때 브라우저 기록을 하나 남겨, 브라우저 뒤로 가기로도 목록에 돌아오게 한다 */
+  var listY = 0;
+  function dropEditState(){ if(history.state && history.state.adEdit) history.back(); }
+  function closeEditor(){ S.edit = null; renderList(); window.scrollTo(0, listY); dropEditState(); }
+  window.addEventListener('popstate', function(){
+    if(!S.edit) return;                              // 버튼 · 저장으로 닫으면서 기록을 되돌린 경우
+    if(confirmLeave()){ S.edit = null; renderList(); window.scrollTo(0, listY); }
+    else history.pushState({ adEdit:1 }, '');        // 머무르기로 하면 기록을 다시 남긴다
+  });
+
   function renderEditor(){
     var e = S.edit, p = e.post, lim = S.data.limits, isNotice = e.board === 'notice';
     var view = $('view');
@@ -258,7 +270,7 @@
     var wrap = h('section', { class:'ad-edit' });
 
     wrap.appendChild(h('div', { class:'ad-edit-top' }, [
-      h('button', { type:'button', class:'ad-back', text:'← 목록으로', onclick:function(){ if(confirmLeave()){ S.edit = null; renderList(); } } }),
+      h('button', { type:'button', class:'ad-back', text:'← 목록으로', onclick:function(){ if(confirmLeave()) closeEditor(); } }),
       p.author ? h('span', { class:'ad-meta', text:'작성 ' + p.author + ' · 마지막 수정 ' + p.updatedBy + ' ' + (p.updatedAt || '').slice(0,16).replace('T',' ') }) : null
     ]));
     wrap.appendChild(h('h2', { text:(e.id ? '' : '새 ') + (isNotice ? '공지' : '앨범') + (e.id ? ' 수정' : '') }));
@@ -319,7 +331,7 @@
     wrap.appendChild(h('div', { class:'ad-actions' }, [
       e.id ? h('button', { type:'button', class:'ad-btn warn', text:'삭제', onclick:removePost }) : null,
       h('div', { class:'r' }, [
-        h('button', { type:'button', class:'ad-btn', text:'취소', onclick:function(){ if(confirmLeave()){ S.edit = null; renderList(); } } }),
+        h('button', { type:'button', class:'ad-btn', text:'취소', onclick:function(){ if(confirmLeave()) closeEditor(); } }),
         h('button', { type:'button', class:'ad-btn pri', text:'저장', onclick:save })
       ])
     ]));
@@ -565,7 +577,7 @@
       files:isNotice ? e.files.map(function(a){ return a.attachmentId; }) : []
     }, 120000).then(function(d){
       e.dirty = false;
-      S.edit = null;
+      S.edit = null; dropEditState();
       toast(d.published ? '저장했습니다. 1~2분 뒤 사이트에 보입니다.' : '저장했지만 사이트 반영에 실패했습니다. 위의 [다시 반영]을 눌러 주세요.', !d.published);
       return load();
     }, function(err){ busy(null); toast(errMsg(err), true); });
@@ -576,7 +588,7 @@
     if(!confirm('이 글을 삭제할까요?\n첨부한 사진 · 파일도 함께 지워집니다(드라이브 휴지통에서 30일 안에 복구 가능).')) return;
     busy('삭제하고 사이트에 반영하는 중…');
     api('remove', { board:e.board, id:e.id }, 120000).then(function(d){
-      e.dirty = false; S.edit = null;
+      e.dirty = false; S.edit = null; dropEditState();
       toast(d.published ? '삭제했습니다. 1~2분 뒤 사이트에서 사라집니다.' : '삭제했지만 사이트 반영에 실패했습니다. [다시 반영]을 눌러 주세요.', !d.published);
       return load();
     }, function(err){ busy(null); toast(errMsg(err), true); });

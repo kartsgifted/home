@@ -7,7 +7,6 @@
 var SITE = {
   name : "2026 K예술영재 프로젝트",
   org  : "한국예술영재교육연구원",
-  tel  : "02-0000-0000",
   mail : "kgifted2026@naver.com",
   addr : "한국예술영재교육연구원 · 2026 K예술영재 프로젝트"
 };
@@ -16,10 +15,9 @@ var SITEMAP = [
   { id:"about", en:"ABOUT", ko:"사업소개", href:"about.html", sub:[
       {t:"프로젝트 개요", h:"about.html#overview"},
       {t:"추진체계·참여기관", h:"about.html#system"},
-      {t:"연간 로드맵",     h:"about.html#road"},
-      {t:"오시는 길",       h:"about.html#map"}
+      {t:"연간 로드맵",     h:"about.html#road"}
   ]},
-  { id:"programs", en:"PROGRAMS", ko:"분야별 프로그램", href:"programs.html", sub:[
+  { id:"programs", en:"WORKSHOP", ko:"워크숍", href:"programs.html", sub:[
       {t:"무용",     h:"programs.html#dance"},
       {t:"음악",     h:"programs.html#music"},
       {t:"미술",     h:"programs.html#art"},
@@ -28,12 +26,10 @@ var SITEMAP = [
   ]},
   { id:"course", en:"ADVANCED", ko:"심화과정", href:"course.html", sub:[
       {t:"심화 멘토링", h:"course.html#mentoring"},
-      {t:"겨울캠프",   h:"course.html#camp"},
-      {t:"참여 신청",   h:"course.html#apply"}
+      {t:"겨울캠프",   h:"course.html#camp"}
   ]},
-  { id:"news", en:"NEWS", ko:"소식·아카이브", href:"news.html", sub:[
+  { id:"news", en:"NEWS", ko:"소식", href:"news.html", sub:[
       {t:"공지사항",   h:"news.html#notice"},
-      {t:"아카이브",   h:"news.html#archive"},
       {t:"갤러리",     h:"news.html#gallery"}
   ]}
 ];
@@ -75,8 +71,8 @@ var SITEMAP = [
       '<div class="ft-link"><button class="fbtn" type="button">관련 사이트 LINK <span>&#8963;</span></button></div>'+
     '</div>'+
     '<div class="ft-bot">'+
-      '<nav class="ft-nav"><a href="index.html">HOME</a><a href="news.html#notice">이메일무단수집거부</a><a href="about.html#map">오시는 길</a></nav>'+
-      '<address><span data-site="addr">'+SITE.addr+'</span> · TEL <span data-site="tel">'+SITE.tel+'</span> · <span data-site="mail">'+SITE.mail+'</span><br>&copy; K ARTS GIFTED PROJECT. All Rights Reserved.</address>'+
+      '<nav class="ft-nav"><a href="index.html">HOME</a><a href="news.html#notice">이메일무단수집거부</a></nav>'+
+      '<address><span data-site="addr">'+SITE.addr+'</span> · <span data-site="mail">'+SITE.mail+'</span><br>&copy; K ARTS GIFTED PROJECT. All Rights Reserved.</address>'+
     '</div>'+
   '</div>';
 

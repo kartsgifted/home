@@ -16,7 +16,7 @@ function getSetting_(key, fallback) {
 }
 
 function getCategories_() {
-  return String(getSetting_('공지 분류', '공지,워크숍,심화과정,아카이브'))
+  return String(getSetting_('공지 분류', '공지,워크숍,심화과정'))
     .split(',').map(function (s) { return s.trim(); }).filter(Boolean);
 }
 

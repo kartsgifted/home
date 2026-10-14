@@ -30,7 +30,7 @@
   });
 })();
 
-/* 한 번 스크롤로 다음 칸 이동 — PC(1101px 이상 · 마우스)만.
+/* 한 번 스크롤로 다음 칸 이동 — 마우스 · 터치패드를 쓰는 창이면 크기와 상관없이 (휴대폰 · 태블릿 터치는 일반 스크롤).
    화면보다 긴 칸은 안에서 일반 스크롤하다가 끝에 닿으면 다음 칸으로 넘어간다. */
 (function(){
   var blocks=[].slice.call(document.querySelectorAll('body > section[id]'));
@@ -38,12 +38,12 @@
   if(!blocks.length) return;
   if(foot) blocks.push(foot);
 
-  var wide=window.matchMedia('(min-width:1101px) and (pointer:fine)'),
+  var mouse=window.matchMedia('(pointer:fine)'),
       still=window.matchMedia('(prefers-reduced-motion:reduce)'),
       root=document.documentElement,
       busy=false, waitQuiet=false, lastWheel=0;
 
-  function on(){ return wide.matches && !still.matches && !document.body.classList.contains('menu-open'); }
+  function on(){ return mouse.matches && !still.matches && !document.body.classList.contains('menu-open'); }
 
   /* 이동할 위치를 정해 움직이면 true, 일반 스크롤에 맡기면 false */
   function step(dir){
