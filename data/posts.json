@@ -1,0 +1,123 @@
+{
+  "updatedAt": "2026-10-14T11:48:38+09:00",
+  "notices": [
+    {
+      "id": "N-0008",
+      "category": "심화과정",
+      "title": "2026 K예술영재 프로젝트 심화과정 참여 수요조사 안내",
+      "body": "",
+      "date": "2026-09-02",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    },
+    {
+      "id": "N-0007",
+      "category": "워크숍",
+      "title": "분야별 워크숍 만족도조사 링크 오픈 안내",
+      "body": "",
+      "date": "2026-08-21",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    },
+    {
+      "id": "N-0005",
+      "category": "워크숍",
+      "title": "8월 전통예술 집중 워크숍 운영 일정 안내",
+      "body": "",
+      "date": "2026-07-24",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    },
+    {
+      "id": "N-0004",
+      "category": "공지",
+      "title": "2026 K예술영재 프로젝트 참여 학생 반 배정 결과 안내",
+      "body": "",
+      "date": "2026-06-30",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    },
+    {
+      "id": "N-0003",
+      "category": "공지",
+      "title": "분야별 정규 워크숍 사전 준비물 안내",
+      "body": "",
+      "date": "2026-06-18",
+      "pinned": false,
+      "photoPosition": "top",
+      "photoLink": "",
+      "photos": [],
+      "files": []
+    }
+  ],
+  "gallery": [
+    {
+      "id": "G-0008",
+      "title": "심화 멘토링 첫 회차",
+      "desc": "2026.10",
+      "date": "2026-10-01",
+      "photos": []
+    },
+    {
+      "id": "G-0007",
+      "title": "분야별 평가회의",
+      "desc": "2026.09",
+      "date": "2026-09-01",
+      "photos": []
+    },
+    {
+      "id": "G-0006",
+      "title": "미술 결과전시",
+      "desc": "2026.08 · 한국과학기술원",
+      "date": "2026-08-01",
+      "photos": []
+    },
+    {
+      "id": "G-0005",
+      "title": "앙상블 리허설",
+      "desc": "2026.08 · 서초동캠퍼스",
+      "date": "2026-08-01",
+      "photos": []
+    },
+    {
+      "id": "G-0004",
+      "title": "전통예술 집중 워크숍",
+      "desc": "2026.08 · 석관동캠퍼스",
+      "date": "2026-08-01",
+      "photos": []
+    },
+    {
+      "id": "G-0003",
+      "title": "미술 창작 스튜디오",
+      "desc": "2026.08 · 한국과학기술원",
+      "date": "2026-08-01",
+      "photos": []
+    },
+    {
+      "id": "G-0002",
+      "title": "음악 마스터클래스",
+      "desc": "2026.07 · 서초동캠퍼스",
+      "date": "2026-07-01",
+      "photos": []
+    },
+    {
+      "id": "G-0001",
+      "title": "무용 워크숍 현장",
+      "desc": "2026.07 · 광주캠퍼스",
+      "date": "2026-07-01",
+      "photos": []
+    }
+  ]
+}
