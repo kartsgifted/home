@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T16:47:52+09:00",
+  "updatedAt": "2026-10-14T16:56:16+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -62,7 +62,15 @@
       "files": []
     }
   ],
-  "press": [],
+  "press": [
+    {
+      "id": "P-0002",
+      "source": "월간조선",
+      "title": "보스턴발레단·헝가리 국립발레단·워싱턴발레단 무용수가 광주에 모인 이유…한예종, 'K예술영재 프로젝트' 무용 워크숍 17일 개막",
+      "date": "2026-07-15",
+      "url": "https://monthly.chosun.com/news/articleView.html?idxno=70694"
+    }
+  ],
   "gallery": [
     {
       "id": "G-0008",
