@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T16:56:28+09:00",
+  "updatedAt": "2026-10-14T16:56:35+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -63,6 +63,13 @@
     }
   ],
   "press": [
+    {
+      "id": "P-0005",
+      "source": "월간조선",
+      "title": "\"범 내려온다\" 안이호부터 국내 최고 해금 명인 정수년까지…K예술영재 프로젝트 전통예술 워크숍 개막",
+      "date": "2026-07-30",
+      "url": "https://monthly.chosun.com/news/articleView.html?idxno=70903"
+    },
     {
       "id": "P-0004",
       "source": "이투뉴스",
