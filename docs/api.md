@@ -151,7 +151,7 @@
 |---|---|
 | `GITHUB_TOKEN` | Fine-grained 토큰 (`kartsgifted/home` Contents 읽기·쓰기) |
 | `GITHUB_REPO` | `kartsgifted/home` |
-| `GITHUB_BRANCH` | 발행 대상 브랜치. 개발 중 `data-test`, 운영 `main` |
+| `GITHUB_BRANCH` | 발행 대상 브랜치. 개발 중 `data-test`, **2026-10-14부터 `main`** |
 | `GITHUB_PATH` | `data/posts.json` |
 
 - 동시에 두 사람이 저장해도 커밋이 엇갈리지 않게 `LockService`로 한 번에 하나만 발행한다.

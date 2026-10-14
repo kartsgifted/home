@@ -47,8 +47,8 @@
   /* ---------- 알림 · 처리 중 ---------- */
   var toastTimer;
   function toast(msg, isErr){
-    var t = $('toast'); t.textContent = msg; t.className = 'ad-toast on' + (isErr ? ' err' : '');
-    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.className = 'ad-toast'; }, isErr ? 6000 : 3500);
+    var t = $('toast'); t.textContent = msg; t.className = 'mg-toast on' + (isErr ? ' err' : '');
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.className = 'mg-toast'; }, isErr ? 6000 : 3500);
   }
   function busy(msg){ $('busyMsg').textContent = msg || ''; $('busy').hidden = !msg; }
 
@@ -158,8 +158,8 @@
     box.textContent = '';
     if(!p){ box.hidden = true; return; }
     box.hidden = false;
-    box.className = 'ad-pub' + (p.ok ? '' : ' fail');
-    var inner = h('div', { class:'ad-in' });
+    box.className = 'mg-pub' + (p.ok ? '' : ' fail');
+    var inner = h('div', { class:'mg-in' });
     if(p.ok){
       inner.appendChild(h('span', { text:'마지막 사이트 반영 ' + p.at.slice(0,16).replace('T',' ') + ' · 저장한 내용은 1~2분 뒤 사이트에 보입니다.' }));
     }else{
@@ -181,36 +181,36 @@
   function renderList(){
     var d = S.data, view = $('view');
     view.textContent = '';
-    var tabs = h('div', { class:'ad-tabs' }, [
+    var tabs = h('div', { class:'mg-tabs' }, [
       h('button', { type:'button', class:S.tab === 'notice' ? 'on' : null, onclick:function(){ S.tab = 'notice'; renderList(); } },
         ['공지사항', h('span', { class:'n', text:String(d.notices.length) })]),
       h('button', { type:'button', class:S.tab === 'gallery' ? 'on' : null, onclick:function(){ S.tab = 'gallery'; renderList(); } },
         ['갤러리', h('span', { class:'n', text:String(d.gallery.length) })])
     ]);
-    view.appendChild(h('div', { class:'ad-head' }, [
+    view.appendChild(h('div', { class:'mg-head' }, [
       tabs,
-      h('button', { type:'button', class:'ad-btn pri', text:S.tab === 'notice' ? '+ 새 공지' : '+ 새 앨범', onclick:function(){ openEditor(S.tab, null); } })
+      h('button', { type:'button', class:'mg-btn pri', text:S.tab === 'notice' ? '+ 새 공지' : '+ 새 앨범', onclick:function(){ openEditor(S.tab, null); } })
     ]));
 
     var items = S.tab === 'notice' ? d.notices : d.gallery;
-    if(!items.length){ view.appendChild(h('p', { class:'ad-empty', text:'아직 글이 없습니다.' })); return; }
+    if(!items.length){ view.appendChild(h('p', { class:'mg-empty', text:'아직 글이 없습니다.' })); return; }
 
     if(S.tab === 'notice'){
-      view.appendChild(h('div', { class:'ad-rows' }, items.map(function(n){
+      view.appendChild(h('div', { class:'mg-rows' }, items.map(function(n){
         var meta = [n.date];
         if(n.photos.length) meta.push('사진 ' + n.photos.length);
         if(n.files.length) meta.push('파일 ' + n.files.length);
-        return h('button', { type:'button', class:'ad-row', onclick:function(){ openEditor('notice', n); } }, [
+        return h('button', { type:'button', class:'mg-row', onclick:function(){ openEditor('notice', n); } }, [
           h('span', { class:'badges' }, [visBadge(n.visibility), n.pinned ? h('span', { class:'badge pin', text:'상단 고정' }) : null]),
           h('span', { class:'t' }, [h('small', { text:n.category }), n.title]),
           h('span', { class:'m', text:meta.join(' · ') })
         ]);
       })));
     }else{
-      view.appendChild(h('div', { class:'ad-cards' }, items.map(function(g){
+      view.appendChild(h('div', { class:'mg-cards' }, items.map(function(g){
         var th = h('span', { class:'th' }, [visBadge(g.visibility)]);
         if(g.photos.length) th.style.backgroundImage = 'url("' + Board.photoUrl(g.photos[0].fileId, 480) + '")';
-        return h('button', { type:'button', class:'ad-card', onclick:function(){ openEditor('gallery', g); } }, [
+        return h('button', { type:'button', class:'mg-card', onclick:function(){ openEditor('gallery', g); } }, [
           th,
           h('span', { class:'tx' }, [
             h('span', { class:'t', text:g.title, style:'display:block' }),
@@ -267,11 +267,11 @@
     var e = S.edit, p = e.post, lim = S.data.limits, isNotice = e.board === 'notice';
     var view = $('view');
     view.textContent = '';
-    var wrap = h('section', { class:'ad-edit' });
+    var wrap = h('section', { class:'mg-edit' });
 
-    wrap.appendChild(h('div', { class:'ad-edit-top' }, [
-      h('button', { type:'button', class:'ad-back', text:'← 목록으로', onclick:function(){ if(confirmLeave()) closeEditor(); } }),
-      p.author ? h('span', { class:'ad-meta', text:'작성 ' + p.author + ' · 마지막 수정 ' + p.updatedBy + ' ' + (p.updatedAt || '').slice(0,16).replace('T',' ') }) : null
+    wrap.appendChild(h('div', { class:'mg-edit-top' }, [
+      h('button', { type:'button', class:'mg-back', text:'← 목록으로', onclick:function(){ if(confirmLeave()) closeEditor(); } }),
+      p.author ? h('span', { class:'mg-meta', text:'작성 ' + p.author + ' · 마지막 수정 ' + p.updatedBy + ' ' + (p.updatedAt || '').slice(0,16).replace('T',' ') }) : null
     ]));
     wrap.appendChild(h('h2', { text:(e.id ? '' : '새 ') + (isNotice ? '공지' : '앨범') + (e.id ? ' 수정' : '') }));
 
@@ -331,11 +331,11 @@
       wrap.appendChild(photoField(e, '사진', '맨 앞 사진이 목록에 보이는 대표 사진입니다.'));
     }
 
-    wrap.appendChild(h('div', { class:'ad-actions' }, [
-      e.id ? h('button', { type:'button', class:'ad-btn warn', text:'삭제', onclick:removePost }) : null,
+    wrap.appendChild(h('div', { class:'mg-actions' }, [
+      e.id ? h('button', { type:'button', class:'mg-btn warn', text:'삭제', onclick:removePost }) : null,
       h('div', { class:'r' }, [
-        h('button', { type:'button', class:'ad-btn', text:'취소', onclick:function(){ if(confirmLeave()) closeEditor(); } }),
-        h('button', { type:'button', class:'ad-btn pri', text:'저장', onclick:save })
+        h('button', { type:'button', class:'mg-btn', text:'취소', onclick:function(){ if(confirmLeave()) closeEditor(); } }),
+        h('button', { type:'button', class:'mg-btn pri', text:'저장', onclick:save })
       ])
     ]));
     view.appendChild(wrap);
@@ -437,7 +437,7 @@
       addPhotos(e, [].slice.call(input.files)); input.value = '';
     } });
     box.appendChild(h('div', { class:'add' }, [
-      h('button', { type:'button', class:'ad-btn sm', text:'+ 사진 추가', disabled:e.photos.length >= e.maxPhotos, onclick:function(){ input.click(); } }),
+      h('button', { type:'button', class:'mg-btn sm', text:'+ 사진 추가', disabled:e.photos.length >= e.maxPhotos, onclick:function(){ input.click(); } }),
       h('span', { class:'hint', text:'JPG · PNG · WEBP. 올리기 전에 자동으로 줄입니다(긴 변 ' + PHOTO_MAX_SIDE + 'px).' }),
       input
     ]));
@@ -527,7 +527,7 @@
       addFiles(e, [].slice.call(input.files)); input.value = '';
     } });
     box.appendChild(h('div', { class:'add' }, [
-      h('button', { type:'button', class:'ad-btn sm', text:'+ 파일 추가', disabled:e.files.length >= lim.noticeFiles, onclick:function(){ input.click(); } }),
+      h('button', { type:'button', class:'mg-btn sm', text:'+ 파일 추가', disabled:e.files.length >= lim.noticeFiles, onclick:function(){ input.click(); } }),
       h('span', { class:'hint', text:lim.fileExts.join(' · ') + ' · 한 개 ' + Board.formatSize(lim.fileBytes) + ' 이하' }),
       input
     ]));

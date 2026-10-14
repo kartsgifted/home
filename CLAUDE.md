@@ -18,9 +18,11 @@
 7. 실제 접근코드, 서명 키, GitHub 토큰, 시트 ID, 드라이브 폴더 ID, 관문 배포 주소는 어떤 파일에도 쓰지 않는다. 이런 값은 `.gitignore`에 등록된 `docs/private/`에만 둔다.
 8. `docs/` · `apps-script/` · `CLAUDE.md`는 `_config.yml`로 게시에서 뺀다. `_legacy/`는 `_`로 시작해 자동으로 빠진다. 루트에 `.nojekyll`을 만들지 않는다(만들면 제외 설정이 무효가 됨).
 9. 외부 라이브러리를 추가하기 전에 먼저 묻는다.
+10. class · id 이름을 광고처럼 짓지 않는다(`ad-` · `ads` · `banner` · `sponsor` 등). 광고 차단(네이버 웨일 내장 등)이 숨긴다. 새 이름을 만들면 `docs/private/tools/adblock-scan.mjs`로 확인한다.
 
 ## 작업 방식
 - 작업 브랜치는 `home/parkjiheon`이다. **커밋은 사용자가 WBS 한 절(0 · 1 · 2 …)이 끝날 때마다 직접 한다.** 절이 끝나면 바뀐 내용을 정리해 알린다.
+- 배포는 main에 push하면 GitHub Pages가 자동으로 한다. 관문이 main에 공지 목록(`data/posts.json`)을 커밋하므로, push 전에 `git fetch origin` → `git merge origin/main`으로 받아 합친다. **main에 강제 push(`--force`)하지 않는다.** `data/posts.json`은 손으로 고치지 않는다.
 - 작업 전에 `docs/wbs.md`에서 해당 ID를 확인하고, 끝나면 상태를 바꾼다.
 - 조금이라도 확실하지 않으면 먼저 묻는다. 설계와 다르게 구현해야 하면 먼저 묻고, 합의되면 `docs/decisions.md`도 함께 고친다.
 - 문서에 없는 사실은 지어내지 말고 "확인 필요"로 표시한다.
