@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T17:27:20+09:00",
+  "updatedAt": "2026-10-14T17:27:38+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -210,6 +210,11 @@
       "fileId": "1d-RROPDk7x5NGDTLTp4NkllsiItpPliJ",
       "w": 2400,
       "h": 1164
+    },
+    "art": {
+      "fileId": "1UaHQ_FUn0635cDFqeRUMLP_5C8u-Iiqs",
+      "w": 2400,
+      "h": 1606
     }
   }
 }
