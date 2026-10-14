@@ -29,6 +29,8 @@
 #hero.ready .slide.on::before{transform:scale(1)}
 #hero.ready .slide.on:nth-of-type(even)::before{transform:scale(1.08)}
 @media(prefers-reduced-motion:reduce){ .slide::before{transition:none} }
+/* 세로 화면(휴대폰 등)은 사진 가운데만 보이므로, 표지 사진 규칙(주인공은 가운데~오른쪽)에 맞춰 62% 지점을 중심으로 (2026-10-14 사용자 결정) */
+@media(max-aspect-ratio:1/1){ .slide::before{background-position:62% center} }
 .s-dance::before{background-image:var(--img-hero-dance),linear-gradient(160deg,#3FB3D9,#1B7EA6 42%,#0E4356)}
 .s-music::before{background-image:var(--img-hero-music),linear-gradient(160deg,#6E8FB8,#2C5C7A 45%,#12303F)}
 .s-art::before{background-image:var(--img-hero-art),linear-gradient(160deg,#9A6AAE,#5E3A78 45%,#241433)}
