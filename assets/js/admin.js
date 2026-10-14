@@ -282,7 +282,10 @@
     if(isNotice){
       row.appendChild(h('div', { class:'fld' }, [
         h('label', { for:'f-cat', text:'분류' }),
-        h('select', { id:'f-cat', onchange:bind('category') }, S.data.categories.map(function(c){ return h('option', { value:c, text:c, selected:c === p.category }); }))
+        // 분류 목록에서 빠진 분류(예: 2026-10-14 삭제한 「아카이브」)의 글은 다시 고르게 한다. 그대로 두면 화면엔 첫 분류가 보이지만 예전 값이 전송된다
+        h('select', { id:'f-cat', onchange:bind('category') }, (S.data.categories.indexOf(p.category) < 0
+          ? [h('option', { value:'', text:'분류를 골라 주세요 (예전 분류 「' + p.category + '」는 더 이상 쓰지 않음)', selected:true, disabled:true })] : [])
+          .concat(S.data.categories.map(function(c){ return h('option', { value:c, text:c, selected:c === p.category }); })))
       ]));
     }
     row.appendChild(h('div', { class:'fld' }, [
@@ -562,9 +565,12 @@
     if(!p.title.trim()) return fail('제목을 입력해 주세요.');
     if(!/^\d{4}-\d{2}-\d{2}$/.test(p.date || '')) return fail('게시일을 입력해 주세요.');
     if(isNotice){
+      if(S.data.categories.indexOf(p.category) < 0) return fail('분류를 골라 주세요. 「' + p.category + '」는 더 이상 쓰지 않는 분류입니다.');
       if(p.body.length > lim.noticeBody) return fail('본문이 너무 깁니다.');
       if(p.photoLink && !/^https?:\/\/\S+$/i.test(p.photoLink.trim())) return fail('사진 이동 주소는 https:// 로 시작해야 합니다.');
-      if(!p.body.trim() && !e.photos.length && !e.files.length) return fail('본문 · 사진 · 첨부 중 하나는 있어야 합니다.');
+      // 내용 없는 공지는 사이트 목록에 보이되 누를 수 없다(docs/decisions.md 4절). 공개 글이면 한 번 묻고 저장한다
+      if(!p.body.trim() && !e.photos.length && !e.files.length && p.visibility === '공개' &&
+         !confirm('본문 · 사진 · 첨부가 없어 사이트 목록에서 누를 수 없는 글이 됩니다. 이대로 저장할까요?')) return;
     }else if(!e.photos.length && p.visibility === '공개' && !confirm('사진이 없는 앨범입니다. 사이트에 빈 칸으로 보입니다. 그래도 공개로 저장할까요?')) return;
 
     var post = isNotice
