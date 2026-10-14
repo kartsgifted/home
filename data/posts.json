@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T14:22:50+09:00",
+  "updatedAt": "2026-10-14T14:27:46+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -68,7 +68,13 @@
       "title": "심화 멘토링 첫 회차",
       "desc": "2026.10",
       "date": "2026-10-01",
-      "photos": []
+      "photos": [
+        {
+          "fileId": "1jf7FKfP6hXmrbvBkeoZwuGG8CV_fSeME",
+          "w": 1600,
+          "h": 1200
+        }
+      ]
     },
     {
       "id": "G-0007",
