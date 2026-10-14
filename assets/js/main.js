@@ -10,6 +10,9 @@
   document.querySelector('.h-nav.prev').addEventListener('click',function(){go(idx-1);play()});
   dots.forEach(function(d,i){d.addEventListener('click',function(){go(i);play()})});
   play();
+  /* 첫 화면을 그린 뒤 사진 움직임을 켠다 (바로 켜면 첫 장은 움직임이 끝난 모습으로 시작함) */
+  var hero=document.getElementById('hero');
+  requestAnimationFrame(function(){requestAnimationFrame(function(){hero.classList.add('ready')})});
 
   var rail=document.getElementById('rail');
   /* 카드가 모두 보이면 좌우 화살표 숨김 */

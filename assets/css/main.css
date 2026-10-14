@@ -2,23 +2,34 @@
 /* 2026 K예술영재 프로젝트 — main.css (메인 페이지 전용) */
 
 :root{
-  --img-hero1:var(--none);  /* 히어로 1 : 무용  → url("assets/img/hero1.jpg") */
-  --img-hero2:var(--none);  /* 히어로 2 : 음악 */
-  --img-hero3:var(--none);  /* 히어로 3 : 전통예술 */
+  /* 주소는 이 파일(assets/css/) 기준 → url("../img/hero1.jpg"). 사진 출처는 docs/decisions.md 2절 */
+  --img-hero-dance:var(--none);                 /* 표지 : 무용 (사진 대기) */
+  --img-hero-music:url("../img/hero-music.jpg"); /* 표지 : 음악 */
+  --img-hero-art  :var(--none);                 /* 표지 : 미술 (사진 대기) */
+  --img-hero-trad :url("../img/hero-trad.jpg");  /* 표지 : 전통예술 */
   --img-news :var(--none);  /* 다크 섹션 우측 컷 */
-  --img-p1:var(--none); --img-p2:var(--none); --img-p3:var(--none);
-  --img-p4:var(--none);                         /* 프로그램 카드 4컷 */
+  /* 프로그램 카드 4컷 — 카드 비율(292:262)로 미리 잘라 900×808 */
+  --img-p1:url("../img/p1.jpg");  /* 무용 */
+  --img-p2:url("../img/p2.jpg");  /* 음악 */
+  --img-p3:url("../img/p3.jpg");  /* 미술 */
+  --img-p4:url("../img/p4.jpg");  /* 전통예술 */
 }
 
 /* ============ HERO ============ */
 #hero{position:relative;height:100vh;min-height:720px;overflow:hidden;background:var(--teal-dp)}
 .slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
 .slide.on{opacity:1}
-.slide::before{content:"";position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.06);transition:transform 8s linear}
-.slide.on::before{transform:scale(1)}
-.slide:nth-child(1)::before{background-image:var(--img-hero1),linear-gradient(160deg,#3FB3D9,#1B7EA6 42%,#0E4356)}
-.slide:nth-child(2)::before{background-image:var(--img-hero2),linear-gradient(160deg,#6E8FB8,#2C5C7A 45%,#12303F)}
-.slide:nth-child(3)::before{background-image:var(--img-hero3),linear-gradient(160deg,#C97A63,#8A4A46 45%,#2A1E22)}
+/* 사진 움직임 (#hero 첫 요소가 숨김 제목 h2라 nth-child 대신 nth-of-type) — 홀수 장은 크게 → 원래(축소), 짝수 장은 원래 → 크게(확대). 크기는 1.08, 시간은 8s를 바꾸면 된다.
+   #hero.ready는 main.js가 첫 화면을 그린 뒤 붙여서 첫 장도 움직이며 시작한다. */
+.slide::before{content:"";position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.08);transition:transform 8s linear}
+.slide:nth-of-type(even)::before{transform:scale(1)}
+#hero.ready .slide.on::before{transform:scale(1)}
+#hero.ready .slide.on:nth-of-type(even)::before{transform:scale(1.08)}
+@media(prefers-reduced-motion:reduce){ .slide::before{transition:none} }
+.s-dance::before{background-image:var(--img-hero-dance),linear-gradient(160deg,#3FB3D9,#1B7EA6 42%,#0E4356)}
+.s-music::before{background-image:var(--img-hero-music),linear-gradient(160deg,#6E8FB8,#2C5C7A 45%,#12303F)}
+.s-art::before{background-image:var(--img-hero-art),linear-gradient(160deg,#9A6AAE,#5E3A78 45%,#241433)}
+.s-trad::before{background-image:var(--img-hero-trad),linear-gradient(160deg,#C97A63,#8A4A46 45%,#2A1E22)}
 .slide::after{content:"";position:absolute;inset:0;
   background:radial-gradient(90% 70% at 22% 45%,rgba(0,0,0,.42),transparent 65%),
              linear-gradient(180deg,rgba(0,0,0,.30),rgba(0,0,0,0) 32%,rgba(0,0,0,.34))}
@@ -50,9 +61,12 @@
 .dots button{width:34px;height:2px;border:0;background:rgba(255,255,255,.45);cursor:pointer;padding:0}
 .dots button.on{background:var(--coral)}
 .scr{position:absolute;right:46px;bottom:56px;z-index:8;color:#fff;writing-mode:vertical-rl;font-size:10px;letter-spacing:.32em;opacity:.85}
-.scr::after{content:"";display:block;width:1px;height:56px;background:rgba(255,255,255,.6);margin:12px auto 0;animation:scr 2.2s ease-in-out infinite}
-@keyframes scr{0%{transform:scaleY(.2);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}
-  51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(.1);transform-origin:bottom}}
+/* 스크롤 표시 — 흐린 세로선 안으로 빛 줄기(흰색 → 산호색)가 위에서 아래로 흘러내린다 */
+.scr::after{content:"";display:block;width:1px;height:90px;margin:14px auto 0;
+  background:linear-gradient(transparent,#fff 70%,var(--coral)) 0 -40px/1px 40px no-repeat,rgba(255,255,255,.25);
+  animation:scr 2s ease-in-out infinite}
+@keyframes scr{from{background-position:0 -40px,0 0}to{background-position:0 90px,0 0}}
+@media(prefers-reduced-motion:reduce){ .scr::after{animation:none;background-position:0 25px,0 0} }
 
 /* ============ PROGRAMS ============ */
 #programs{padding:var(--pad-sec) 0 130px;background:#fff}

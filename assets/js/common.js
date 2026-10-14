@@ -8,7 +8,7 @@ var SITE = {
   name : "2026 K예술영재 프로젝트",
   org  : "한국예술영재교육연구원",
   tel  : "02-0000-0000",
-  mail : "kbrainc.ai@gmail.com",
+  mail : "kgifted2026@naver.com",
   addr : "한국예술영재교육연구원 · 2026 K예술영재 프로젝트"
 };
 
