@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T16:56:43+09:00",
+  "updatedAt": "2026-10-14T17:27:20+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -205,5 +205,11 @@
       ]
     }
   ],
-  "hero": {}
+  "hero": {
+    "dance": {
+      "fileId": "1d-RROPDk7x5NGDTLTp4NkllsiItpPliJ",
+      "w": 2400,
+      "h": 1164
+    }
+  }
 }
