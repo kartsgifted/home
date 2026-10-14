@@ -166,10 +166,10 @@ window.Board = (function(){
     return !!(String(post.body || '').trim() || (post.photos && post.photos.length) || (post.files && post.files.length));
   }
 
-  // 공지 목록 한 줄. 누를 수 없는 글은 href 없는 <a>로 두어 모양은 같고 링크만 빠진다.
+  // 공지 목록 한 줄. 내용 없는 글은 href 없는 <a class="empty">로 두어 마우스 반응은 같고 눌러도 이동하지 않는다.
   function noticeItem(post, href, withCat){
     var li = el('li'), a = el('a');
-    if(hasContent(post)) a.href = href;
+    if(hasContent(post)) a.href = href; else a.className = 'empty';
     if(withCat && post.category) a.appendChild(el('span', 'cat', post.category));
     a.appendChild(el('span', 't', post.title || ''));
     a.appendChild(el('span', 'd', post.date || ''));

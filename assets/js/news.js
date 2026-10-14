@@ -126,7 +126,9 @@
         var img = el('img'); img.src = Board.photoUrl(g.photos[0].fileId, 640); img.alt = ''; img.loading = 'lazy';
         th.appendChild(img);
         th.addEventListener('click', function(){ Board.viewer(g.photos, 0, g.title); });
-      }else th = el('div', 'th');   // 사진이 없으면 기본 그라디언트 칸, 누를 수 없음
+      }else{   // 사진이 없으면 기본 그라디언트 칸. 마우스 반응은 같고 눌러도 아무 일도 없다
+        th = el('div', 'th'); th.appendChild(el('i', 'ph')); fig.className = 'empty';
+      }
       fig.appendChild(th);
       fig.appendChild(el('figcaption', null, g.title || ''));
       if(g.desc) fig.appendChild(el('p', 'm', g.desc));

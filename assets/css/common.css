@@ -182,8 +182,7 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .bbs .cat{flex:0 0 auto;font-size:12.5px;font-weight:600;color:var(--teal);border:1px solid var(--teal);padding:5px 12px;letter-spacing:-.02em}
 .bbs .t{flex:1;font-size:17px;font-weight:500;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bbs .d{flex:0 0 auto;font-family:"Playfair Display",serif;font-size:14px;color:var(--gray-lt)}
-.bbs li a:not([href]){cursor:default}
-.bbs li a:not([href]):hover{background:none}
+.bbs li a.empty{cursor:pointer}  /* 내용 없는 공지: 반응은 같고 이동만 없음 */
 .paging{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:50px}
 .paging button{width:40px;height:40px;display:grid;place-items:center;font-size:15px;color:var(--gray);border:1px solid var(--line);background:#fff;cursor:pointer}
 .paging button:hover{border-color:var(--teal);color:var(--teal)}
@@ -198,8 +197,10 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .gal button.th{cursor:pointer}
 .gal button.th::after{content:"";position:absolute;inset:0}  /* 제목·설명을 눌러도 열리게 칸 전체로 넓힘 */
 .gal button.th:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
-.gal .th img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,1,.36,1)}
-.gal figure:hover .th img{transform:scale(1.07)}
+.gal .th img,.gal .th .ph{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.gal .th .ph{background:inherit}  /* 사진 없는 앨범: 그라디언트 칸도 같이 커진다 */
+.gal figure.empty{cursor:pointer}
+.gal figure:hover .th img,.gal figure:hover .th .ph{transform:scale(1.07)}
 .gal figcaption{margin-top:14px;font-size:16px;font-weight:600;letter-spacing:-.02em}
 .gal .m{font-size:13.5px;color:var(--gray-lt);margin-top:5px;font-family:"Playfair Display",serif}
 
