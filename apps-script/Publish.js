@@ -61,11 +61,18 @@ function buildPublicPosts_() {
   var notices = sortNotices_(readTab_('공지').filter(isPublic).map(function (r) { return noticeFromRow_(r, attachments, false); }));
   var press = sortByDate_(readTab_('언론홍보').filter(isPublic).map(function (r) { return pressFromRow_(r, false); }));
   var gallery = sortByDate_(readTab_('갤러리').filter(isPublic).map(function (r) { return galleryFromRow_(r, attachments, false); }));
-  // 표지: 사진을 올린 칸만 { dance: { fileId, w, h }, … }. 빈 칸은 화면이 기본 사진을 쓰거나 건너뛴다
+  // 표지: 사진을 올린 칸만 { dance: { fileId, w, h }, … }. 빈 칸은 화면이 기본 사진을 쓰거나 건너뛴다.
+  // 2.5D 입체 효과를 켠 칸은 누끼(fg)와 확대 중심(depth, 사진의 %)을 더한다
   var hero = {};
   readTab_('표지').forEach(function (r) {
     var photo = attachmentsOf_(r['글ID'], '사진', attachments, false)[0];
-    if (photo) hero[String(r['글ID']).replace(/^H-/, '')] = photo;
+    if (!photo) return;
+    var cutout = attachmentsOf_(r['글ID'], '누끼', attachments, false)[0];
+    if (r['입체효과'] === '예' && cutout) {
+      photo.fg = { fileId: cutout.fileId };
+      photo.depth = parseCenter_(r['입체중심']);
+    }
+    hero[String(r['글ID']).replace(/^H-/, '')] = photo;
   });
   return {
     compareKey: JSON.stringify({ notices: notices, press: press, gallery: gallery, hero: hero }),

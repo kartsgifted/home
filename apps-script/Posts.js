@@ -1,18 +1,18 @@
 /**
  * 게시글 목록·저장·삭제. docs/api.md 3-3 · 3-5 · 3-6, docs/sheet-schema.md 2-1 ~ 2-3 · 2-7 · 2-8.
  * 공지(N-0001) · 언론홍보(P-0001) · 갤러리(G-0001) · 표지(H-dance 등)는 같은 흐름으로 처리하고, 차이는 BOARDS_와 검증 함수에만 둔다.
- * 표지는 칸이 고정(fixed)이라 새로 만들거나 지우지 않고, 사진 한 장만 바꾼다 (Setup.js HERO_SLOTS_).
+ * 표지는 칸이 고정(fixed)이라 새로 만들거나 지우지 않고, 사진 한 장(+ 2.5D용 누끼 한 장)만 바꾼다 (Setup.js HERO_SLOTS_).
  */
 
 var BOARDS_ = {
   notice:  { tab: '공지',     prefix: 'N', validate: function (p) { return validateNotice_(p); },
-             maxPhotos: function () { return LIMITS_.noticePhotos; },  maxFiles: function () { return LIMITS_.noticeFiles; } },
+             maxPhotos: function () { return LIMITS_.noticePhotos; },  maxFiles: function () { return LIMITS_.noticeFiles; }, maxCutouts: function () { return 0; } },
   press:   { tab: '언론홍보', prefix: 'P', validate: function (p) { return validatePress_(p); },
-             maxPhotos: function () { return 0; }, maxFiles: function () { return 0; } },
+             maxPhotos: function () { return 0; }, maxFiles: function () { return 0; }, maxCutouts: function () { return 0; } },
   gallery: { tab: '갤러리',   prefix: 'G', validate: function (p) { return validateGallery_(p); },
-             maxPhotos: function () { return LIMITS_.galleryPhotos; }, maxFiles: function () { return 0; } },
+             maxPhotos: function () { return LIMITS_.galleryPhotos; }, maxFiles: function () { return 0; }, maxCutouts: function () { return 0; } },
   hero:    { tab: '표지', fixed: true, validate: function (p) { return validateHero_(p); },
-             maxPhotos: function () { return 1; }, maxFiles: function () { return 0; } }
+             maxPhotos: function () { return 1; }, maxFiles: function () { return 0; }, maxCutouts: function () { return 1; } }
 };
 
 function handleList_(req) {
@@ -44,9 +44,9 @@ function handleSave_(req) {
   var fields = board.validate(req.post);
   if (!fields || (board.fixed && !req.id)) return jsonResponse_(false, 'INVALID_INPUT', null);
 
-  var photoIds = idList_(req.photos), fileIds = idList_(req.files);
-  if (!photoIds || !fileIds) return jsonResponse_(false, 'INVALID_INPUT', null);
-  if (photoIds.length > board.maxPhotos() || fileIds.length > board.maxFiles()) return jsonResponse_(false, 'FILE_REJECTED', null);
+  var photoIds = idList_(req.photos), fileIds = idList_(req.files), cutoutIds = idList_(req.cutouts);
+  if (!photoIds || !fileIds || !cutoutIds) return jsonResponse_(false, 'INVALID_INPUT', null);
+  if (photoIds.length > board.maxPhotos() || fileIds.length > board.maxFiles() || cutoutIds.length > board.maxCutouts()) return jsonResponse_(false, 'FILE_REJECTED', null);
 
   return withLock_(function () {
     var rows = readTab_(board.tab);
@@ -60,8 +60,12 @@ function handleSave_(req) {
     var attachments = readTab_('첨부');
     var byId = {};
     attachments.forEach(function (a) { byId[a['첨부ID']] = a; });
+    if (board.fixed) {
+      cutoutIds = checkHeroDepth_(fields, photoIds, cutoutIds, ownId, attachments, byId);
+      if (!cutoutIds) return jsonResponse_(false, 'INVALID_INPUT', null);
+    }
     var seen = {};
-    var ok = [[photoIds, '사진'], [fileIds, '파일']].every(function (pair) {
+    var ok = [[photoIds, '사진'], [fileIds, '파일'], [cutoutIds, '누끼']].every(function (pair) {
       return pair[0].every(function (aid) {
         var a = byId[aid];
         if (!a || seen[aid] || a['구분'] !== pair[1] || (a['글ID'] && a['글ID'] !== ownId)) return false;
@@ -84,7 +88,7 @@ function handleSave_(req) {
     writeRow_(board.tab, fields, existing && existing._row);
 
     // 첨부 행에 글ID·순서를 적고, 이 글에서 빠진 첨부는 휴지통으로 보낸다.
-    [photoIds, fileIds].forEach(function (ids) {
+    [photoIds, fileIds, cutoutIds].forEach(function (ids) {
       ids.forEach(function (aid, i) {
         var a = byId[aid];
         if (a['글ID'] === id && Number(a['순서']) === i + 1) return;
@@ -163,9 +167,46 @@ function validatePress_(p) {
   return { '언론사': source, '제목': title, '게시일': date, '기사주소': url, '공개여부': vis };
 }
 
-// 표지: 적을 값이 없다(사진만 바꿈). 칸 이름은 handleSave_가 기존 행에서 옮긴다
+// 표지: 2.5D 입체 효과 켬/끔과 확대 중심(누끼 인물 영역의 가운데, 사진 가로 · 세로의 %).
+// 칸 이름은 handleSave_가 기존 행에서 옮기고, 사진 · 누끼와 맞는지는 checkHeroDepth_가 본다
 function validateHero_(p) {
-  return {};
+  if (!p) return null;
+  var center = '';
+  if (p.center != null) {
+    var x = Number(p.center.x), y = Number(p.center.y);
+    if (!isFinite(x) || !isFinite(y) || x < 0 || x > 100 || y < 0 || y > 100) return null;
+    center = x.toFixed(1) + ',' + y.toFixed(1);
+  }
+  return { '입체효과': p.depth === true ? '예' : '', '입체중심': center };
+}
+
+// 표지 2.5D (docs/decisions.md 2절). 저장할 누끼 첨부ID 목록을 돌려주고, 맞지 않으면 null(INVALID_INPUT).
+// - 원본을 빼거나 바꿨는데 누끼가 예전 것이면 누끼를 빼고 효과를 끈다 — 새 사진 위에 옛 인물이 겹치지 않게 (2026-10-15 사용자 결정)
+// - 효과를 켜려면 누끼가 있어야 하고, 원본과 크기가 같아야 한다(관리자 화면이 원본 크기로 맞춰 올린다)
+function checkHeroDepth_(fields, photoIds, cutoutIds, ownId, attachments, byId) {
+  var oldPhoto = attachments.filter(function (a) { return a['글ID'] === ownId && a['구분'] === '사진'; })[0];
+  var photoChanged = !oldPhoto || photoIds[0] !== oldPhoto['첨부ID'];
+  var cut = cutoutIds.length ? byId[cutoutIds[0]] : null;
+  if (cut && (!photoIds.length || (photoChanged && cut['글ID'] === ownId))) {
+    fields['입체효과'] = '';
+    cutoutIds = [];
+  }
+  if (!cutoutIds.length) {
+    if (fields['입체효과']) return null;
+    fields['입체중심'] = '';
+    return cutoutIds;
+  }
+  var photo = byId[photoIds[0]];
+  if (fields['입체효과'] && photo && cut &&
+      (Number(photo['가로']) !== Number(cut['가로']) || Number(photo['세로']) !== Number(cut['세로']))) return null;
+  if (!fields['입체중심']) fields['입체중심'] = '50.0,50.0';
+  return cutoutIds;
+}
+
+// "64.2,55.0" → { x: 64.2, y: 55 }. 비었거나 잘못되면 가운데
+function parseCenter_(value) {
+  var m = String(value == null ? '' : value).match(/^\s*([\d.]+)\s*,\s*([\d.]+)\s*$/);
+  return m ? { x: Number(m[1]), y: Number(m[2]) } : { x: 50, y: 50 };
 }
 
 // 여러 줄을 허용하지 않으면 줄바꿈을 공백으로 바꾼다. 줄바꿈은 \n 하나로 맞춘다.
@@ -200,7 +241,7 @@ function attachmentsOf_(postId, kind, attachments, admin) {
     .sort(function (a, b) { return Number(a['순서']) - Number(b['순서']); })
     .map(function (a) {
       var o = { fileId: String(a['파일ID']) };
-      if (kind === '사진') { o.w = Number(a['가로']) || 0; o.h = Number(a['세로']) || 0; }
+      if (kind !== '파일') { o.w = Number(a['가로']) || 0; o.h = Number(a['세로']) || 0; }
       else { o.name = String(a['파일명']); o.size = Number(a['크기']) || 0; }
       if (admin) { o.attachmentId = a['첨부ID']; o.name = String(a['파일명']); o.size = Number(a['크기']) || 0; }
       return o;
@@ -234,11 +275,13 @@ function pressFromRow_(r, admin) {
   return o;
 }
 
-// 관리용만 — 방문자용은 Publish.js가 { dance: 사진, … } 모양으로 만든다. photos는 0장 또는 1장
+// 관리용만 — 방문자용은 Publish.js가 { dance: 사진, … } 모양으로 만든다. photos · cutouts는 0장 또는 1장
 function heroFromRow_(r, attachments) {
   return {
     id: r['글ID'], slot: String(r['글ID']).replace(/^H-/, ''), label: String(r['칸']),
     photos: attachmentsOf_(r['글ID'], '사진', attachments, true),
+    cutouts: attachmentsOf_(r['글ID'], '누끼', attachments, true),
+    depth: r['입체효과'] === '예', center: parseCenter_(r['입체중심']),
     updatedBy: String(r['수정자']), updatedAt: formatDateTimeCell_(r['수정시각'])
   };
 }

@@ -10,7 +10,7 @@ var TAB_HEADERS_ = {
   '공지':     ['글ID', '분류', '제목', '본문', '게시일', '상단고정', '사진위치', '사진링크', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
   '갤러리':   ['글ID', '제목', '설명', '게시일', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
   '언론홍보': ['글ID', '언론사', '제목', '게시일', '기사주소', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
-  '표지':     ['글ID', '칸', '작성자', '작성시각', '수정자', '수정시각'],
+  '표지':     ['글ID', '칸', '작성자', '작성시각', '수정자', '수정시각', '입체효과', '입체중심'],
   '첨부':     ['첨부ID', '글ID', '구분', '순서', '파일ID', '파일명', '크기', '가로', '세로', '공유', '올린사람', '올린시각'],
   '접근코드': ['코드', '이름', '상태', '사용기한', '버전', '비고'],
   '설정':     ['항목', '값', '설명'],
@@ -22,7 +22,7 @@ var TEXT_COLUMNS_ = {
   '공지': ['글ID', '게시일', '사진링크'],
   '갤러리': ['글ID', '게시일'],
   '언론홍보': ['글ID', '게시일', '기사주소'],
-  '표지': ['글ID'],
+  '표지': ['글ID', '입체중심'],
   '첨부': ['첨부ID', '글ID', '파일ID'],
   '접근코드': ['코드', '사용기한']
 };
@@ -67,7 +67,8 @@ function setup() {
 function setupTabs_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   Object.keys(TAB_HEADERS_).forEach(function (name) {
-    if (ss.getSheetByName(name)) { Logger.log(name + ': 이미 있어 건드리지 않음'); return; }
+    var existing = ss.getSheetByName(name);
+    if (existing) { addMissingHeaders_(existing, name); return; }
     var sheet = ss.insertSheet(name, ss.getSheets().length);
     var headers = TAB_HEADERS_[name];
     if (headers.length) {
@@ -96,6 +97,20 @@ function setupTabs_() {
       Logger.log(name + ': 빈 기본 탭이라 지움');
     }
   });
+}
+
+// 이미 있는 탭은 내용을 건드리지 않고, 나중에 생긴 머리글(예: 표지 입체효과 · 입체중심, 2026-10-15)만 1행 맨 뒤에 붙인다.
+// 관문은 머리글 글자로 열을 찾으므로 열 순서는 상관없다.
+function addMissingHeaders_(sheet, name) {
+  var lastCol = sheet.getLastColumn();
+  var have = lastCol ? sheet.getRange(1, 1, 1, lastCol).getValues()[0] : [];
+  var missing = TAB_HEADERS_[name].filter(function (h) { return have.indexOf(h) === -1; });
+  if (!missing.length) { Logger.log(name + ': 이미 있어 건드리지 않음'); return; }
+  sheet.getRange(1, lastCol + 1, 1, missing.length).setValues([missing]).setFontWeight('bold');
+  missing.forEach(function (h, i) {
+    if ((TEXT_COLUMNS_[name] || []).indexOf(h) > -1) sheet.getRange(2, lastCol + 1 + i, sheet.getMaxRows() - 1, 1).setNumberFormat('@');
+  });
+  Logger.log(name + ': 머리글 추가 — ' + missing.join(', '));
 }
 
 function setupDriveFolder_() {

@@ -37,6 +37,7 @@ var LIMITS_ = {
   galleryPhotos: 50,
   heroPhotoSide: 2400,   // 표지 사진은 넓은 화면용이라 올리기 전 긴 변을 더 크게 (공지 · 갤러리는 화면이 1600으로 줄임)
   photoBytes: 5 * 1024 * 1024,
+  cutoutBytes: 8 * 1024 * 1024,   // 표지 누끼는 투명도 때문에 PNG로 두어 JPEG보다 크다(2400px에 보통 1~4MB)
   fileBytes: 10 * 1024 * 1024,
   fileName: 150,
   photoTypes: ['image/jpeg', 'image/png', 'image/webp'],

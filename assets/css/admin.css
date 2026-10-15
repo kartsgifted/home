@@ -122,6 +122,18 @@ main.mg-in{padding:34px 0 120px}
 .add{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
 .add .hint{font-size:13px;color:var(--gray-lt)}
 
+/* 표지 2.5D — 누끼 칸 · 미리보기 (admin.js drawDepth). 확대 크기 1.06 · 1.14는 main.css 표지와 맞출 것 */
+.mg-depth{border-top:1px solid #DCDDDA;padding-top:24px}
+.mg-depth > .choices{gap:8px;align-items:center;cursor:pointer}
+.mg-depth > p.hint{display:block;margin:6px 0 18px;line-height:1.6}
+.ph.cut .im{background-size:contain,16px 16px;background-repeat:no-repeat,repeat;background-position:center,0 0}
+.mg-depth-pv{position:relative;overflow:hidden;max-width:640px;background:#111}
+.mg-depth-pv img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.mg-depth-pv .bg{animation:mgDepthBg 4s ease-in-out infinite alternate}
+.mg-depth-pv .fg{animation:mgDepthFg 4s ease-in-out infinite alternate}
+@keyframes mgDepthBg{from{transform:scale(1)}to{transform:scale(1.06)}}
+@keyframes mgDepthFg{from{transform:scale(1)}to{transform:scale(1.14)}}
+
 /* 파일 */
 .files{border-top:1px solid var(--line)}
 .fl{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);font-size:15px}

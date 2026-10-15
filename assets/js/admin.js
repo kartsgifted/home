@@ -248,7 +248,7 @@
 
   /* 표지 사진 — 분야 칸 4개(순서 고정). 올린 사진 > 기본 사진 > 건너뜀 */
   function heroState(slot){
-    if(slot.photos.length) return { src:Board.photoUrl(slot.photos[0].fileId, 640), text:'올린 사진', cls:'on' };
+    if(slot.photos.length) return { src:Board.photoUrl(slot.photos[0].fileId, 640), text:slot.depth && slot.cutouts.length ? '올린 사진 · 2.5D' : '올린 사진', cls:'on' };
     if(HERO_DEFAULT[slot.slot]) return { src:HERO_DEFAULT[slot.slot], text:'기본 사진', cls:'def' };
     return { src:null, text:'사진 없음 · 표지에서 건너뜀', cls:'off' };
   }
@@ -288,6 +288,7 @@
       post: post ? Object.assign({}, post) : blank[board],
       photos: post && post.photos ? post.photos.map(copyAtt) : [],
       files: post && post.files ? post.files.map(copyAtt) : [],
+      cutouts: post && post.cutouts ? post.cutouts.map(copyAtt) : [],
       maxPhotos: board === 'notice' ? lim.noticePhotos : board === 'hero' ? 1 : lim.galleryPhotos,
       photoSide: board === 'hero' ? (lim.heroPhotoSide || 2400) : PHOTO_MAX_SIDE
     };
@@ -297,7 +298,7 @@
   }
 
   function markDirty(){ if(S.edit) S.edit.dirty = true; }
-  function pending(){ var e = S.edit; return e ? e.photos.concat(e.files).filter(function(a){ return a.uploading; }).length : 0; }
+  function pending(){ var e = S.edit; return e ? e.photos.concat(e.files, e.cutouts).filter(function(a){ return a.uploading; }).length : 0; }
   function confirmLeave(){
     if(!S.edit || (!S.edit.dirty && !pending())) return true;
     return confirm('저장하지 않은 내용이 있습니다. 나가면 사라집니다. 나갈까요?');
@@ -421,6 +422,9 @@
       ? '사진을 올리면 표지의 이 칸에 보입니다. 사진을 빼고 저장하면 아래 기본 사진으로 돌아갑니다.'
       : '사진을 올리면 표지의 이 칸에 보입니다. 이 칸은 기본 사진이 없어, 사진을 빼고 저장하면 표지에서 건너뜁니다.' }));
     wrap.appendChild(photoField(e, '사진', '가로로 긴 사진(16:9 정도)이 좋습니다. 화면 비율에 따라 위아래나 좌우가 잘리고, 왼쪽에 제목 글자가 올라갑니다.'));
+    var depthBox = h('div', { class:'fld mg-depth', id:'depthFld' });
+    wrap.appendChild(depthBox);
+    drawDepth(e, depthBox);
     if(def) wrap.appendChild(h('div', { class:'fld' }, [
       h('span', { class:'lb', text:'기본 사진 (올린 사진이 없을 때 보임)' }),
       h('img', { class:'mg-hero-def', src:def, alt:'' })
@@ -492,6 +496,117 @@
   }
 
   /* ---------- 사진 ---------- */
+  /* 표지 2.5D 입체 효과 — 원본 위에 누끼(인물만 오려 낸 투명 배경 PNG)를 겹쳐, 넘어갈 때 인물이 배경보다 더 커지며 다가오게 한다.
+     켜려면 누끼가 있어야 하고, 원본을 빼거나 바꾸면 누끼가 빠지고 꺼진다. 관문도 같은 규칙으로 다시 확인한다 (docs/decisions.md 2절) */
+  function drawDepth(e, box){
+    box = box || $('depthFld');
+    if(!box) return;
+    box.textContent = '';
+    var p = e.post, ph = e.photos[0], cut = e.cutouts[0];
+    var ready = !!(ph && ph.attachmentId && ph.w);
+    box.appendChild(h('label', { class:'choices', style:'font-weight:700' }, [
+      h('input', { type:'checkbox', checked:p.depth, disabled:!ready && !p.depth, onchange:function(ev){ p.depth = ev.target.checked; markDirty(); drawDepth(e); } }),
+      '2.5D 입체 효과 켜기'
+    ]));
+    box.appendChild(h('p', { class:'hint', text:ready
+      ? '인물만 오려 낸 누끼 사진을 원본 위에 겹쳐, 사진이 넘어갈 때 인물이 배경보다 앞으로 다가오게 합니다. 끄면 사진 전체가 천천히 확대 · 축소됩니다.'
+      : '원본 사진을 먼저 올리면 켤 수 있습니다. 끄면 사진 전체가 천천히 확대 · 축소됩니다.' }));
+    if(!p.depth) return;
+
+    box.appendChild(h('span', { class:'lb' }, ['누끼 사진', h('span', { class:'hint', text:'원본 사진에서 배경을 지운 투명 배경 PNG 1장. 앞으로 다가올 주인공만 남기고(여러 명이 떨어져 있으면 인물 뒤에 겹친 윤곽이 보임), 원본과 같은 비율이어야 합니다.' })]));
+    if(cut){
+      var im = h('div', { class:'im' });
+      var src = cut.local || (cut.fileId && Board.photoUrl(cut.fileId, 400));
+      if(src) im.style.backgroundImage = 'url("' + src + '"),repeating-conic-gradient(#D9DBD8 0 25%,#fff 0 50%)';
+      box.appendChild(h('div', { class:'photos' }, [h('div', { class:'ph cut' }, [
+        im,
+        cut.uploading ? h('div', { class:'state', text:'올리는 중…' }) : null,
+        cut.error ? h('div', { class:'state err', text:cut.error }) : null,
+        h('div', { class:'ctl' }, [h('button', { type:'button', class:'x', text:'✕', title:'빼기', onclick:function(){ e.cutouts = []; markDirty(); drawDepth(e); } })])
+      ])]));
+      var bgSrc = ph && (ph.local || (ph.fileId && Board.photoUrl(ph.fileId, 1600)));
+      var fgSrc = cut.local || (cut.fileId && Board.photoUrl(cut.fileId, 1600));
+      if(bgSrc && fgSrc && !cut.error){
+        var pv = h('div', { class:'mg-depth-pv' }, [h('img', { class:'bg', src:bgSrc, alt:'' }), h('img', { class:'fg', src:fgSrc, alt:'' })]);
+        pv.style.aspectRatio = ph.w + ' / ' + ph.h;
+        var org = (p.center ? p.center.x : 50) + '% ' + (p.center ? p.center.y : 50) + '%';
+        [].forEach.call(pv.children, function(img){ img.style.transformOrigin = org; });
+        box.appendChild(h('span', { class:'lb', style:'margin-top:18px' }, ['미리보기', h('span', { class:'hint', text:'인물 윤곽이 원본과 어긋나 보이면 누끼를 다시 만들어 주세요. 표지에서는 사진이 넘어갈 때마다 한 번 다가옵니다.' })]));
+        box.appendChild(pv);
+      }
+    }else{
+      var input = h('input', { type:'file', accept:'image/png,image/webp', hidden:true, onchange:function(){
+        if(input.files[0]) addCutout(e, input.files[0]); input.value = '';
+      } });
+      box.appendChild(h('div', { class:'add' }, [
+        h('button', { type:'button', class:'mg-btn sm', text:'+ 누끼 사진 올리기', onclick:function(){ input.click(); } }),
+        h('span', { class:'hint', text:'PNG · WEBP. 원본 크기에 맞춰 올립니다.' }),
+        input
+      ]));
+    }
+  }
+
+  // 원본을 빼거나 새로 올리면 누끼를 빼고 2.5D를 끈다 — 새 사진 위에 예전 인물이 겹치지 않게 (2026-10-15 사용자 결정)
+  function photoChanged(e){
+    if(e.board !== 'hero') return;
+    if(e.cutouts.length) toast('원본 사진이 바뀌어 누끼 사진을 뺐습니다. 2.5D를 쓰려면 새 원본의 누끼를 올려 주세요.');
+    e.cutouts = []; e.post.depth = false;
+    drawDepth(e);
+  }
+
+  function addCutout(e, file){
+    var ph = e.photos[0], cut = { uploading:true, name:file.name };
+    e.cutouts = [cut];
+    drawDepth(e);
+    prepCutout(file, ph.w, ph.h).then(function(r){
+      cut.local = r.preview; cut.w = ph.w; cut.h = ph.h; e.post.center = r.center;
+      if(S.edit === e) drawDepth(e);
+      if(r.blob.size > (S.data.limits.cutoutBytes || 8388608)) throw { userMsg:'누끼 사진이 너무 큽니다(' + Math.round(r.blob.size / 1048576) + 'MB). 원본을 더 작은 사진으로 바꿔 주세요.' };
+      return blobToBase64(r.blob).then(function(b64){
+        return api('upload', { kind:'cutout', name:file.name.replace(/\.[^.]+$/, '') + '.png', mimeType:'image/png', base64:b64, width:ph.w, height:ph.h }, 120000);
+      });
+    }).then(function(d){
+      cut.attachmentId = d.attachmentId; cut.fileId = d.fileId; cut.size = d.size; cut.uploading = false; markDirty();
+    }, function(err){
+      cut.uploading = false;
+      cut.error = err && err.code ? errMsg(err) : (err && err.userMsg) || '이 사진은 열 수 없습니다. PNG로 바꿔 올려 주세요.';
+    }).then(function(){ if(S.edit === e) drawDepth(e); });
+  }
+
+  // 누끼를 원본 크기(w×h)로 맞추고 확인한다 — 비율이 원본과 같아야(1% 안) 하고 투명한 곳이 있어야 한다.
+  // 투명한 곳의 색 값은 0으로 비워 PNG 용량을 줄이고, 인물 영역(반 넘게 불투명한 곳)을 감싸는 상자의 가운데를 확대 중심(%)으로 돌려준다.
+  function prepCutout(file, w, hgt){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function(){
+        URL.revokeObjectURL(url);
+        var iw = img.naturalWidth, ih = img.naturalHeight;
+        if(Math.abs(iw / ih - w / hgt) > w / hgt * 0.01){
+          return reject({ userMsg:'원본과 비율이 다릅니다(원본 ' + w + '×' + hgt + ', 누끼 ' + iw + '×' + ih + '). 원본과 같은 사진에서 배경만 지워 주세요.' });
+        }
+        var c = document.createElement('canvas'); c.width = w; c.height = hgt;
+        var g = c.getContext('2d'); g.drawImage(img, 0, 0, w, hgt);
+        var data = g.getImageData(0, 0, w, hgt), d = data.data, n = w * hgt, clear = 0;
+        var x0 = w, x1 = -1, y0 = hgt, y1 = -1;
+        for(var i = 0; i < n; i++){
+          var a = d[i * 4 + 3];
+          if(a === 0){ d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = 0; clear++; }
+          else if(a > 128){
+            var x = i % w, y = (i - x) / w;
+            if(x < x0) x0 = x; if(x > x1) x1 = x; if(y < y0) y0 = y; if(y > y1) y1 = y;
+          }
+        }
+        if(clear < n * 0.02) return reject({ userMsg:'배경이 지워지지 않은 사진입니다. 배경을 투명하게 지운 PNG를 올려 주세요.' });
+        if(x1 < 0) return reject({ userMsg:'인물이 보이지 않습니다(사진 전체가 투명). 누끼를 다시 만들어 주세요.' });
+        g.putImageData(data, 0, 0);
+        var center = { x:Math.round((x0 + x1 + 1) / 2 / w * 1000) / 10, y:Math.round((y0 + y1 + 1) / 2 / hgt * 1000) / 10 };
+        c.toBlob(function(blob){ blob ? resolve({ blob:blob, preview:URL.createObjectURL(blob), center:center }) : reject(new Error('toBlob')); }, 'image/png');
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('decode')); };
+      img.src = url;
+    });
+  }
+
   function photoField(e, label, hint){
     var box = h('div', { class:'fld', id:'photoFld' });
     drawPhotos(box, e, label, hint);
@@ -520,7 +635,7 @@
           e.maxPhotos > 1 ? h('button', { type:'button', text:'◀', title:'앞으로', disabled:i === 0, onclick:function(){ move(i - 1); } }) : null,
           e.maxPhotos > 1 ? h('button', { type:'button', text:'▶', title:'뒤로', disabled:i === e.photos.length - 1, onclick:function(){ move(i + 1); } }) : null,
           e.maxPhotos > 1 ? h('button', { type:'button', text:isGallery ? '대표로' : '맨 앞', disabled:i === 0, onclick:function(){ move(0); } }) : null,
-          h('button', { type:'button', class:'x', text:'✕', title:'빼기', onclick:function(){ e.photos.splice(i, 1); markDirty(); drawPhotos(null, e); } })
+          h('button', { type:'button', class:'x', text:'✕', title:'빼기', onclick:function(){ e.photos.splice(i, 1); markDirty(); drawPhotos(null, e); photoChanged(e); } })
         ])
       ]));
     });
@@ -551,10 +666,11 @@
           ph.attachmentId = d.attachmentId; ph.fileId = d.fileId; ph.size = d.size; ph.uploading = false; markDirty();
         }, function(err){
           ph.uploading = false; ph.error = err && err.code ? errMsg(err) : '이 사진은 열 수 없습니다. JPG로 바꿔 올려 주세요.';
-        }).then(function(){ if(S.edit === e) drawPhotos(null, e); });
+        }).then(function(){ if(S.edit === e){ drawPhotos(null, e); drawDepth(e); } });
       };
     });
     drawPhotos(null, e);
+    if(jobs.length) photoChanged(e);
     runQueue(jobs, UPLOAD_PARALLEL);
   }
 
@@ -653,10 +769,14 @@
     var e = S.edit, p = e.post, lim = S.data.limits, isNotice = e.board === 'notice';
     var fail = function(msg){ toast(msg, true); };
     if(pending()) return fail('사진 · 파일을 올리는 중입니다. 끝난 뒤 저장해 주세요.');
-    if(e.photos.concat(e.files).some(function(a){ return a.error; })) return fail('올리지 못한 사진 · 파일이 있습니다. ✕로 빼고 저장해 주세요.');
+    if(e.photos.concat(e.files, e.cutouts).some(function(a){ return a.error; })) return fail('올리지 못한 사진 · 파일이 있습니다. ✕로 빼고 저장해 주세요.');
     if(e.board === 'hero'){
+      if(p.depth && !e.cutouts.length) return fail('2.5D 입체 효과를 켜려면 누끼 사진을 올려 주세요. 쓰지 않으려면 체크를 꺼 주세요.');
       if(!e.photos.length && !HERO_DEFAULT[p.slot] && !confirm('사진이 없으면 「' + p.label + '」 칸은 표지에서 빠집니다. 이대로 저장할까요?')) return;
-      return send({ board:'hero', id:e.id, post:{}, photos:e.photos.map(function(a){ return a.attachmentId; }), files:[] });
+      return send({
+        board:'hero', id:e.id, post:{ depth:!!p.depth, center:e.cutouts.length ? p.center : null },
+        photos:e.photos.map(function(a){ return a.attachmentId; }), cutouts:e.cutouts.map(function(a){ return a.attachmentId; }), files:[]
+      });
     }
     if(e.board === 'press' && !(p.source || '').trim()) return fail('언론사를 입력해 주세요.');
     if(!p.title.trim()) return fail('제목을 입력해 주세요.');

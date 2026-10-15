@@ -8,7 +8,8 @@ function handleUpload_(req) {
   var auth = requireAuth_(req);
   if (!auth.ok) return jsonResponse_(false, auth.error, null);
 
-  var kind = req.kind === 'photo' ? 'photo' : req.kind === 'file' ? 'file' : null;
+  // cutout: 표지 2.5D용 누끼 사진(투명 배경 PNG). 관리자 화면이 원본과 같은 크기로 맞춰 PNG 그대로 올린다 (docs/decisions.md 2절)
+  var kind = req.kind === 'photo' || req.kind === 'file' || req.kind === 'cutout' ? req.kind : null;
   var name = cleanFileName_(req.name);
   var mimeType = String(req.mimeType || '').toLowerCase();
   if (!kind || !name || !req.base64) return jsonResponse_(false, 'FILE_REJECTED', null);
@@ -16,8 +17,8 @@ function handleUpload_(req) {
   var ext = (name.match(/\.([a-z0-9]+)$/i) || [])[1];
   ext = ext ? ext.toLowerCase() : '';
   var width = 0, height = 0;
-  if (kind === 'photo') {
-    if (LIMITS_.photoTypes.indexOf(mimeType) === -1) return jsonResponse_(false, 'FILE_REJECTED', null);
+  if (kind === 'photo' || kind === 'cutout') {
+    if (kind === 'photo' ? LIMITS_.photoTypes.indexOf(mimeType) === -1 : mimeType !== 'image/png') return jsonResponse_(false, 'FILE_REJECTED', null);
     width = Math.round(Number(req.width)) || 0;
     height = Math.round(Number(req.height)) || 0;
     if (width < 1 || height < 1 || width > 10000 || height > 10000) return jsonResponse_(false, 'FILE_REJECTED', null);
@@ -32,7 +33,7 @@ function handleUpload_(req) {
   } catch (err) {
     return jsonResponse_(false, 'FILE_REJECTED', null);
   }
-  var maxBytes = kind === 'photo' ? LIMITS_.photoBytes : LIMITS_.fileBytes;
+  var maxBytes = kind === 'photo' ? LIMITS_.photoBytes : kind === 'cutout' ? LIMITS_.cutoutBytes : LIMITS_.fileBytes;
   if (!bytes.length || bytes.length > maxBytes) return jsonResponse_(false, 'FILE_REJECTED', null);
 
   // 드라이브 저장은 오래 걸려(수 초) 잠금 밖에서 한다 — 관리자 화면이 여러 장을 동시에 올릴 수 있게.
@@ -48,7 +49,7 @@ function handleUpload_(req) {
   try {
     var id = nextId_('A', 5, readTab_('첨부').map(function (r) { return r['첨부ID']; }));
     writeRow_('첨부', {
-      '첨부ID': id, '글ID': '', '구분': kind === 'photo' ? '사진' : '파일', '순서': '',
+      '첨부ID': id, '글ID': '', '구분': KIND_LABELS_[kind], '순서': '',
       '파일ID': file.getId(), '파일명': name, '크기': bytes.length,
       '가로': width || '', '세로': height || '', '공유': '공유',
       '올린사람': auth.name, '올린시각': new Date()
@@ -59,6 +60,9 @@ function handleUpload_(req) {
   logAccess_('성공', auth.code, auth.name, '', 'upload', id);
   return jsonResponse_(true, null, { attachmentId: id, fileId: file.getId(), size: bytes.length });
 }
+
+// 업로드 종류 → 「첨부」 탭의 구분
+var KIND_LABELS_ = { photo: '사진', file: '파일', cutout: '누끼' };
 
 // 경로 문자와 제어 문자를 빼고 길이를 줄인다. 드라이브에 이 이름으로 저장돼 내려받을 때 그대로 쓰인다.
 function cleanFileName_(raw) {

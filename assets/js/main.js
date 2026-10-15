@@ -26,9 +26,11 @@
       s.className='slide s-'+k+(i===0?' on':'');
       /* 파일ID는 관문이 만든 영숫자라 따옴표가 들어갈 일이 없고, photoUrl이 한 번 더 인코딩한다 */
       if(custom[k]) s.style.setProperty('--img-hero-'+k,'url("'+Board.photoUrl(custom[k].fileId,photoWidth())+'")');
+      if(custom[k] && custom[k].fg) addDepth(s,custom[k]);
       hero.insertBefore(s,anchor);   /* .slide가 #hero의 첫 div들이어야 main.css의 nth-of-type(확대 · 축소 번갈아)이 맞는다 */
       return s;
     });
+    slides.forEach(place);
     dots=list.map(function(_,i){
       var b=document.createElement('button');
       b.type='button'; b.setAttribute('aria-label',(i+1)+'번째 사진'); if(i===0) b.className='on';
@@ -41,6 +43,26 @@
     idx=0;
     return list[0];
   }
+  /* 2.5D 입체 효과 (관리자 페이지에서 켠 칸) — 누끼(인물만 오려 낸 PNG)를 사진 위에 겹쳐 배경보다 더 키운다(main.css .pz).
+     누끼를 받지 못하면 그 칸은 보통의 확대 · 축소로 돌아간다 */
+  function addDepth(s,ph){
+    var fg=document.createElement('div'), url=Board.photoUrl(ph.fg.fileId,photoWidth()), img=new Image();
+    fg.className='fg'; fg.style.backgroundImage='url("'+url+'")';
+    s.appendChild(fg); s.classList.add('pz'); s._depth=ph;
+    img.onerror=function(){ s.removeChild(fg); s.classList.remove('pz'); s._depth=null; };
+    img.src=url;
+  }
+  /* 두 층이 인물 영역의 가운데(depth, 사진의 %)를 중심으로 커져야 커진 인물이 원래 윤곽을 덮는다.
+     사진은 background-size:cover라 화면 크기 · 휴대폰 62% 중심에 따라 위치가 달라지므로 화면 좌표로 바꿔 둔다 */
+  function place(s){
+    var d=s._depth; if(!d || !d.w || !d.h || !d.depth) return;
+    var W=hero.clientWidth, H=hero.clientHeight, sc=Math.max(W/d.w,H/d.h), dw=d.w*sc, dh=d.h*sc;
+    var px=parseFloat(getComputedStyle(s.querySelector('.fg')).backgroundPositionX)/100;
+    if(isNaN(px)) px=.5;
+    s.style.setProperty('--org',((W-dw)*px+dw*d.depth.x/100).toFixed(1)+'px '+((H-dh)/2+dh*d.depth.y/100).toFixed(1)+'px');
+  }
+  window.addEventListener('resize',function(){ slides.forEach(place); });
+
   function go(n){ if(!slides.length) return; idx=(n+slides.length)%slides.length;
     slides.forEach(function(s,i){s.classList.toggle('on',i===idx)});
     dots.forEach(function(d,i){d.classList.toggle('on',i===idx)}); }
@@ -60,7 +82,10 @@
     if(started) return; started=true;
     var first=build(custom||{});
     if(!custom || !custom[first]) return show();
-    var img=new Image(); img.onload=img.onerror=show; img.src=Board.photoUrl(custom[first].fileId,photoWidth());
+    var urls=[custom[first].fileId].concat(custom[first].fg ? [custom[first].fg.fileId] : []), left=urls.length;
+    urls.forEach(function(id){   /* 첫 장은 누끼까지 받은 뒤 보인다 (인물이 나중에 튀어나오지 않게) */
+      var img=new Image(); img.onload=img.onerror=function(){ if(--left===0) show(); }; img.src=Board.photoUrl(id,photoWidth());
+    });
     setTimeout(show,2000);
   }
   if(window.Board) Board.load().then(function(d){ start(d&&d.hero); });
