@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-14T17:59:32+09:00",
+  "updatedAt": "2026-10-15T10:12:43+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -209,7 +209,14 @@
     "dance": {
       "fileId": "1d-RROPDk7x5NGDTLTp4NkllsiItpPliJ",
       "w": 2400,
-      "h": 1164
+      "h": 1164,
+      "fg": {
+        "fileId": "13IHye6195XQwSkDPptDqsCfLYBFnRT88"
+      },
+      "depth": {
+        "x": 62.7,
+        "y": 55.3
+      }
     },
     "art": {
       "fileId": "1Tk_cR9zRR4SAdujYZBqvzH-tCQuIINv-",
