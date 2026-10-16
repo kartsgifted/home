@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta content="noindex, nofollow" name="robots"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>게시글 관리 | 2026 K예술영재 프로젝트</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet"/>
+<link href="assets/css/common.css" rel="stylesheet"/>
+<link href="assets/css/admin.css" rel="stylesheet"/>
+</head>
+<body class="admin">
+<header class="mg-top">
+  <div class="mg-in">
+    <p class="mg-logo">K예술영재 홍보 사이트 <b>게시글 관리</b></p>
+    <div class="mg-user" id="user" hidden>
+      <span id="who"></span>
+      <a href="index.html" target="_blank" rel="noopener">사이트 보기 ↗</a>
+      <button type="button" id="logout">로그아웃</button>
+    </div>
+  </div>
+</header>
+<div class="mg-pub" id="pub" hidden></div>
+<main class="mg-in" id="view"></main>
+
+<!-- 로그인 (처음 들어올 때, 그리고 사용 중 로그인이 만료됐을 때 작업 화면 위에 띄운다) -->
+<div class="mg-modal" id="login" hidden>
+  <form class="mg-login" id="loginForm" autocomplete="off">
+    <h1>게시글 관리 로그인</h1>
+    <p class="sub" id="loginSub">운영진 접근코드를 입력해 주세요.</p>
+    <label>접근코드<input id="code" type="password" required autocomplete="off" spellcheck="false"/></label>
+    <p class="err" id="loginErr" role="alert"></p>
+    <button type="submit" class="mg-btn pri" id="loginBtn">로그인</button>
+  </form>
+</div>
+
+<div class="mg-busy" id="busy" hidden><div><i></i><p id="busyMsg"></p></div></div>
+<div class="mg-toast" id="toast" role="status"></div>
+
+<script src="assets/js/board.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
