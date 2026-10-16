@@ -126,20 +126,21 @@ var SITEMAP = [
   };
 
   /* ---------- 머리 메뉴 판 (WBS 8.12) — PC(1101px 이상)에서 메뉴 줄에 마우스를 올리거나 Tab으로 들어가면
-     화면 가로 전체 판이 내려오고, 메뉴마다 목록이 그 글자 밑에 놓인다. 메뉴 줄 · 판 밖으로 나가거나 Esc · 항목을 누르면 닫힌다 ---------- */
+     메뉴 범위(#gnb ±56px) 판이 내려오고, 메뉴마다 목록이 그 글자 밑에 놓인다. 메뉴 줄 · 판 밖으로 나가거나 Esc · 항목을 누르면 닫힌다 ---------- */
   var hdEl=document.getElementById('header'), nav=hdEl.querySelector('nav'),
       panel=document.createElement('div'), pc=window.matchMedia('(min-width:1101px)'),
       shut=false, leaveT=null;   /* shut: Esc · 항목 누름으로 닫은 뒤 마우스가 한 번 나갈 때까지 다시 열지 않음 */
   var gnbItems=document.querySelectorAll('#gnb > li');
   SITEMAP.forEach(function(m,i){ gnbItems[i].appendChild(subList(m,'gnb-list')); });
   panel.className='gnb-panel'; panel.setAttribute('aria-hidden','true');
-  hdEl.insertBefore(panel,hdEl.firstChild);
+  nav.appendChild(panel);   /* nav 안 — 판 가로 범위가 #gnb ±56px로 따라간다 (8.15, common.css) */
   function panelHeight(){   /* 판 높이 = 가장 긴 목록. 구분선 길이도 이 값을 쓴다 */
     var h=0; document.querySelectorAll('.gnb-list').forEach(function(u){ h=Math.max(h,u.offsetHeight); });
     hdEl.style.setProperty('--gnb-panel-h',h+'px');
   }
   function setNav(open){
     clearTimeout(leaveT);
+    if(open) panelHeight();   /* 웹글꼴이 늦게 들어와 목록 높이가 바뀌어도 열 때마다 맞춘다 */
     hdEl.classList.toggle('nav-open', open && pc.matches);
   }
   function enter(){ clearTimeout(leaveT); if(!shut) setNav(true); }
