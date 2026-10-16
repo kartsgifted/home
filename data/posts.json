@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-16T14:04:12+09:00",
+  "updatedAt": "2026-10-16T14:04:24+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -135,8 +135,8 @@
       "title": "미술 결과전시",
       "desc": "2026.08 · 한국과학기술원",
       "date": "2026-08-01",
-      "course": "",
-      "field": "",
+      "course": "workshop",
+      "field": "art",
       "photos": [
         {
           "fileId": "12ILmHcpiXpgPeDas0MU63MEOEFlTw5tj",
