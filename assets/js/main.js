@@ -80,7 +80,7 @@
   window.addEventListener('resize',function(){ slides.forEach(place); setTone(); });
 
   /* 머리 색 맞추기 (2안 WBS 8.13, 2026-10-16 차장님 피드백 · 사용자 결정) — 지금 보이는 칸의 사진에서 머리(메뉴 글자 · 메뉴 판)가
-     놓이는 윗부분(머리 높이 × 화면 전체 너비)의 밝기를 재어 #header에 data-tone="light"(밝음) · "dark"(어두움)를 붙인다.
+     놓이는 윗부분(PC는 메뉴 · 판 자리, 1100px 이하는 머리 높이 × 화면 전체 너비 — toneArea)의 밝기를 재어 #header에 data-tone="light"(밝음) · "dark"(어두움)를 붙인다.
      색은 common.css(세션 A)가 바꾼다. 사진 칸은 그 사진, 동영상 칸은 첫 장면 대기 사진, 2.5D 칸은 배경 사진,
      기본 사진 칸은 assets/img를 잰다. 잴 수 없으면(사진을 못 받음 · canvas 오류 · 사진 없는 칸) 속성을 빼서 지금 모양 그대로.
      밝기 = WCAG 상대 휘도(0~1)의 평균, 표지 덧칠(main.css .slide::after 위쪽 검정 30% → 높이 32%에서 0)을 반영.
@@ -101,21 +101,33 @@
     var m=getComputedStyle(s,'::before').backgroundImage.match(/url\("?([^")]+)"?\)/);
     return m ? m[1] : null;
   }
-  /* 화면에 보이는 대로(cover로 잘린 위치 · 휴대폰 62% 중심) 머리 높이만큼의 윗부분을 48×8칸으로 줄여 잰다 */
+  /* 재는 범위(표지 안 좌표) — PC(머리 메뉴가 보일 때, 1101px 이상)는 머리 메뉴 판이 놓이는 곳:
+     가로 #gnb 왼쪽 − 56px ~ 오른쪽 + 56px(판 가로 범위, 세션 A와의 약속), 세로 0 ~ 머리 높이 + 판 높이(common.js의 --gnb-panel-h).
+     1100px 이하는 머리 높이 × 화면 전체 너비 (2026-10-16 사용자 결정, WBS 8.16) */
+  var PANEL_PAD=56;
+  function toneArea(W,H){
+    var hd=document.getElementById('header'), gnb=document.getElementById('gnb'), top=hd ? hd.offsetHeight : 0;
+    if(!top) return null;
+    var r=gnb && gnb.getBoundingClientRect();
+    if(!r || !r.width) return { x0:0, x1:W, y1:Math.min(top,H) };
+    var left=hero.getBoundingClientRect().left, panel=parseFloat(getComputedStyle(hd).getPropertyValue('--gnb-panel-h'))||0;
+    return { x0:Math.max(0,r.left-PANEL_PAD-left), x1:Math.min(W,r.right+PANEL_PAD-left), y1:Math.min(H,top+panel) };
+  }
+  /* 화면에 보이는 대로(cover로 잘린 위치 · 휴대폰 62% 중심) 재는 범위를 48×16칸으로 줄여 잰다 */
   function brightness(s,im){
-    var hd=document.getElementById('header'), W=hero.clientWidth, H=hero.clientHeight, top=hd ? hd.offsetHeight : 0;
-    if(!im || !im.naturalWidth || !W || !H || !top) return null;
+    var W=hero.clientWidth, H=hero.clientHeight, a=toneArea(W,H);
+    if(!im || !im.naturalWidth || !W || !H || !a || a.x1<=a.x0) return null;
     var px=parseFloat(getComputedStyle(s,'::before').backgroundPositionX)/100; if(isNaN(px)) px=.5;
     var iw=im.naturalWidth, ih=im.naturalHeight, sc=Math.max(W/iw,H/ih), ox=(W-iw*sc)*px, oy=(H-ih*sc)/2;
-    var cw=48, ch=8, c=document.createElement('canvas'), sum=0, d;
+    var cw=48, ch=16, c=document.createElement('canvas'), sum=0, d;
     c.width=cw; c.height=ch;
     try{
-      var g=c.getContext('2d'); g.drawImage(im,-ox/sc,-oy/sc,W/sc,top/sc,0,0,cw,ch);
+      var g=c.getContext('2d'); g.drawImage(im,(a.x0-ox)/sc,-oy/sc,(a.x1-a.x0)/sc,a.y1/sc,0,0,cw,ch);
       d=g.getImageData(0,0,cw,ch).data;
     }catch(e){ return null; }
     function lin(v){ v/=255; return v<=.04045 ? v/12.92 : Math.pow((v+.055)/1.055,2.4); }
     for(var y=0;y<ch;y++){
-      var shade=Math.max(0,.30*(1-(y+.5)/ch*top/H/.32));
+      var shade=Math.max(0,.30*(1-(y+.5)/ch*a.y1/H/.32));
       for(var x=0;x<cw;x++){ var i=(y*cw+x)*4; sum+=(.2126*lin(d[i])+.7152*lin(d[i+1])+.0722*lin(d[i+2]))*(1-shade); }
     }
     return sum/(cw*ch);
