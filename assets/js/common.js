@@ -33,16 +33,11 @@ var SITEMAP = [
       {t:"추진체계·참여기관", h:"about.html#system"},
       {t:"연간 로드맵",     h:"about.html#road"}
   ]},
-  { id:"programs", en:"WORKSHOP", ko:"워크숍", href:"programs.html", sub:[
-      {t:"무용",     h:"programs.html#dance"},
-      {t:"음악",     h:"programs.html#music"},
-      {t:"미술",     h:"programs.html#art"},
-      {t:"전통예술", h:"programs.html#trad"},
-      {t:"전체일정", h:"programs.html#sched"}
-  ]},
-  { id:"course", en:"ADVANCED", ko:"심화과정", href:"course.html", sub:[
-      {t:"심화 멘토링", h:"course.html#mentoring"},
-      {t:"겨울캠프",   h:"course.html#camp"}
+  /* pages: 이 메뉴를 현재 위치로 표시할 페이지(body의 data-page) */
+  { id:"programs", en:"PROGRAMS", ko:"프로그램", href:"programs.html", pages:["programs","mentoring","camp"], sub:[
+      {t:"워크숍",     h:"programs.html"},
+      {t:"심화 멘토링", h:"mentoring.html"},
+      {t:"겨울캠프",   h:"camp.html"}
   ]},
   { id:"news", en:"NEWS", ko:"소식", href:"news.html", sub:[
       {t:"공지사항",   h:"news.html#notice"},
@@ -56,7 +51,8 @@ var SITEMAP = [
   var cur = document.body.dataset.page || "";
 
   var gnb = SITEMAP.map(function(m){
-    return '<li class="'+(m.id===cur?'on':'')+'"><a href="'+m.href+'">'+m.ko+'</a></li>';
+    var on = m.id===cur || (m.pages && m.pages.indexOf(cur)>=0);
+    return '<li class="'+(on?'on':'')+'"><a href="'+m.href+'">'+m.ko+'</a></li>';
   }).join('');
 
   var header =
