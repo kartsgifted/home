@@ -37,8 +37,12 @@
 #hero.ready .slide.pz.on::before,#hero.ready .slide.pz.on:nth-of-type(even)::before{transform:scale(1.06)}
 #hero.ready .slide.pz.on .fg{transform:scale(1.14)}
 @media(prefers-reduced-motion:reduce){ #hero .slide.pz::before,#hero .slide.pz .fg{transform:none!important;transition:none} }
+/* 동영상 칸 (2안, main.js prep) — 대기 사진(첫 장면)은 움직이지 않고, 영상이 재생되기 시작하면 그 위로 서서히 보인다. 어두운 덧칠(::after)은 영상 위에 그대로 */
+.slide .vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease}
+.slide .vid.on{opacity:1}
+#hero .slide.vd::before,#hero.ready .slide.vd.on::before{transform:none;transition:none}
 /* 세로 화면(휴대폰 등)은 사진 가운데만 보이므로, 표지 사진 규칙(주인공은 가운데~오른쪽)에 맞춰 62% 지점을 중심으로 (2026-10-14 사용자 결정) */
-@media(max-aspect-ratio:1/1){ .slide::before,.slide .fg{background-position:62% center} }
+@media(max-aspect-ratio:1/1){ .slide::before,.slide .fg{background-position:62% center} .slide .vid{object-position:62% center} }
 .s-dance::before{background-image:var(--img-hero-dance),linear-gradient(160deg,#3FB3D9,#1B7EA6 42%,#0E4356)}
 .s-music::before{background-image:var(--img-hero-music),linear-gradient(160deg,#6E8FB8,#2C5C7A 45%,#12303F)}
 .s-art::before{background-image:var(--img-hero-art),linear-gradient(160deg,#9A6AAE,#5E3A78 45%,#241433)}

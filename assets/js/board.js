@@ -156,8 +156,9 @@ window.Board = (function(){
       return r.json();
     }).then(function(d){
       d = d || {};
-      var hero = d.hero && typeof d.hero === 'object' && !Array.isArray(d.hero) ? d.hero : {};
-      return { notices:arr(d.notices).map(fix), press:arr(d.press), gallery:arr(d.gallery).map(fix), hero:hero };
+      var obj = function(v){ return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; };
+      // heroVideo: 표지 동영상(2안 WBS 8.6) — 영상을 올린 칸만 { src, w, h }. 1안 화면은 쓰지 않는다
+      return { notices:arr(d.notices).map(fix), press:arr(d.press), gallery:arr(d.gallery).map(fix), hero:obj(d.hero), heroVideo:obj(d.heroVideo) };
     }).catch(function(){ return null; });
     return loading;
   }

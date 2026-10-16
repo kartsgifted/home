@@ -82,10 +82,10 @@
 |---|---|
 | `notices` | 「공지」 전체(비공개 포함) + 각 글의 `photos` · `files` + 관리용 값(`visibility` · `author` · `updatedAt` 등) |
 | `press` | 「언론홍보」 전체(비공개 포함) + 관리용 값 (2026-10-14) |
-| `gallery` | 「갤러리」 전체 + `photos` |
-| `hero` | 「표지」 4칸 `{ id, slot, label, photos(0~1장), cutouts(누끼 0~1장), depth(2.5D 켬), center({x, y} %), updatedBy, updatedAt }` (2026-10-14, 누끼 · 2.5D는 2026-10-15) |
+| `gallery` | 「갤러리」 전체 + `photos` + `field`(분야 코드, 2026-10-16) |
+| `hero` | 「표지」 4칸 `{ id, slot, label, photos(0~1장), cutouts(누끼 0~1장), videos(동영상 0~1개 `{ src, w, h, attachmentId, name, size }`), depth(2.5D 켬), center({x, y} %), updatedBy, updatedAt }` (2026-10-14, 누끼 · 2.5D는 2026-10-15, 동영상은 2026-10-16 2안) |
 | `categories` | 공지 분류 목록 (「설정」) |
-| `limits` | 업로드 형식 · 크기 · 개수 한도 (`sheet-schema.md` 4절) — 화면이 미리 막는 데 쓴다. 표지 사진을 줄일 크기 `heroPhotoSide`(2400), 누끼 크기 한도 `cutoutBytes`(8MB)도 여기 |
+| `limits` | 업로드 형식 · 크기 · 개수 한도 (`sheet-schema.md` 4절) — 화면이 미리 막는 데 쓴다. 표지 사진을 줄일 크기 `heroPhotoSide`(2400), 누끼 크기 한도 `cutoutBytes`(8MB), 표지 동영상 `videoBytes`(20MB) · `videoPartBytes`(조각 크기) · `videoTypes`도 여기 |
 | `lastPublish` | 마지막 발행 결과 `{ ok, at }` — 실패 상태면 화면이 [다시 반영] 버튼을 보인다 |
 
 ### 3-4. upload
@@ -95,7 +95,7 @@
 | 요청 필드 | 설명 |
 |---|---|
 | `action` · `token` | |
-| `kind` | `photo` · `file` · `cutout`(표지 2.5D용 누끼, PNG만 — 「첨부」 구분 `누끼`, 2026-10-15) |
+| `kind` | `photo` · `file` · `cutout`(표지 2.5D용 누끼, PNG만 — 「첨부」 구분 `누끼`, 2026-10-15) · `video`(표지 동영상, 조각으로 — 아래, 2026-10-16) |
 | `name` | 원래 파일명 |
 | `mimeType` | |
 | `base64` | 파일 내용. 사진은 브라우저가 줄인 JPEG, 누끼는 원본 사진과 같은 크기로 맞춘 PNG |
@@ -110,6 +110,20 @@
 - 관문이 확장자 · MIME · 크기를 다시 확인하고, 홍보용 폴더(공유 안 함)에 저장한 뒤 **그 파일만** 「링크가 있는 사용자 — 보기」로 공유한다(`decisions.md` 5절).
 - 이 단계에서는 어떤 글에도 연결되지 않는다. `save`가 연결한다.
 
+**표지 동영상 `kind: "video"`** (2026-10-16 2안, `apps-script/Media.js`) — 관문 요청 크기 한도 때문에 조각으로 나눠 **차례로** 보낸다.
+
+| 요청 필드 | 설명 |
+|---|---|
+| `name` · `mimeType` | `….mp4` · `video/mp4`만 |
+| `uploadId` | 영상 하나마다 화면이 새로 만드는 값(영숫자 · `-` · `_` 8~64자) |
+| `part` · `parts` | 조각 번호(0부터) · 조각 수(최대 `ceil(videoBytes / videoPartBytes)`) |
+| `base64` | 그 조각의 base64. 마지막이 아닌 조각은 정확히 `videoPartBytes`바이트(3의 배수라 패딩 없음) — 이어 붙이면 파일 전체의 base64가 된다. 첫 조각은 MP4 머리(`ftyp`)를 확인 |
+| `width` · `height` | 영상 크기(마지막 조각에 필수) |
+
+- 조각마다 드라이브 폴더에 base64 글자 그대로 저장(**공유 안 함**), 응답 `data`: `{ part }`.
+- 마지막 조각 응답 `data`: `{ attachmentId, size }` — 「첨부」에 구분 `동영상` 한 줄. 조각이 빠졌거나(6시간 안에 모두 와야 함) 합계가 `videoBytes`를 넘으면 받은 조각을 버리고 `FILE_REJECTED`.
+- 공개는 `save` 때 한다(3-5).
+
 ### 3-5. save
 
 | 요청 필드 | 설명 |
@@ -117,10 +131,11 @@
 | `action` · `token` | |
 | `board` | `notice` · `press` · `gallery` · `hero` |
 | `id` | 고칠 글ID. 새 글이면 빈 값 → 관문이 만든다. **표지는 늘 칸 ID(`H-dance` 등)** — 새로 만들 수 없음 |
-| `post` | 공지: `category` · `title` · `body` · `date` · `pinned` · `photoPosition` · `photoLink` · `visibility` / 언론홍보: `source` · `title` · `date` · `url` · `visibility` / 갤러리: `title` · `desc` · `date` · `visibility` / 표지: `depth`(2.5D 입체 효과 켬, true/false) · `center`(`{ x, y }` 0~100 %, 누끼 인물 영역의 가운데 — 누끼가 없으면 `null`) |
+| `post` | 공지: `category` · `title` · `body` · `date` · `pinned` · `photoPosition` · `photoLink` · `visibility` / 언론홍보: `source` · `title` · `date` · `url` · `visibility` / 갤러리: `title` · `desc` · `date` · `visibility` · `field`(분야 코드 `dance` · `music` · `art` · `trad` · `mentoring` · `camp` · `""`, 그 밖의 값은 `INVALID_INPUT`. **보내지 않으면 기존 값 유지** — 분야 칸이 없는 1안 관리자 화면이 저장해도 지워지지 않게, 2026-10-16) / 표지: `depth`(2.5D 입체 효과 켬, true/false) · `center`(`{ x, y }` 0~100 %, 누끼 인물 영역의 가운데 — 누끼가 없으면 `null`) |
 | `photos` | 첨부ID 배열 — **이 순서가 화면 순서**. 언론홍보는 빈 배열, 표지는 0~1개(빈 배열이면 기본 사진으로) |
 | `files` | 첨부ID 배열 (공지만) |
 | `cutouts` | 누끼 첨부ID 배열 (표지만, 0~1개). `depth`가 true면 1개여야 하고 원본(`photos`)과 가로 · 세로가 같아야 한다. 아니면 `INVALID_INPUT` |
+| `videos` | 동영상 첨부ID 배열 (표지만, 0~1개, 2026-10-16 2안). 있으면 `photos`(대기 사진)가 있어야 하고 `depth`는 false여야 한다(아니면 `INVALID_INPUT`). 새로 붙는 동영상은 시트를 고치기 **전에** 영상 저장소(`MEDIA_REPO`)의 `hero/{첨부ID}.mp4`로 커밋하고, 실패하면 아무것도 바꾸지 않고 `MEDIA_FAILED`. 빠진 동영상은 저장소에서 지우고(이력에는 남음) 드라이브 조각은 휴지통으로. **보내지 않으면**(1안 관리자 화면) 기존 동영상을 두되, 사진을 빼거나 `depth`를 켜면 뺀다 |
 
 처리 순서:
 1. 토큰 확인 · 입력 검증
@@ -147,7 +162,7 @@
 
 `save` · `remove` 끝에서 자동으로 하고, 실패했을 때만 화면이 따로 부른다.
 
-1. 「공지」 · 「언론홍보」 · 「갤러리」에서 공개 글만, 「표지」에서 사진을 올린 칸만 모아 `data/posts.json`을 만든다 (`sheet-schema.md` 3절)
+1. 「공지」 · 「언론홍보」 · 「갤러리」에서 공개 글만, 「표지」에서 사진을 올린 칸만(동영상 칸은 `heroVideo`에도) 모아 `data/posts.json`을 만든다 (`sheet-schema.md` 3절)
 2. GitHub API로 현재 파일의 `sha`를 받아 새 내용으로 커밋한다. 커밋 메시지: `[Data]: 게시글 발행 - {이름}`
 3. 결과를 Script Properties(`LAST_PUBLISH`)와 「로그」에 남긴다
 
@@ -157,6 +172,8 @@
 | `GITHUB_REPO` | `kartsgifted/home` |
 | `GITHUB_BRANCH` | 발행 대상 브랜치. 개발 중 `data-test`, **2026-10-14부터 `main`** |
 | `GITHUB_PATH` | `data/posts.json` |
+| `MEDIA_REPO` · `MEDIA_BRANCH` | 표지 동영상을 올리는 영상 전용 공개 저장소(GitHub Pages) · 브랜치. `setup()`이 기본값 `kartsgifted/home-media` · `main`을 넣는다 (2026-10-16 2안). 커밋 메시지 `[Media]: 표지 동영상 올림 - {이름}` · `[Media]: 표지 동영상 내림` |
+| `MEDIA_GITHUB_TOKEN` | (선택) 영상 저장소용 토큰. 없으면 `GITHUB_TOKEN`을 쓴다 — 그 토큰에 영상 저장소 Contents 읽기 · 쓰기를 더해야 함 |
 
 - 동시에 두 사람이 저장해도 커밋이 엇갈리지 않게 `LockService`로 한 번에 하나만 발행한다.
 - 내용이 직전 발행과 같으면 커밋하지 않는다(빌드 한도 절약, `decisions.md` 3절).
@@ -178,6 +195,7 @@
 | `FILE_REJECTED` | 허용하지 않는 형식 · 크기 초과 · 개수 초과 |
 | `NOT_FOUND` | 고치거나 지우려는 글 · 첨부가 없음, 다른 글의 첨부를 연결하려 함 |
 | `BUSY` | 다른 저장 · 발행이 끝나지 않아 잠금을 얻지 못함 (화면은 잠시 뒤 다시 시도 안내) |
+| `MEDIA_FAILED` | 표지 동영상을 영상 저장소에 커밋하지 못함 — 저장은 하지 않음 (2026-10-16 2안) |
 | `SERVER_ERROR` | 그 외 관문 내부 오류 |
 
 발행 실패는 오류 코드로 돌려주지 않는다. 저장은 성공이므로 `ok: true`에 `published: false`로 알린다.
@@ -217,7 +235,7 @@
 | `news.html` 공지 탭 | `notices` 목록 · 페이지 나누기 · `#notice/글ID` 상세 |
 | `news.html` 언론홍보 탭 | `press` 목록 · 페이지 나누기 · 누르면 기사 주소를 새 탭으로 |
 | `news.html` 갤러리 탭 | `gallery` 목록 · 사이트 안 확대 보기 |
-| `index.html` 표지 | `hero` — 올린 사진이 있는 칸은 그 사진, 없으면 기본 사진, 둘 다 없으면 건너뜀. `fg`가 있는 칸은 누끼를 겹쳐 2.5D로 (누끼를 받지 못하면 보통의 확대 · 축소) |
+| `index.html` 표지 | `hero` — 올린 사진이 있는 칸은 그 사진, 없으면 기본 사진, 둘 다 없으면 건너뜀. `fg`가 있는 칸은 누끼를 겹쳐 2.5D로 (누끼를 받지 못하면 보통의 확대 · 축소). `heroVideo`가 있는 칸(2안)은 사진을 대기 사진으로 깔고 영상 저장소의 영상을 소리 없이 튼다 — 영상 길이만큼(6~20초) 머물고, 3초 안에 시작 못 하면 사진처럼 6초. 움직임 줄이기 · 데이터 절약 · 2G/3G면 대기 사진만 |
 | `index.html` 소식 | `notices` · `press` 앞쪽 3개씩 (`decisions.md` 4절) |
 
 사진 · 첨부 주소 만드는 규칙은 `decisions.md` 5절.
