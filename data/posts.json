@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-16T14:03:58+09:00",
+  "updatedAt": "2026-10-16T14:04:12+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -150,8 +150,8 @@
       "title": "앙상블 리허설",
       "desc": "2026.08 · 서초동캠퍼스",
       "date": "2026-08-01",
-      "course": "",
-      "field": "",
+      "course": "workshop",
+      "field": "music",
       "photos": [
         {
           "fileId": "1fWB-xv4doyWWYljrgyXIoU24N7ZGQrbP",
