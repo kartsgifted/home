@@ -34,8 +34,8 @@ var SITEMAP = [
       {t:"연간 로드맵",     h:"about.html#road"}
   ]},
   /* pages: 이 메뉴를 현재 위치로 표시할 페이지(body의 data-page)
-     drop: PC 머리 메뉴에서 마우스를 올리면 sub를 펼침. 경로 표시의 <li data-menu="programs">도 이 sub로 「프로그램 ▾」 목록을 만든다 (WBS 8.9) */
-  { id:"programs", en:"PROGRAMS", ko:"프로그램", href:"programs.html", pages:["programs","mentoring","camp"], drop:true, sub:[
+     경로 표시의 <li data-menu="programs">도 이 sub로 「프로그램 ▾」 목록을 만든다 (WBS 8.9) */
+  { id:"programs", en:"PROGRAMS", ko:"프로그램", href:"programs.html", pages:["programs","mentoring","camp"], sub:[
       {t:"워크숍",     h:"programs.html"},
       {t:"심화 멘토링", h:"mentoring.html"},
       {t:"겨울캠프",   h:"camp.html"}
@@ -105,19 +105,60 @@ var SITEMAP = [
   fill('allmenu',allmenu);
   fill('footer',footer,'footer');
 
-  /* ---------- 「프로그램」 목록 (WBS 8.9) — 머리 메뉴 펼침 · 경로 표시 「프로그램 ▾」. 둘 다 SITEMAP의 sub로 만든다 ---------- */
+  /* ---------- 하위 목록 — 머리 메뉴 판(8.12) · 경로 표시 「프로그램 ▾」(8.9). 모두 SITEMAP의 sub로 만든다 ----------
+     지금 페이지 항목은 aria-current. 같은 페이지의 탭 항목(about.html#system 등)은 지금 보는 탭을 따라간다(아래 탭 코드가 __navTab 호출) */
+  function pageOf(h){ return h.split('#')[0].replace(/\.html$/,''); }
   function subList(m,cls){
     var ul=document.createElement('ul'); ul.className=cls;
     m.sub.forEach(function(s){
       var li=document.createElement('li'), a=document.createElement('a');
       a.href=s.h; a.textContent=s.t;
-      if(s.h.split('#')[0].replace(/\.html$/,'')===cur) a.setAttribute('aria-current','page');
+      if(s.h.indexOf('#')<0 && pageOf(s.h)===cur) a.setAttribute('aria-current','page');
       li.appendChild(a); ul.appendChild(li);
     });
     return ul;
   }
+  window.__navTab=function(tab){
+    document.querySelectorAll('.gnb-list a[href*="#"]').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(pageOf(h)===cur && h.split('#')[1]===tab) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+    });
+  };
+
+  /* ---------- 머리 메뉴 판 (WBS 8.12) — PC(1101px 이상)에서 메뉴 줄에 마우스를 올리거나 Tab으로 들어가면
+     메뉴 범위(#gnb ±56px) 판이 내려오고, 메뉴마다 목록이 그 글자 밑에 놓인다. 메뉴 줄 · 판 밖으로 나가거나 Esc · 항목을 누르면 닫힌다 ---------- */
+  var hdEl=document.getElementById('header'), nav=hdEl.querySelector('nav'),
+      panel=document.createElement('div'), pc=window.matchMedia('(min-width:1101px)'),
+      shut=false, leaveT=null;   /* shut: Esc · 항목 누름으로 닫은 뒤 마우스가 한 번 나갈 때까지 다시 열지 않음 */
   var gnbItems=document.querySelectorAll('#gnb > li');
-  SITEMAP.forEach(function(m,i){ if(m.drop) gnbItems[i].appendChild(subList(m,'gnb-sub')); });
+  SITEMAP.forEach(function(m,i){ gnbItems[i].appendChild(subList(m,'gnb-list')); });
+  panel.className='gnb-panel'; panel.setAttribute('aria-hidden','true');
+  nav.appendChild(panel);   /* nav 안 — 판 가로 범위가 #gnb ±56px로 따라간다 (8.15, common.css) */
+  function panelHeight(){   /* 판 높이 = 가장 긴 목록. 구분선 길이도 이 값을 쓴다 */
+    var h=0; document.querySelectorAll('.gnb-list').forEach(function(u){ h=Math.max(h,u.offsetHeight); });
+    hdEl.style.setProperty('--gnb-panel-h',h+'px');
+  }
+  function setNav(open){
+    clearTimeout(leaveT);
+    if(open) panelHeight();   /* 웹글꼴이 늦게 들어와 목록 높이가 바뀌어도 열 때마다 맞춘다 */
+    hdEl.classList.toggle('nav-open', open && pc.matches);
+  }
+  function enter(){ clearTimeout(leaveT); if(!shut) setNav(true); }
+  function leave(){ clearTimeout(leaveT); leaveT=setTimeout(function(){ shut=false; setNav(false); },120); }   /* 글자와 판 사이를 지나는 동안 끊기지 않게 */
+  [nav,panel].forEach(function(el){ el.addEventListener('mouseenter',enter); el.addEventListener('mouseleave',leave); });
+  var quiet=false;   /* Esc로 닫으며 포커스를 메뉴 글자로 옮길 때는 다시 열지 않음 */
+  nav.addEventListener('focusin',function(){ if(quiet){ quiet=false; return; } shut=false; setNav(true); });
+  nav.addEventListener('focusout',function(e){ if(!nav.contains(e.relatedTarget)) setNav(false); });
+  nav.addEventListener('click',function(e){ if(e.target.closest('.gnb-list a')){ shut=true; setNav(false); } });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape' || !hdEl.classList.contains('nav-open')) return;
+    shut=true; setNav(false);
+    var f=document.activeElement, word=f && f.closest && f.closest('.gnb-list') && f.closest('#gnb > li').querySelector('a');
+    if(word){ quiet=true; word.focus(); }   /* 숨는 목록 안에 있던 포커스를 그 메뉴 글자로 */
+  });
+  window.addEventListener('resize',panelHeight); panelHeight();
+  /* 1100px 이하로 줄면 판을 닫고, 1101px 이상으로 넓히면 전체메뉴(☰ — 1100px 이하 전용)를 닫는다 */
+  pc.addEventListener('change',function(e){ if(e.matches) document.body.classList.remove('menu-open'); else setNav(false); });
 
   document.querySelectorAll('#crumb [data-menu]').forEach(function(li){
     var m=SITEMAP.filter(function(x){return x.id===li.dataset.menu})[0];
@@ -177,6 +218,7 @@ var SITEMAP = [
     var c=document.querySelector('#crumb ol > li:last-child'),   /* ol > : 「프로그램 ▾」 목록 안의 li는 빼고 */
         b=tabs.querySelector('[data-tab="'+id+'"]');
     if(c&&b) c.textContent=b.textContent;
+    if(window.__navTab) window.__navTab(id);   /* 머리 메뉴 판의 지금 탭 표시 */
     if(push) history.replaceState(null,'','#'+id);
     if(window.__rvObserve) window.__rvObserve(document.getElementById(id));
   }

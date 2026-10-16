@@ -63,13 +63,53 @@ section[id]{scroll-margin-top:var(--hd)}
 #gnb > li > a:hover::after,#gnb > li.on > a::after{width:100%}
 #header.solid #gnb > li > a,body.sub #gnb > li > a{color:var(--ink)}
 body.sub #gnb > li.on > a{color:var(--teal);font-weight:600}
-/* 「프로그램」 펼침 (common.js · WBS 8.9) — PC에서 마우스를 올리거나 Tab으로 들어가면. 글자를 누르면 지금처럼 그 페이지로 */
-#gnb > li{position:relative}
-.gnb-sub{position:absolute;left:50%;top:calc(100% + 16px);transform:translate(-50%,8px);opacity:0;visibility:hidden;
-  transition:opacity .25s,transform .25s,visibility .25s}
-.gnb-sub::before{content:"";position:absolute;left:0;right:0;top:-17px;height:17px}  /* 글자와 상자 사이에서 마우스가 떨어지지 않게 */
-#gnb > li:hover > .gnb-sub,#gnb > li:focus-within > .gnb-sub{opacity:1;visibility:visible;transform:translate(-50%,0)}
-body.menu-open .gnb-sub{display:none}
+/* ---------- 머리 메뉴 판 (common.js · WBS 8.12 → 8.15) ----------
+   PC(1101px 이상)에서 메뉴 줄에 마우스를 올리거나 Tab으로 들어가면 #header.nav-open — 메뉴 범위 판(.gnb-panel)이 내려오고,
+   메뉴마다 목록(.gnb-list)이 그 글자 가운데 밑에, 두 글자 사이 가운데에 세로 구분선. 메뉴 줄은 머리 높이 전체라 판으로 내려가도 끊기지 않는다.
+   판 가로 범위 = #gnb 왼쪽 − 56px ~ 오른쪽 + 56px(판이 nav 안에 있음), 높이 = #header의 --gnb-panel-h — 세션 B(표지 밝기 재는 범위)와의 약속 */
+#header nav{position:relative;align-self:stretch;display:flex}
+#gnb{height:100%}
+#gnb > li{position:relative;display:flex;align-items:center}
+/* 흰 머리(스크롤 뒤 .solid · 하위 페이지 body.sub) — 흰 판 · --ink 글자, 그림자는 아래 · 옆으로만 */
+.gnb-panel{position:absolute;left:-56px;right:-56px;top:100%;height:var(--gnb-panel-h,0);background:#fff;border:1px solid var(--line-lt);border-top:0;
+  box-shadow:0 16px 30px rgba(0,0,0,.10);clip-path:inset(0 -40px -60px -40px);
+  opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s,background-color .4s,border-color .4s}
+.gnb-list{position:absolute;left:50%;top:100%;transform:translateX(-50%);z-index:2;padding:22px 0 24px;text-align:center;
+  opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.gnb-list a{position:relative;display:block;padding:10px 14px;font-size:15px;font-weight:400;color:var(--ink);white-space:nowrap;letter-spacing:-.02em;
+  transition:color .2s,text-shadow .2s}
+/* 마우스를 올리면 바탕 없이 글자가 굵어 보이고 가운데에서 밑줄이 그어진다(2026-10-16 사용자 결정 B).
+   굵기는 font-weight 대신 text-shadow로 — 글자 폭이 그대로라 목록이 흔들리지 않는다. 밑줄 폭 = 글자 폭(좌우 14px 뺌) */
+.gnb-list a::after{content:"";position:absolute;left:50%;bottom:5px;width:0;height:1.5px;background:currentColor;transform:translateX(-50%);
+  transition:width .3s cubic-bezier(.22,1,.36,1)}
+.gnb-list a:hover,.gnb-list a:focus-visible{color:var(--teal);text-shadow:0 0 .6px currentColor,0 0 .6px currentColor;outline:none}
+.gnb-list a:hover::after,.gnb-list a:focus-visible::after{width:calc(100% - 28px)}
+.gnb-list a[aria-current="page"]{color:var(--teal);font-weight:700}
+#gnb > li+li::before{content:"";position:absolute;z-index:1;left:-38px;top:calc(100% + 24px);height:calc(var(--gnb-panel-h,0px) - 48px);   /* z-index: 판(.gnb-panel, nav 안 뒤쪽) 위로 */
+  border-left:1px solid var(--line-lt);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s,border-color .4s}   /* 구분선 = 글자 간격 76px의 가운데 */
+#header.nav-open .gnb-panel,#header.nav-open .gnb-list,#header.nav-open #gnb > li+li::before{opacity:1;visibility:visible}
+/* 메인 표지 위(머리가 투명할 때) — 반투명 판 + 뒤 흐림, 판 글자색은 머리 메뉴 글자색과 같다 (8.15).
+   어두운 표지(data-tone 없음 · dark): 흰 글자 / 밝은 표지(light — 세션 B가 #header에 붙임): 메뉴 글자 · ☰ · 판 글자 모두 --ink */
+body:not(.sub) #header:not(.solid) .gnb-panel{background:rgba(10,12,14,.38);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-color:rgba(255,255,255,.14);box-shadow:none}
+body:not(.sub) #header:not(.solid) #gnb > li+li::before{border-color:rgba(255,255,255,.28)}
+body:not(.sub) #header:not(.solid) .gnb-list a{color:#fff}
+body:not(.sub) #header:not(.solid) .gnb-list a:hover,
+body:not(.sub) #header:not(.solid) .gnb-list a:focus-visible{color:#fff}
+body:not(.sub) #header:not(.solid) .gnb-list a[aria-current="page"]{color:#fff}
+body:not(.sub) #header[data-tone="light"]:not(.solid) #gnb > li > a{color:var(--ink)}
+body:not(.sub) #header[data-tone="light"]:not(.solid) .ham span{background:var(--ink)}
+body:not(.sub) #header[data-tone="light"]:not(.solid) .gnb-panel{background:rgba(255,255,255,.52);border-color:rgba(0,0,0,.08)}
+body:not(.sub) #header[data-tone="light"]:not(.solid) #gnb > li+li::before{border-color:rgba(0,0,0,.14)}
+body:not(.sub) #header[data-tone="light"]:not(.solid) .gnb-list a{color:var(--ink)}
+body:not(.sub) #header[data-tone="light"]:not(.solid) .gnb-list a:hover,
+body:not(.sub) #header[data-tone="light"]:not(.solid) .gnb-list a:focus-visible{color:var(--teal)}
+body:not(.sub) #header[data-tone="light"]:not(.solid) .gnb-list a[aria-current="page"]{color:var(--ink)}
+/* 뒤 흐림을 못 쓰는 브라우저는 바탕을 더 진하게 */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  body:not(.sub) #header:not(.solid) .gnb-panel{background:rgba(10,12,14,.62)}
+  body:not(.sub) #header[data-tone="light"]:not(.solid) .gnb-panel{background:rgba(255,255,255,.82)}
+}
 .ham{position:absolute;right:0;top:50%;transform:translateY(-50%);width:28px;height:18px;cursor:pointer;background:none;border:0;z-index:4}
 .ham span{display:block;height:1.5px;background:#fff;margin-bottom:6px;transition:background .3s,transform .3s,opacity .3s}
 .ham span:last-child{margin-bottom:0;width:70%}
@@ -91,6 +131,9 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 #allmenu li a{display:block;padding:11px 0;color:rgba(255,255,255,.82);font-size:16px;transition:color .25s,padding-left .25s}
 #allmenu li a:hover{color:#fff;padding-left:8px}
 #allmenu ul{margin-top:10px}
+/* 전체메뉴(☰)는 머리 메뉴 글자가 숨는 1100px 이하 전용 — PC는 머리 메뉴 판이 대신한다 (2026-10-16 사용자 결정, WBS 8.12).
+   위의 #allmenu{display:flex}보다 뒤에 둬야 이긴다 */
+@media(min-width:1101px){ .ham,#allmenu{display:none} }
 
 /* ============ SUB VISUAL ============ */
 #sv{position:relative;height:400px;margin-top:0;background:var(--teal-dp);overflow:hidden;display:flex;align-items:center}
@@ -121,11 +164,11 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .crumb-btn[aria-expanded="true"] .crumb-caret{transform:rotate(225deg);margin-top:3px}
 .crumb-sub{position:absolute;left:-14px;top:calc(100% + 10px);z-index:70}
 .crumb-sub[hidden]{display:none}
-/* 머리 메뉴 · 경로 표시 목록 공통 모양 — 흰 상자 · 그림자, 지금 페이지는 청록 굵게 */
-.crumb-sub,.gnb-sub{min-width:168px;padding:8px 0;background:#fff;border:1px solid var(--line-lt);box-shadow:0 14px 34px rgba(0,0,0,.12)}
-.crumb-sub a,.gnb-sub a{display:block;padding:11px 20px;font-size:15px;font-weight:400;color:var(--ink);white-space:nowrap;letter-spacing:-.02em;transition:background .2s,color .2s}
-.crumb-sub a:hover,.gnb-sub a:hover,.crumb-sub a:focus-visible,.gnb-sub a:focus-visible{background:var(--teal-lt);color:var(--teal);outline:none}
-.crumb-sub a[aria-current="page"],.gnb-sub a[aria-current="page"]{color:var(--teal);font-weight:700}
+/* 경로 표시 목록 모양 — 흰 상자 · 그림자, 지금 페이지는 청록 굵게 (머리 메뉴 판 .gnb-list와 같은 색) */
+.crumb-sub{min-width:168px;padding:8px 0;background:#fff;border:1px solid var(--line-lt);box-shadow:0 14px 34px rgba(0,0,0,.12)}
+.crumb-sub a{display:block;padding:11px 20px;font-size:15px;font-weight:400;color:var(--ink);white-space:nowrap;letter-spacing:-.02em;transition:background .2s,color .2s}
+.crumb-sub a:hover,.crumb-sub a:focus-visible{background:var(--teal-lt);color:var(--teal);outline:none}
+.crumb-sub a[aria-current="page"]{color:var(--teal);font-weight:700}
 
 /* ---------- sub tabs ---------- */
 #tabs{border-bottom:1px solid var(--line-lt);background:#fff;position:sticky;top:var(--hd);z-index:50}
@@ -313,8 +356,7 @@ html.zv-open{overflow:hidden}
 
 /* ============ RESPONSIVE ============ */
 @media(max-width:1280px){
-  .inner{width:calc(100% - 60px)}
-  #gnb{gap:44px}
+  .inner{width:calc(100% - 60px)}   /* 머리 메뉴 간격은 76px 그대로 — 판 목록(「추진체계·참여기관」)이 구분선 안에 들어가게 (WBS 8.12) */
   .gal{grid-template-columns:repeat(3,1fr)}
   .pg-item{flex:0 0 calc((100% - 40px)/3)}
 }
