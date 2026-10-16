@@ -93,7 +93,7 @@ var SITEMAP = [
       }).join('')+'</div>'+
     '</div>'+
     '<div class="ft-bot">'+
-      '<nav class="ft-nav"><a href="index.html">HOME</a><a href="news.html#notice">이메일무단수집거부</a></nav>'+
+      '<nav class="ft-nav"><a href="index.html">HOME</a></nav>'+
       '<address><span data-site="addr">'+SITE.addr+'</span> · <span data-site="mail">'+SITE.mail+'</span><br>&copy; K ARTS GIFTED PROJECT. All Rights Reserved.</address>'+
     '</div>'+
   '</div>';
