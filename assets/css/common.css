@@ -78,7 +78,7 @@ body.menu-open .ham span:nth-child(3){width:100%;transform:translateY(-7.5px) ro
 #allmenu{position:fixed;inset:0;background:var(--teal-dp);z-index:90;opacity:0;pointer-events:none;
   transition:opacity .5s ease;display:flex;align-items:center;overflow-y:auto}
 body.menu-open #allmenu{opacity:1;pointer-events:auto}
-#allmenu .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;width:100%;padding:var(--hd) 0 40px}
+#allmenu .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;width:100%;padding:var(--hd) 0 40px}
 #allmenu h3{font-family:"GmarketSans",Pretendard,sans-serif;font-size:24px;color:#fff;padding-bottom:16px;border-bottom:1px solid var(--line-dk)}
 #allmenu h3 span{display:block;font-family:"Playfair Display",serif;font-size:12px;letter-spacing:.18em;color:var(--gold);margin-bottom:8px}
 #allmenu li a{display:block;padding:11px 0;color:rgba(255,255,255,.82);font-size:16px;transition:color .25s,padding-left .25s}
@@ -91,7 +91,7 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 #sv::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.25) 45%,rgba(0,0,0,.5))}
 #sv[data-page="about"]::before   {background-image:var(--img-sub-about),   linear-gradient(140deg,#2E7E9B,#0E3E4E)}
 #sv[data-page="programs"]::before{background-image:var(--img-sub-programs),linear-gradient(140deg,#5B3F86,#20143A)}
-#sv[data-page="course"]::before  {background-image:var(--img-sub-course),  linear-gradient(140deg,#1E6C7E,#0B2F38)}
+#sv[data-page="mentoring"]::before,#sv[data-page="camp"]::before{background-image:var(--img-sub-course),  linear-gradient(140deg,#1E6C7E,#0B2F38)}
 #sv[data-page="news"]::before    {background-image:var(--img-sub-news),    linear-gradient(140deg,#8A5F2E,#2A1C10)}
 #sv .in{position:relative;z-index:3;color:#fff;padding-top:var(--hd)}
 #sv .en{font-family:"Playfair Display",serif;font-size:13px;letter-spacing:.28em;color:var(--gold)}
@@ -209,6 +209,26 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .gal figcaption{margin-top:14px;font-size:16px;font-weight:600;letter-spacing:-.02em}
 .gal .m{font-size:13.5px;color:var(--gray-lt);margin-top:5px;font-family:"Playfair Display",serif}
 
+/* 프로그램 페이지 갤러리 사진 줄 (program-photos.js) — 메인 WORKSHOP 칸과 같은 모양. 사진이 없으면 칸째 숨김 */
+.pg-photos{margin-top:70px}
+.pg-photos[hidden]{display:none}
+.pg-photos-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}
+.pg-photos-head .h-sub{margin:0}
+.pg-arrows{display:flex;gap:10px}
+.pg-arrows button{width:44px;height:44px;border-radius:50%;border:0;background:var(--teal);color:#fff;font-size:16px;cursor:pointer;
+  display:grid;place-items:center;transition:background .3s,transform .3s}
+.pg-arrows button:hover{background:var(--teal-dp);transform:translateY(-2px)}
+.pg-rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
+.pg-rail::-webkit-scrollbar{display:none}
+.pg-item{position:relative;flex:0 0 calc((100% - 60px)/4);min-width:250px;scroll-snap-align:start}
+.pg-item .th{display:block;width:100%;border:0;padding:0;aspect-ratio:292/262;overflow:hidden;background:#DDE3E6;cursor:pointer}
+.pg-item .th::after{content:"";position:absolute;inset:0}  /* 제목·설명을 눌러도 열리게 칸 전체로 넓힘 */
+.pg-item .th:focus-visible{outline:3px solid var(--teal);outline-offset:-3px}
+.pg-item img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.pg-item:hover img{transform:scale(1.07)}
+.pg-item figcaption{margin-top:16px;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.pg-item .m{font-size:13.5px;color:var(--gray-lt);margin-top:5px;font-family:"Playfair Display",serif}
+
 /* 지도/약도 자리 */
 .mapbox{aspect-ratio:16/7;background:var(--cream);border:1px solid var(--line);display:grid;place-items:center;color:var(--gray-lt);font-size:15px}
 
@@ -273,6 +293,7 @@ html.zv-open{overflow:hidden}
   .inner{width:calc(100% - 60px)}
   #gnb{gap:44px}
   .gal{grid-template-columns:repeat(3,1fr)}
+  .pg-item{flex:0 0 calc((100% - 40px)/3)}
 }
 @media(max-width:1100px){
   :root{--hd:72px;--pad-sec:80px}
@@ -295,6 +316,7 @@ html.zv-open{overflow:hidden}
 @media(max-width:640px){
   .boxes.c2,.boxes.c3,.boxes.c4{grid-template-columns:1fr}
   .gal{grid-template-columns:1fr}
+  .pg-item{flex:0 0 78%;min-width:0}
   .bbs li a{flex-wrap:wrap;gap:10px}
   .bbs .t,.bbs .press .t{flex:1 0 100%;white-space:normal}
   .bbs .press .ext{display:none}
