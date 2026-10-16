@@ -27,9 +27,13 @@ var TEXT_COLUMNS_ = {
   '접근코드': ['코드', '사용기한']
 };
 
-// 갤러리 앨범의 분야 — 시트에는 한글, data/posts.json에는 오른쪽 코드 (docs/decisions.md 「2안 posts.json 약속」).
-// 프로그램 페이지가 이 코드로 앨범 사진을 모은다. 빈칸 = 지정 안 함
-var GALLERY_FIELDS_ = { '무용': 'dance', '음악': 'music', '미술': 'art', '전통예술': 'trad', '심화멘토링': 'mentoring', '겨울캠프': 'camp' };
+// 갤러리 앨범의 과정 · 분야 (2026-10-16 WBS 8.10). 시트 「분야」 열에는 「워크숍 · 무용」처럼 한글 두 값을 이어 쓰고(지정 안 함은 빈칸),
+// data/posts.json에는 course · field 코드로 나간다. 분야 「공통」(코드 '')은 그 과정 전체. 프로그램 페이지가 이 코드로 앨범 사진을 모은다
+var GALLERY_COURSES_ = { '워크숍': 'workshop', '심화멘토링': 'mentoring', '겨울캠프': 'camp' };
+var GALLERY_FIELDS_ = { '무용': 'dance', '음악': 'music', '미술': 'art', '전통예술': 'trad', '공통': '' };
+// 8.5 때(과정 없이 분야 하나) 쓰던 시트 값 → [과정, 분야]. 읽기만 하고, 저장하면 새 모양으로 쓴다
+var GALLERY_OLD_VALUES_ = { '무용': ['workshop', 'dance'], '음악': ['workshop', 'music'], '미술': ['workshop', 'art'], '전통예술': ['workshop', 'trad'],
+  '심화멘토링': ['mentoring', ''], '겨울캠프': ['camp', ''] };
 
 var DROPDOWNS_ = {
   '접근코드': { '상태': ['사용', '정지'] }

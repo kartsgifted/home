@@ -33,8 +33,9 @@ var SITEMAP = [
       {t:"추진체계·참여기관", h:"about.html#system"},
       {t:"연간 로드맵",     h:"about.html#road"}
   ]},
-  /* pages: 이 메뉴를 현재 위치로 표시할 페이지(body의 data-page) */
-  { id:"programs", en:"PROGRAMS", ko:"프로그램", href:"programs.html", pages:["programs","mentoring","camp"], sub:[
+  /* pages: 이 메뉴를 현재 위치로 표시할 페이지(body의 data-page)
+     drop: PC 머리 메뉴에서 마우스를 올리면 sub를 펼침. 경로 표시의 <li data-menu="programs">도 이 sub로 「프로그램 ▾」 목록을 만든다 (WBS 8.9) */
+  { id:"programs", en:"PROGRAMS", ko:"프로그램", href:"programs.html", pages:["programs","mentoring","camp"], drop:true, sub:[
       {t:"워크숍",     h:"programs.html"},
       {t:"심화 멘토링", h:"mentoring.html"},
       {t:"겨울캠프",   h:"camp.html"}
@@ -103,6 +104,37 @@ var SITEMAP = [
   fill('header',header,'header');
   fill('allmenu',allmenu);
   fill('footer',footer,'footer');
+
+  /* ---------- 「프로그램」 목록 (WBS 8.9) — 머리 메뉴 펼침 · 경로 표시 「프로그램 ▾」. 둘 다 SITEMAP의 sub로 만든다 ---------- */
+  function subList(m,cls){
+    var ul=document.createElement('ul'); ul.className=cls;
+    m.sub.forEach(function(s){
+      var li=document.createElement('li'), a=document.createElement('a');
+      a.href=s.h; a.textContent=s.t;
+      if(s.h.split('#')[0].replace(/\.html$/,'')===cur) a.setAttribute('aria-current','page');
+      li.appendChild(a); ul.appendChild(li);
+    });
+    return ul;
+  }
+  var gnbItems=document.querySelectorAll('#gnb > li');
+  SITEMAP.forEach(function(m,i){ if(m.drop) gnbItems[i].appendChild(subList(m,'gnb-sub')); });
+
+  document.querySelectorAll('#crumb [data-menu]').forEach(function(li){
+    var m=SITEMAP.filter(function(x){return x.id===li.dataset.menu})[0];
+    if(!m) return;
+    var btn=document.createElement('button'), caret=document.createElement('span'), list=subList(m,'crumb-sub');
+    btn.type='button'; btn.className='crumb-btn'; btn.textContent=m.ko;
+    caret.className='crumb-caret'; caret.setAttribute('aria-hidden','true'); caret.textContent='▾';
+    btn.appendChild(caret);
+    list.id='crumb-sub-'+m.id; list.hidden=true;
+    btn.setAttribute('aria-controls',list.id); btn.setAttribute('aria-expanded','false');
+    li.textContent=''; li.className='crumb-menu';
+    li.appendChild(btn); li.appendChild(list);
+    function set(open){ list.hidden=!open; btn.setAttribute('aria-expanded',String(open)); }
+    btn.addEventListener('click',function(){ set(list.hidden); });
+    document.addEventListener('click',function(e){ if(!li.contains(e.target)) set(false); });   /* 바깥을 누르면 닫힘 */
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !list.hidden){ set(false); btn.focus(); } });
+  });
   if(!document.querySelector('.top')){
     var b=document.createElement('button');b.className='top';b.type='button';
     b.setAttribute('aria-label','맨 위로');b.innerHTML='&#8593;';document.body.appendChild(b);
@@ -142,7 +174,7 @@ var SITEMAP = [
   function open(id,push){
     btns.forEach(function(b){b.classList.toggle('on',b.dataset.tab===id)});
     panels.forEach(function(p){p.classList.toggle('on',p.id===id)});
-    var c=document.querySelector('#crumb li:last-child'),
+    var c=document.querySelector('#crumb ol > li:last-child'),   /* ol > : 「프로그램 ▾」 목록 안의 li는 빼고 */
         b=tabs.querySelector('[data-tab="'+id+'"]');
     if(c&&b) c.textContent=b.textContent;
     if(push) history.replaceState(null,'','#'+id);

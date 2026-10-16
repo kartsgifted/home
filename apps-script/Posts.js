@@ -165,7 +165,8 @@ function validateNotice_(p) {
   };
 }
 
-// 분야(field)는 코드(dance 등)나 ''(지정 안 함)로 받아 시트에는 한글로 쓴다. 보내지 않으면(분야 칸을 모르는 화면) 기존 값을 둔다 — handleSave_
+// 과정 · 분야(course · field)는 코드로 받아 시트 「분야」 열에 「워크숍 · 무용」으로 쓴다(Setup.js GALLERY_COURSES_ · GALLERY_FIELDS_).
+// 둘 다 보내지 않으면(분야 칸을 모르는 1안 관리자 화면) 기존 값을 둔다 — handleSave_
 function validateGallery_(p) {
   if (!p) return null;
   var title = cleanText_(p.title), desc = cleanText_(p.desc);
@@ -173,24 +174,37 @@ function validateGallery_(p) {
   if (!title || title.length > LIMITS_.galleryTitle || desc.length > LIMITS_.galleryDesc) return null;
   if (!date || !vis) return null;
   var fields = { '제목': title, '설명': desc, '게시일': date, '공개여부': vis };
-  if (p.field !== undefined) {
-    var label = p.field === '' ? '' : galleryFieldLabel_(p.field);
+  if (p.course !== undefined || p.field !== undefined) {
+    var label = galleryLabel_(p.course, p.field);
     if (label === null) return null;
     fields['분야'] = label;
   }
   return fields;
 }
 
-// 'dance' → '무용'. 목록에 없는 코드면 null
-function galleryFieldLabel_(code) {
-  var labels = Object.keys(GALLERY_FIELDS_).filter(function (k) { return GALLERY_FIELDS_[k] === code; });
-  return labels.length ? labels[0] : null;
+// ('workshop', 'dance') → '워크숍 · 무용', ('mentoring', '') → '심화멘토링 · 공통', ('', '') → ''(지정 안 함).
+// 하나만 보냈거나, 목록에 없는 코드거나, 과정 없이 분야만 있으면 null
+function galleryLabel_(course, field) {
+  if (typeof course !== 'string' || typeof field !== 'string') return null;
+  if (course === '') return field === '' ? '' : null;
+  var c = codeKey_(GALLERY_COURSES_, course), f = codeKey_(GALLERY_FIELDS_, field);
+  return c === null || f === null ? null : c + ' · ' + f;
 }
 
-// '무용' → 'dance'. 빈칸이나 목록에 없는 값은 ''(지정 안 함)
-function galleryFieldCode_(label) {
-  var s = String(label == null ? '' : label).trim();
-  return Object.prototype.hasOwnProperty.call(GALLERY_FIELDS_, s) ? GALLERY_FIELDS_[s] : '';
+function codeKey_(map, code) {
+  var keys = Object.keys(map).filter(function (k) { return map[k] === code; });
+  return keys.length ? keys[0] : null;
+}
+
+// 시트 값 → { course, field }. 8.5 때의 옛 값(「무용」 · 「심화멘토링」 등)도 읽는다. 빈칸이나 모르는 값은 지정 안 함
+function galleryCodes_(label) {
+  var s = String(label == null ? '' : label).trim(), has = Object.prototype.hasOwnProperty;
+  if (has.call(GALLERY_OLD_VALUES_, s)) return { course: GALLERY_OLD_VALUES_[s][0], field: GALLERY_OLD_VALUES_[s][1] };
+  var parts = s.split('·').map(function (x) { return x.trim(); });
+  if (parts.length === 2 && has.call(GALLERY_COURSES_, parts[0]) && has.call(GALLERY_FIELDS_, parts[1])) {
+    return { course: GALLERY_COURSES_[parts[0]], field: GALLERY_FIELDS_[parts[1]] };
+  }
+  return { course: '', field: '' };
 }
 
 // 언론홍보: 기사 한 건. 목록에서 누르면 기사 주소가 새 탭으로 열린다 (사이트 안 상세 화면 없음)
@@ -299,9 +313,10 @@ function noticeFromRow_(r, attachments, admin) {
 }
 
 function galleryFromRow_(r, attachments, admin) {
+  var cf = galleryCodes_(r['분야']);
   var o = {
     id: r['글ID'], title: String(r['제목']), desc: String(r['설명']), date: formatDateCell_(r['게시일']),
-    field: galleryFieldCode_(r['분야']),
+    course: cf.course, field: cf.field,
     photos: attachmentsOf_(r['글ID'], '사진', attachments, admin)
   };
   if (admin) addAdminFields_(o, r);

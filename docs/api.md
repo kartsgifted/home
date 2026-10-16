@@ -82,7 +82,7 @@
 |---|---|
 | `notices` | 「공지」 전체(비공개 포함) + 각 글의 `photos` · `files` + 관리용 값(`visibility` · `author` · `updatedAt` 등) |
 | `press` | 「언론홍보」 전체(비공개 포함) + 관리용 값 (2026-10-14) |
-| `gallery` | 「갤러리」 전체 + `photos` + `field`(분야 코드, 2026-10-16) |
+| `gallery` | 「갤러리」 전체 + `photos` + `course` · `field`(과정 · 분야 코드, 2026-10-16 — `sheet-schema.md` 「갤러리 과정 · 분야」) |
 | `hero` | 「표지」 4칸 `{ id, slot, label, photos(0~1장), cutouts(누끼 0~1장), videos(동영상 0~1개 `{ src, w, h, attachmentId, name, size }`), depth(2.5D 켬), center({x, y} %), updatedBy, updatedAt }` (2026-10-14, 누끼 · 2.5D는 2026-10-15, 동영상은 2026-10-16 2안) |
 | `categories` | 공지 분류 목록 (「설정」) |
 | `limits` | 업로드 형식 · 크기 · 개수 한도 (`sheet-schema.md` 4절) — 화면이 미리 막는 데 쓴다. 표지 사진을 줄일 크기 `heroPhotoSide`(2400), 누끼 크기 한도 `cutoutBytes`(8MB), 표지 동영상 `videoBytes`(20MB) · `videoPartBytes`(조각 크기) · `videoTypes`도 여기 |
@@ -131,7 +131,7 @@
 | `action` · `token` | |
 | `board` | `notice` · `press` · `gallery` · `hero` |
 | `id` | 고칠 글ID. 새 글이면 빈 값 → 관문이 만든다. **표지는 늘 칸 ID(`H-dance` 등)** — 새로 만들 수 없음 |
-| `post` | 공지: `category` · `title` · `body` · `date` · `pinned` · `photoPosition` · `photoLink` · `visibility` / 언론홍보: `source` · `title` · `date` · `url` · `visibility` / 갤러리: `title` · `desc` · `date` · `visibility` · `field`(분야 코드 `dance` · `music` · `art` · `trad` · `mentoring` · `camp` · `""`, 그 밖의 값은 `INVALID_INPUT`. **보내지 않으면 기존 값 유지** — 분야 칸이 없는 1안 관리자 화면이 저장해도 지워지지 않게, 2026-10-16) / 표지: `depth`(2.5D 입체 효과 켬, true/false) · `center`(`{ x, y }` 0~100 %, 누끼 인물 영역의 가운데 — 누끼가 없으면 `null`) |
+| `post` | 공지: `category` · `title` · `body` · `date` · `pinned` · `photoPosition` · `photoLink` · `visibility` / 언론홍보: `source` · `title` · `date` · `url` · `visibility` / 갤러리: `title` · `desc` · `date` · `visibility` · `course`(과정 코드 `workshop` · `mentoring` · `camp` · `""`) · `field`(분야 코드 `dance` · `music` · `art` · `trad` · `""`=공통). 시트에는 `워크숍 · 무용`처럼 쓰고, `course` · `field`가 모두 `""`이면 지정 안 함(빈칸). **둘 다 보내지 않으면 기존 값 유지** — 분야 칸이 없는 1안 관리자 화면이 저장해도 지워지지 않게. 하나만 보내거나, 목록에 없는 값 · 문자열이 아닌 값이거나, `course`가 `""`인데 `field`가 있으면 `INVALID_INPUT` (2026-10-16 WBS 8.10, 그 전 8.5의 `field` 하나만 보내는 요청도 이제 `INVALID_INPUT`) / 표지: `depth`(2.5D 입체 효과 켬, true/false) · `center`(`{ x, y }` 0~100 %, 누끼 인물 영역의 가운데 — 누끼가 없으면 `null`) |
 | `photos` | 첨부ID 배열 — **이 순서가 화면 순서**. 언론홍보는 빈 배열, 표지는 0~1개(빈 배열이면 기본 사진으로) |
 | `files` | 첨부ID 배열 (공지만) |
 | `cutouts` | 누끼 첨부ID 배열 (표지만, 0~1개). `depth`가 true면 1개여야 하고 원본(`photos`)과 가로 · 세로가 같아야 한다. 아니면 `INVALID_INPUT` |

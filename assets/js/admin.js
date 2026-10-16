@@ -22,9 +22,16 @@
   var HERO_DEFAULT = { music:'assets/img/hero-music.jpg', trad:'assets/img/hero-trad.jpg' };
   /* 표지 동영상이 올라가는 영상 전용 저장소(GitHub Pages) — main.js의 MEDIA_BASE와 맞출 것. 관문은 경로(hero/A-00123.mp4)만 준다 (2안 WBS 8.6) */
   var MEDIA_BASE = 'https://kartsgifted.github.io/home-media/';
-  /* 갤러리 앨범 분야 — 관문 GALLERY_FIELDS_(Setup.js)와 같은 코드. 프로그램 페이지가 이 코드로 공개 앨범 사진을 모은다 (docs/decisions.md 「2안 posts.json 약속」) */
-  var GALLERY_FIELDS = [['', '지정 안 함'], ['dance', '무용'], ['music', '음악'], ['art', '미술'], ['trad', '전통예술'], ['mentoring', '심화멘토링'], ['camp', '겨울캠프']];
-  function fieldLabel(code){ var f = GALLERY_FIELDS.filter(function(x){ return x[0] === (code || ''); })[0]; return f ? f[1] : ''; }
+  /* 갤러리 앨범 과정 · 분야 — 관문 GALLERY_COURSES_ · GALLERY_FIELDS_(Setup.js)와 같은 코드. 프로그램 페이지가 이 코드로 공개 앨범 사진을 모은다.
+     분야 ''(공통)은 그 과정 전체, 과정 ''은 지정 안 함 (WBS 8.10) */
+  var GALLERY_COURSES = [['workshop', '워크숍'], ['mentoring', '심화멘토링'], ['camp', '겨울캠프']];
+  var GALLERY_FIELDS = [['dance', '무용'], ['music', '음악'], ['art', '미술'], ['trad', '전통예술'], ['', '공통']];
+  function codeName(list, code){ var x = list.filter(function(i){ return i[0] === code; })[0]; return x ? x[1] : ''; }
+  // ('workshop', 'dance') → '워크숍 · 무용'. 지정 안 함이면 ''
+  function galleryLabel(course, field){
+    var c = codeName(GALLERY_COURSES, course || '');
+    return c ? c + ' · ' + codeName(GALLERY_FIELDS, field || '') : '';
+  }
 
   var S = { token:null, exp:0, name:'', data:null, tab:'notice', edit:null, lastActive:Date.now() };
   var $ = function(id){ return document.getElementById(id); };
@@ -242,7 +249,7 @@
           th,
           h('span', { class:'tx' }, [
             h('span', { class:'t', text:g.title, style:'display:block' }),
-            h('span', { class:'m', text:[g.date, g.field ? fieldLabel(g.field) : null, '사진 ' + g.photos.length + '장'].filter(Boolean).join(' · '), style:'display:block' })
+            h('span', { class:'m', text:[g.date, galleryLabel(g.course, g.field) || null, '사진 ' + g.photos.length + '장'].filter(Boolean).join(' · '), style:'display:block' })
           ])
         ]);
       })));
@@ -287,7 +294,7 @@
     var blank = {
       notice:  { category:S.data.categories[0], title:'', body:'', date:todayKst(), pinned:false, photoPosition:'top', photoLink:'', visibility:'공개' },
       press:   { source:'', title:'', date:todayKst(), url:'', visibility:'공개' },
-      gallery: { title:'', desc:'', date:todayKst(), visibility:'공개', field:'' }
+      gallery: { title:'', desc:'', date:todayKst(), visibility:'공개', course:'', field:'' }
     };
     S.edit = {
       board:board, id:post ? post.id : null, dirty:false, preview:false,
@@ -355,10 +362,15 @@
     if(e.board === 'gallery'){
       row.appendChild(h('div', { class:'fld' }, [
         h('label', { for:'f-field', text:'분야' }),
-        h('select', { id:'f-field', onchange:bind('field') }, GALLERY_FIELDS.map(function(f){
-          return h('option', { value:f[0], text:f[1], selected:f[0] === (p.field || '') });
-        })),
-        h('p', { class:'syntax', text:'고르면 그 프로그램 페이지에 이 앨범 사진이 나옵니다(공개 앨범만).' })
+        // 값은 「과정:분야」 (예: workshop:dance, workshop: = 워크숍 · 공통, : = 지정 안 함)
+        h('select', { id:'f-field', onchange:function(ev){
+          var v = ev.target.value.split(':'); p.course = v[0]; p.field = v[1] || ''; markDirty();
+        } }, [h('option', { value:':', text:'지정 안 함', selected:!p.course })].concat(GALLERY_COURSES.map(function(c){
+          return h('optgroup', { label:c[1] }, GALLERY_FIELDS.map(function(f){
+            return h('option', { value:c[0] + ':' + f[0], text:f[1], selected:p.course === c[0] && (p.field || '') === f[0] });
+          }));
+        }))),
+        h('p', { class:'syntax', text:'고르면 그 프로그램 페이지에 이 앨범 사진이 나옵니다(공개 앨범만). 워크숍 · 공통은 워크숍 네 분야 탭에 모두 나옵니다.' })
       ]));
     }
     row.appendChild(h('div', { class:'fld' }, [
@@ -928,7 +940,7 @@
 
     var post = isNotice
       ? { category:p.category, title:p.title, body:p.body, date:p.date, pinned:!!p.pinned, photoPosition:p.photoPosition, photoLink:(p.photoLink || '').trim(), visibility:p.visibility }
-      : { title:p.title, desc:p.desc || '', date:p.date, visibility:p.visibility, field:p.field || '' };
+      : { title:p.title, desc:p.desc || '', date:p.date, visibility:p.visibility, course:p.course || '', field:p.course ? p.field || '' : '' };
     send({
       board:e.board, id:e.id, post:post,
       photos:e.photos.map(function(a){ return a.attachmentId; }),
