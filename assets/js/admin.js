@@ -20,6 +20,9 @@
   ];
   /* 표지 기본 사진 — main.css의 --img-hero-*와 맞출 것. 올린 사진이 없으면 사이트는 이 사진을, 이것도 없으면 그 칸을 건너뛴다 */
   var HERO_DEFAULT = { music:'assets/img/hero-music.jpg', trad:'assets/img/hero-trad.jpg' };
+  /* 갤러리 앨범 분야 — 관문 GALLERY_FIELDS_(Setup.js)와 같은 코드. 프로그램 페이지가 이 코드로 공개 앨범 사진을 모은다 (docs/decisions.md 「2안 posts.json 약속」) */
+  var GALLERY_FIELDS = [['', '지정 안 함'], ['dance', '무용'], ['music', '음악'], ['art', '미술'], ['trad', '전통예술'], ['mentoring', '심화멘토링'], ['camp', '겨울캠프']];
+  function fieldLabel(code){ var f = GALLERY_FIELDS.filter(function(x){ return x[0] === (code || ''); })[0]; return f ? f[1] : ''; }
 
   var S = { token:null, exp:0, name:'', data:null, tab:'notice', edit:null, lastActive:Date.now() };
   var $ = function(id){ return document.getElementById(id); };
@@ -236,7 +239,7 @@
           th,
           h('span', { class:'tx' }, [
             h('span', { class:'t', text:g.title, style:'display:block' }),
-            h('span', { class:'m', text:[g.date, '사진 ' + g.photos.length + '장'].join(' · '), style:'display:block' })
+            h('span', { class:'m', text:[g.date, g.field ? fieldLabel(g.field) : null, '사진 ' + g.photos.length + '장'].filter(Boolean).join(' · '), style:'display:block' })
           ])
         ]);
       })));
@@ -281,7 +284,7 @@
     var blank = {
       notice:  { category:S.data.categories[0], title:'', body:'', date:todayKst(), pinned:false, photoPosition:'top', photoLink:'', visibility:'공개' },
       press:   { source:'', title:'', date:todayKst(), url:'', visibility:'공개' },
-      gallery: { title:'', desc:'', date:todayKst(), visibility:'공개' }
+      gallery: { title:'', desc:'', date:todayKst(), visibility:'공개', field:'' }
     };
     S.edit = {
       board:board, id:post ? post.id : null, dirty:false, preview:false,
@@ -343,6 +346,15 @@
         h('select', { id:'f-cat', onchange:bind('category') }, (S.data.categories.indexOf(p.category) < 0
           ? [h('option', { value:'', text:'분류를 골라 주세요 (예전 분류 「' + p.category + '」는 더 이상 쓰지 않음)', selected:true, disabled:true })] : [])
           .concat(S.data.categories.map(function(c){ return h('option', { value:c, text:c, selected:c === p.category }); })))
+      ]));
+    }
+    if(e.board === 'gallery'){
+      row.appendChild(h('div', { class:'fld' }, [
+        h('label', { for:'f-field', text:'분야' }),
+        h('select', { id:'f-field', onchange:bind('field') }, GALLERY_FIELDS.map(function(f){
+          return h('option', { value:f[0], text:f[1], selected:f[0] === (p.field || '') });
+        })),
+        h('p', { class:'syntax', text:'고르면 그 프로그램 페이지에 이 앨범 사진이 나옵니다(공개 앨범만).' })
       ]));
     }
     row.appendChild(h('div', { class:'fld' }, [
@@ -796,7 +808,7 @@
 
     var post = isNotice
       ? { category:p.category, title:p.title, body:p.body, date:p.date, pinned:!!p.pinned, photoPosition:p.photoPosition, photoLink:(p.photoLink || '').trim(), visibility:p.visibility }
-      : { title:p.title, desc:p.desc || '', date:p.date, visibility:p.visibility };
+      : { title:p.title, desc:p.desc || '', date:p.date, visibility:p.visibility, field:p.field || '' };
     send({
       board:e.board, id:e.id, post:post,
       photos:e.photos.map(function(a){ return a.attachmentId; }),

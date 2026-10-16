@@ -79,6 +79,9 @@ function handleSave_(req) {
     var id = ownId || nextId_(board.prefix, 4, rows.map(function (r) { return r['글ID']; }));
     if (board.fixed) fields['칸'] = existing['칸'];
 
+    // 요청에 없는 열은 기존 값을 그대로 쓴다 — 새 열(예: 갤러리 분야)을 모르는 화면(1안 관리자 페이지)이 저장해도 지워지지 않게
+    if (existing) Object.keys(existing).forEach(function (h) { if (h !== '_row' && !(h in fields)) fields[h] = existing[h]; });
+
     var now = new Date();
     fields['글ID'] = id;
     fields['작성자'] = existing ? existing['작성자'] : auth.name;
@@ -147,13 +150,32 @@ function validateNotice_(p) {
   };
 }
 
+// 분야(field)는 코드(dance 등)나 ''(지정 안 함)로 받아 시트에는 한글로 쓴다. 보내지 않으면(분야 칸을 모르는 화면) 기존 값을 둔다 — handleSave_
 function validateGallery_(p) {
   if (!p) return null;
   var title = cleanText_(p.title), desc = cleanText_(p.desc);
   var date = cleanDate_(p.date), vis = cleanVisibility_(p.visibility);
   if (!title || title.length > LIMITS_.galleryTitle || desc.length > LIMITS_.galleryDesc) return null;
   if (!date || !vis) return null;
-  return { '제목': title, '설명': desc, '게시일': date, '공개여부': vis };
+  var fields = { '제목': title, '설명': desc, '게시일': date, '공개여부': vis };
+  if (p.field !== undefined) {
+    var label = p.field === '' ? '' : galleryFieldLabel_(p.field);
+    if (label === null) return null;
+    fields['분야'] = label;
+  }
+  return fields;
+}
+
+// 'dance' → '무용'. 목록에 없는 코드면 null
+function galleryFieldLabel_(code) {
+  var labels = Object.keys(GALLERY_FIELDS_).filter(function (k) { return GALLERY_FIELDS_[k] === code; });
+  return labels.length ? labels[0] : null;
+}
+
+// '무용' → 'dance'. 빈칸이나 목록에 없는 값은 ''(지정 안 함)
+function galleryFieldCode_(label) {
+  var s = String(label == null ? '' : label).trim();
+  return Object.prototype.hasOwnProperty.call(GALLERY_FIELDS_, s) ? GALLERY_FIELDS_[s] : '';
 }
 
 // 언론홍보: 기사 한 건. 목록에서 누르면 기사 주소가 새 탭으로 열린다 (사이트 안 상세 화면 없음)
@@ -263,6 +285,7 @@ function noticeFromRow_(r, attachments, admin) {
 function galleryFromRow_(r, attachments, admin) {
   var o = {
     id: r['글ID'], title: String(r['제목']), desc: String(r['설명']), date: formatDateCell_(r['게시일']),
+    field: galleryFieldCode_(r['분야']),
     photos: attachmentsOf_(r['글ID'], '사진', attachments, admin)
   };
   if (admin) addAdminFields_(o, r);
