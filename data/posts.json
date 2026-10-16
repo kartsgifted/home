@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-16T14:03:33+09:00",
+  "updatedAt": "2026-10-16T14:03:47+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -180,8 +180,8 @@
       "title": "미술 창작 스튜디오",
       "desc": "2026.08 · 한국과학기술원",
       "date": "2026-08-01",
-      "course": "",
-      "field": "",
+      "course": "workshop",
+      "field": "art",
       "photos": [
         {
           "fileId": "19JH71Kq3knfdeiayojAToWpQ3Pw2V09z",
