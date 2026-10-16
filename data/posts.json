@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-16T14:03:47+09:00",
+  "updatedAt": "2026-10-16T14:03:58+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -165,8 +165,8 @@
       "title": "전통예술 집중 워크숍",
       "desc": "2026.08 · 석관동캠퍼스",
       "date": "2026-08-01",
-      "course": "",
-      "field": "",
+      "course": "workshop",
+      "field": "trad",
       "photos": [
         {
           "fileId": "1zxlsU5_oCyuzbPvs1N-dqUPwCElWKfd6",
