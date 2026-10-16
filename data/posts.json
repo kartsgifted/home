@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-15T10:12:43+09:00",
+  "updatedAt": "2026-10-16T11:52:36+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -105,6 +105,7 @@
       "title": "심화 멘토링 첫 회차",
       "desc": "2026.10",
       "date": "2026-10-01",
+      "field": "",
       "photos": [
         {
           "fileId": "1sfAIeyB9u4F4aLpzPW71v0OtYHoN0ghM",
@@ -118,6 +119,7 @@
       "title": "분야별 평가회의",
       "desc": "2026.09",
       "date": "2026-09-01",
+      "field": "",
       "photos": [
         {
           "fileId": "15q8Jpo--pynUJJ67dc6Lvju-hZvPzbL5",
@@ -131,6 +133,7 @@
       "title": "미술 결과전시",
       "desc": "2026.08 · 한국과학기술원",
       "date": "2026-08-01",
+      "field": "",
       "photos": [
         {
           "fileId": "12ILmHcpiXpgPeDas0MU63MEOEFlTw5tj",
@@ -144,6 +147,7 @@
       "title": "앙상블 리허설",
       "desc": "2026.08 · 서초동캠퍼스",
       "date": "2026-08-01",
+      "field": "",
       "photos": [
         {
           "fileId": "1fWB-xv4doyWWYljrgyXIoU24N7ZGQrbP",
@@ -157,6 +161,7 @@
       "title": "전통예술 집중 워크숍",
       "desc": "2026.08 · 석관동캠퍼스",
       "date": "2026-08-01",
+      "field": "",
       "photos": [
         {
           "fileId": "1zxlsU5_oCyuzbPvs1N-dqUPwCElWKfd6",
@@ -170,6 +175,7 @@
       "title": "미술 창작 스튜디오",
       "desc": "2026.08 · 한국과학기술원",
       "date": "2026-08-01",
+      "field": "",
       "photos": [
         {
           "fileId": "19JH71Kq3knfdeiayojAToWpQ3Pw2V09z",
@@ -183,6 +189,7 @@
       "title": "음악 마스터클래스",
       "desc": "2026.07 · 서초동캠퍼스",
       "date": "2026-07-01",
+      "field": "",
       "photos": [
         {
           "fileId": "14RTQALrlTXkfpOG6yS1X3WcvDos5aPJR",
@@ -196,6 +203,7 @@
       "title": "무용 워크숍 현장",
       "desc": "2026.07 · 광주캠퍼스",
       "date": "2026-07-01",
+      "field": "",
       "photos": [
         {
           "fileId": "18ZyALBQBnPi_uRz1L5Q-QopUrEp3w73R",
@@ -222,6 +230,18 @@
       "fileId": "1Tk_cR9zRR4SAdujYZBqvzH-tCQuIINv-",
       "w": 2400,
       "h": 1800
+    },
+    "trad": {
+      "fileId": "1KFu4tjPvrN0o8wcVZjq2qE2hHRa6neYK",
+      "w": 1920,
+      "h": 1080
+    }
+  },
+  "heroVideo": {
+    "trad": {
+      "src": "hero/A-00025.mp4",
+      "w": 1920,
+      "h": 1080
     }
   }
 }
