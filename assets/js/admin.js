@@ -20,6 +20,8 @@
   ];
   /* 표지 기본 사진 — main.css의 --img-hero-*와 맞출 것. 올린 사진이 없으면 사이트는 이 사진을, 이것도 없으면 그 칸을 건너뛴다 */
   var HERO_DEFAULT = { music:'assets/img/hero-music.jpg', trad:'assets/img/hero-trad.jpg' };
+  /* 표지 동영상이 올라가는 영상 전용 저장소(GitHub Pages) — main.js의 MEDIA_BASE와 맞출 것. 관문은 경로(hero/A-00123.mp4)만 준다 (2안 WBS 8.6) */
+  var MEDIA_BASE = 'https://kartsgifted.github.io/home-media/';
   /* 갤러리 앨범 분야 — 관문 GALLERY_FIELDS_(Setup.js)와 같은 코드. 프로그램 페이지가 이 코드로 공개 앨범 사진을 모은다 (docs/decisions.md 「2안 posts.json 약속」) */
   var GALLERY_FIELDS = [['', '지정 안 함'], ['dance', '무용'], ['music', '음악'], ['art', '미술'], ['trad', '전통예술'], ['mentoring', '심화멘토링'], ['camp', '겨울캠프']];
   function fieldLabel(code){ var f = GALLERY_FIELDS.filter(function(x){ return x[0] === (code || ''); })[0]; return f ? f[1] : ''; }
@@ -73,6 +75,7 @@
     FILE_REJECTED:'올릴 수 없는 파일입니다. 형식과 크기를 확인해 주세요.',
     NOT_FOUND:'글이나 첨부를 찾을 수 없습니다. 다른 사람이 지웠을 수 있습니다.',
     BUSY:'다른 저장이 진행 중입니다. 잠시 뒤 다시 눌러 주세요.',
+    MEDIA_FAILED:'동영상을 사이트에 올리지 못했습니다. 아무것도 바뀌지 않았으니 잠시 뒤 다시 저장해 주세요.',
     NETWORK:'인터넷 연결을 확인해 주세요.',
     TIMEOUT:'응답이 너무 늦습니다. 잠시 뒤 다시 시도해 주세요.',
     SERVER_ERROR:'처리 중 오류가 났습니다. 잠시 뒤 다시 시도해 주세요.'
@@ -251,7 +254,7 @@
 
   /* 표지 사진 — 분야 칸 4개(순서 고정). 올린 사진 > 기본 사진 > 건너뜀 */
   function heroState(slot){
-    if(slot.photos.length) return { src:Board.photoUrl(slot.photos[0].fileId, 640), text:slot.depth && slot.cutouts.length ? '올린 사진 · 2.5D' : '올린 사진', cls:'on' };
+    if(slot.photos.length) return { src:Board.photoUrl(slot.photos[0].fileId, 640), text:(slot.videos || []).length ? '올린 동영상' : slot.depth && slot.cutouts.length ? '올린 사진 · 2.5D' : '올린 사진', cls:'on' };
     if(HERO_DEFAULT[slot.slot]) return { src:HERO_DEFAULT[slot.slot], text:'기본 사진', cls:'def' };
     return { src:null, text:'사진 없음 · 표지에서 건너뜀', cls:'off' };
   }
@@ -292,6 +295,7 @@
       photos: post && post.photos ? post.photos.map(copyAtt) : [],
       files: post && post.files ? post.files.map(copyAtt) : [],
       cutouts: post && post.cutouts ? post.cutouts.map(copyAtt) : [],
+      videos: post && post.videos ? post.videos.map(copyAtt) : [],
       maxPhotos: board === 'notice' ? lim.noticePhotos : board === 'hero' ? 1 : lim.galleryPhotos,
       photoSide: board === 'hero' ? (lim.heroPhotoSide || 2400) : PHOTO_MAX_SIDE
     };
@@ -301,7 +305,7 @@
   }
 
   function markDirty(){ if(S.edit) S.edit.dirty = true; }
-  function pending(){ var e = S.edit; return e ? e.photos.concat(e.files, e.cutouts).filter(function(a){ return a.uploading; }).length : 0; }
+  function pending(){ var e = S.edit; return e ? e.photos.concat(e.files, e.cutouts, e.videos).filter(function(a){ return a.uploading; }).length : 0; }
   function confirmLeave(){
     if(!S.edit || (!S.edit.dirty && !pending())) return true;
     return confirm('저장하지 않은 내용이 있습니다. 나가면 사라집니다. 나갈까요?');
@@ -434,6 +438,11 @@
       ? '사진을 올리면 표지의 이 칸에 보입니다. 사진을 빼고 저장하면 아래 기본 사진으로 돌아갑니다.'
       : '사진을 올리면 표지의 이 칸에 보입니다. 이 칸은 기본 사진이 없어, 사진을 빼고 저장하면 표지에서 건너뜁니다.' }));
     wrap.appendChild(photoField(e, '사진', '가로로 긴 사진(16:9 정도)이 좋습니다. 화면 비율에 따라 위아래나 좌우가 잘리고, 왼쪽에 제목 글자가 올라갑니다.'));
+    if(S.data.limits.videoPartBytes){   // 동영상을 받는 관문(2안)일 때만
+      var videoBox = h('div', { class:'fld mg-video', id:'videoFld' });
+      wrap.appendChild(videoBox);
+      drawVideo(e, videoBox);
+    }
     var depthBox = h('div', { class:'fld mg-depth', id:'depthFld' });
     wrap.appendChild(depthBox);
     drawDepth(e, depthBox);
@@ -514,6 +523,10 @@
     box = box || $('depthFld');
     if(!box) return;
     box.textContent = '';
+    if(e.videos.length){   // 동영상 칸은 2.5D를 쓰지 않는다 (2026-10-16 사용자 결정)
+      box.appendChild(h('p', { class:'hint', text:'동영상을 올린 칸은 2.5D 입체 효과를 쓰지 않습니다.' }));
+      return;
+    }
     var p = e.post, ph = e.photos[0], cut = e.cutouts[0];
     var ready = !!(ph && ph.attachmentId && ph.w);
     box.appendChild(h('label', { class:'choices', style:'font-weight:700' }, [
@@ -617,6 +630,109 @@
       img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('decode')); };
       img.src = url;
     });
+  }
+
+  /* ---------- 표지 동영상 (2안 WBS 8.6) ----------
+     드라이브 영상은 사이트에서 재생되지 않아 관문이 영상 전용 저장소에 올린다(저장할 때만 — 저장하지 않은 영상은 공개되지 않음).
+     올리면 첫 장면을 잘라 이 칸의 사진(대기 사진)으로 바꾼다 — 영상이 뜨기 전 · 데이터 절약 · 움직임 줄이기 · 1안 화면에서 보인다.
+     영상은 줄이거나 바꾸지 않고 그대로 올리므로 MP4(H.264) · 20MB 이하만 받는다 (2026-10-16 사용자 결정) */
+  function drawVideo(e, box){
+    box = box || $('videoFld');
+    if(!box) return;
+    box.textContent = '';
+    var lim = S.data.limits, v = e.videos[0];
+    box.appendChild(h('span', { class:'lb' }, ['동영상 (선택)', h('span', { class:'hint', text:'올리면 사진 대신 소리 없이 재생됩니다. 첫 장면이 자동으로 위 사진이 되어, 영상이 뜨기 전이나 데이터 절약 · 움직임 줄이기 설정에서 보입니다.' })]));
+    if(v){
+      var src = v.local || (v.src && MEDIA_BASE + v.src);
+      var pv = h('div', { class:'mg-video-pv' });
+      if(src){
+        var vd = h('video', { src:src, autoplay:true, loop:true, playsinline:true });
+        vd.muted = true;
+        vd.addEventListener('error', function(){ if(!v.local) pv.appendChild(h('p', { class:'state', text:'저장한 영상은 사이트 반영 뒤 1~2분 지나야 여기서도 보입니다.' })); });
+        pv.appendChild(vd);
+      }
+      if(v.uploading) pv.appendChild(h('p', { class:'state', text:'올리는 중… ' + (v.progress || '') }));
+      if(v.error) pv.appendChild(h('p', { class:'state err', text:v.error }));
+      box.appendChild(pv);
+      var meta = [v.name, v.size ? Board.formatSize(v.size) : null, v.w ? v.w + '×' + v.h : null, v.duration ? Math.round(v.duration) + '초' : null].filter(Boolean).join(' · ');
+      box.appendChild(h('div', { class:'add' }, [
+        h('span', { class:'hint', text:meta }),
+        h('button', { type:'button', class:'mg-btn sm', text:'동영상 빼기', disabled:!!v.uploading, onclick:function(){
+          e.videos = []; markDirty(); drawVideo(e); drawDepth(e);
+          toast('동영상을 뺐습니다. 위 사진(첫 장면)은 그대로 남습니다. 필요하면 사진도 바꿔 주세요.');
+        } })
+      ]));
+      return;
+    }
+    var input = h('input', { type:'file', accept:'video/mp4,.mp4', hidden:true, onchange:function(){
+      if(input.files[0]) addVideo(e, input.files[0]); input.value = '';
+    } });
+    box.appendChild(h('div', { class:'add' }, [
+      h('button', { type:'button', class:'mg-btn sm', text:'+ 동영상 올리기', onclick:function(){ input.click(); } }),
+      h('span', { class:'hint', text:'MP4(H.264) · ' + Board.formatSize(lim.videoBytes) + ' 이하. 10~20초 · 1080p 가로 영상이 알맞습니다. 아이폰 기본 영상(HEVC · MOV)은 MP4(H.264)로 바꿔 올려 주세요.' }),
+      input
+    ]));
+  }
+
+  function addVideo(e, file){
+    var lim = S.data.limits;
+    if(!/\.mp4$/i.test(file.name) || (file.type && file.type !== 'video/mp4')) return toast('MP4 파일만 올릴 수 있습니다. 아이폰 영상(MOV)은 MP4(H.264)로 바꿔 올려 주세요.', true);
+    if(file.size > lim.videoBytes) return toast('동영상이 너무 큽니다(' + Board.formatSize(file.size) + '). ' + Board.formatSize(lim.videoBytes) + ' 이하로 줄여 주세요.', true);
+    var v = { uploading:true, name:file.name, size:file.size, progress:'' };
+    e.videos = [v]; e.post.depth = false;
+    drawVideo(e); drawDepth(e);
+    var redraw = function(){ if(S.edit === e){ drawVideo(e); drawPhotos(null, e); } };
+    probeVideo(file, e.photoSide).then(function(r){
+      v.local = r.url; v.w = r.w; v.h = r.h; v.duration = r.duration;
+      // 첫 장면 → 이 칸의 사진(대기 사진). 원본이 바뀌므로 누끼 · 2.5D도 빠진다
+      var ph = { uploading:true, name:'첫 장면.jpg', local:URL.createObjectURL(r.poster), w:r.pw, h:r.ph };
+      e.photos = [ph]; photoChanged(e); redraw();
+      var base = file.name.replace(/\.[^.]+$/, '');
+      var poster = blobToBase64(r.poster).then(function(b64){
+        return api('upload', { kind:'photo', name:base + '-첫장면.jpg', mimeType:'image/jpeg', base64:b64, width:r.pw, height:r.ph }, 120000);
+      }).then(function(d){ ph.attachmentId = d.attachmentId; ph.fileId = d.fileId; ph.size = d.size; ph.uploading = false; },
+        function(err){ ph.uploading = false; ph.error = errMsg(err); throw err; });
+      return Promise.all([poster, uploadVideo(file, base + '.mp4', r, v, redraw)]);
+    }).then(function(){ markDirty(); }, function(err){
+      v.uploading = false;
+      v.error = err && err.userMsg ? err.userMsg : errMsg(err);
+    }).then(redraw);
+  }
+
+  // 영상을 열어 크기 · 길이를 읽고, 첫 장면을 표지 사진 크기(긴 변 maxSide 이하) JPEG로 잘라 낸다. 열 수 없으면(HEVC 등) 거절
+  function probeVideo(file, maxSide){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file), vd = document.createElement('video');
+      var fail = function(){ URL.revokeObjectURL(url); reject({ userMsg:'이 영상은 열 수 없습니다. MP4(H.264)로 바꿔 올려 주세요. 아이폰 기본 영상(HEVC)은 브라우저에서 열리지 않을 수 있습니다.' }); };
+      vd.muted = true; vd.playsInline = true; vd.preload = 'auto';
+      vd.onerror = fail;
+      vd.onloadeddata = function(){
+        if(!vd.videoWidth || !vd.videoHeight) return fail();
+        vd.onseeked = function(){
+          vd.onseeked = null;
+          var w = vd.videoWidth, hgt = vd.videoHeight, sc = Math.min(1, maxSide / Math.max(w, hgt));
+          var pw = Math.round(w * sc), ph = Math.round(hgt * sc);
+          var c = document.createElement('canvas'); c.width = pw; c.height = ph;
+          c.getContext('2d').drawImage(vd, 0, 0, pw, ph);
+          c.toBlob(function(blob){ blob ? resolve({ url:url, w:w, h:hgt, duration:vd.duration, poster:blob, pw:pw, ph:ph }) : fail(); }, 'image/jpeg', 0.85);
+        };
+        vd.currentTime = 0.001;   // 첫 화면을 확실히 그리게 한 번 이동
+      };
+      vd.src = url;
+    });
+  }
+
+  // 관문 요청 크기 한도 때문에 limits.videoPartBytes(약 4MB) 조각으로 나눠 차례로 보낸다. 마지막 조각 응답에 첨부ID가 온다
+  function uploadVideo(file, name, r, v, redraw){
+    var PART = S.data.limits.videoPartBytes, n = Math.max(1, Math.ceil(file.size / PART)), i = 0;
+    var uploadId = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(16).slice(2));
+    var next = function(){
+      v.progress = Math.round(i / n * 100) + '%'; redraw();
+      return blobToBase64(file.slice(i * PART, (i + 1) * PART)).then(function(b64){
+        return api('upload', { kind:'video', name:name, mimeType:'video/mp4', width:r.w, height:r.h, uploadId:uploadId, part:i, parts:n, base64:b64 }, 180000);
+      }).then(function(d){ i++; return i < n ? next() : d; });
+    };
+    return next().then(function(d){ v.attachmentId = d.attachmentId; v.size = d.size; v.uploading = false; });
   }
 
   function photoField(e, label, hint){
@@ -781,14 +897,18 @@
     var e = S.edit, p = e.post, lim = S.data.limits, isNotice = e.board === 'notice';
     var fail = function(msg){ toast(msg, true); };
     if(pending()) return fail('사진 · 파일을 올리는 중입니다. 끝난 뒤 저장해 주세요.');
-    if(e.photos.concat(e.files, e.cutouts).some(function(a){ return a.error; })) return fail('올리지 못한 사진 · 파일이 있습니다. ✕로 빼고 저장해 주세요.');
+    if(e.photos.concat(e.files, e.cutouts, e.videos).some(function(a){ return a.error; })) return fail('올리지 못한 사진 · 파일이 있습니다. ✕로 빼고 저장해 주세요.');
     if(e.board === 'hero'){
-      if(p.depth && !e.cutouts.length) return fail('2.5D 입체 효과를 켜려면 누끼 사진을 올려 주세요. 쓰지 않으려면 체크를 꺼 주세요.');
+      var hasVideo = e.videos.length > 0;
+      if(hasVideo && !e.photos.length) return fail('동영상 칸은 대기 사진이 필요합니다. 동영상을 빼고 다시 올리면 첫 장면이 사진으로 들어갑니다.');
+      if(p.depth && !hasVideo && !e.cutouts.length) return fail('2.5D 입체 효과를 켜려면 누끼 사진을 올려 주세요. 쓰지 않으려면 체크를 꺼 주세요.');
       if(!e.photos.length && !HERO_DEFAULT[p.slot] && !confirm('사진이 없으면 「' + p.label + '」 칸은 표지에서 빠집니다. 이대로 저장할까요?')) return;
+      var newVideo = e.videos.some(function(a){ return !a.src; });
       return send({
-        board:'hero', id:e.id, post:{ depth:!!p.depth, center:e.cutouts.length ? p.center : null },
-        photos:e.photos.map(function(a){ return a.attachmentId; }), cutouts:e.cutouts.map(function(a){ return a.attachmentId; }), files:[]
-      });
+        board:'hero', id:e.id, post:{ depth:!hasVideo && !!p.depth, center:e.cutouts.length ? p.center : null },
+        photos:e.photos.map(function(a){ return a.attachmentId; }), cutouts:e.cutouts.map(function(a){ return a.attachmentId; }),
+        videos:e.videos.map(function(a){ return a.attachmentId; }), files:[]
+      }, newVideo ? '저장하고 사이트에 반영하는 중…\n동영상이 있어 30초 정도 걸릴 수 있습니다.' : null);
     }
     if(e.board === 'press' && !(p.source || '').trim()) return fail('언론사를 입력해 주세요.');
     if(!p.title.trim()) return fail('제목을 입력해 주세요.');
@@ -816,9 +936,9 @@
     });
   }
 
-  function send(req){
+  function send(req, busyMsg){
     var e = S.edit;
-    busy('저장하고 사이트에 반영하는 중…\n10초 정도 걸립니다.');
+    busy(busyMsg || '저장하고 사이트에 반영하는 중…\n10초 정도 걸립니다.');
     api('save', req, 120000).then(function(d){
       e.dirty = false;
       S.edit = null; dropEditState();

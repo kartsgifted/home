@@ -39,6 +39,11 @@ var LIMITS_ = {
   photoBytes: 5 * 1024 * 1024,
   cutoutBytes: 8 * 1024 * 1024,   // 표지 누끼는 투명도 때문에 PNG로 두어 JPEG보다 크다(2400px에 보통 1~4MB)
   fileBytes: 10 * 1024 * 1024,
+  // 표지 동영상 (2안 WBS 8.6) — MP4 한 개 20MB 이하. 관문 요청 크기 한도 때문에 화면이 조각으로 나눠 보낸다.
+  // 조각 크기는 3의 배수여야 조각별 base64를 이어 붙인 것이 파일 전체의 base64와 같다 (Media.js)
+  videoBytes: 20 * 1024 * 1024,
+  videoPartBytes: 3 * 1398101,   // 4,194,303바이트(약 4MB) → base64 5,592,404자
+  videoTypes: ['video/mp4'],
   fileName: 150,
   photoTypes: ['image/jpeg', 'image/png', 'image/webp'],
   fileExts: ['hwp', 'hwpx', 'doc', 'docx', 'pdf', 'xls', 'xlsx', 'ppt', 'pptx']

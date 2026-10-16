@@ -63,8 +63,11 @@ function buildPublicPosts_() {
   var gallery = sortByDate_(readTab_('갤러리').filter(isPublic).map(function (r) { return galleryFromRow_(r, attachments, false); }));
   // 표지: 사진을 올린 칸만 { dance: { fileId, w, h }, … }. 빈 칸은 화면이 기본 사진을 쓰거나 건너뛴다.
   // 2.5D 입체 효과를 켠 칸은 누끼(fg)와 확대 중심(depth, 사진의 %)을 더한다
-  var hero = {};
+  // 동영상을 올린 칸은 heroVideo에 { src(영상 저장소 경로), w, h }를 더하고, hero에는 대기 사진(첫 장면)이 그대로 들어간다 —
+  // 1안 화면(heroVideo를 모름)은 그 사진을 보인다 (2안 WBS 8.6, docs/decisions.md 「2안 posts.json 약속」)
+  var hero = {}, heroVideo = {};
   readTab_('표지').forEach(function (r) {
+    var slot = String(r['글ID']).replace(/^H-/, '');
     var photo = attachmentsOf_(r['글ID'], '사진', attachments, false)[0];
     if (!photo) return;
     var cutout = attachmentsOf_(r['글ID'], '누끼', attachments, false)[0];
@@ -72,16 +75,19 @@ function buildPublicPosts_() {
       photo.fg = { fileId: cutout.fileId };
       photo.depth = parseCenter_(r['입체중심']);
     }
-    hero[String(r['글ID']).replace(/^H-/, '')] = photo;
+    hero[slot] = photo;
+    var video = attachmentsOf_(r['글ID'], '동영상', attachments, false)[0];
+    if (video) heroVideo[slot] = video;
   });
   return {
-    compareKey: JSON.stringify({ notices: notices, press: press, gallery: gallery, hero: hero }),
+    compareKey: JSON.stringify({ notices: notices, press: press, gallery: gallery, hero: hero, heroVideo: heroVideo }),
     posts: {
       updatedAt: Utilities.formatDate(new Date(), 'Asia/Seoul', "yyyy-MM-dd'T'HH:mm:ssXXX"),
       notices: notices,
       press: press,
       gallery: gallery,
-      hero: hero
+      hero: hero,
+      heroVideo: heroVideo
     }
   };
 }

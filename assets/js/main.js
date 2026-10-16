@@ -3,11 +3,15 @@
 /* 표지 — 분야마다 한 장씩 무용 → 음악 → 미술 → 전통예술 순서로 넘어간다 (docs/decisions.md 2절).
    관리자 페이지에서 올린 사진(data/posts.json의 hero)이 있으면 그 사진, 없으면 기본 사진(main.css --img-hero-*),
    둘 다 없는 칸은 건너뛴다. 기본 사진이 올린 사진으로 바뀌며 깜박이지 않도록 #hero.wait 동안은 사진을 숨겨 두고
-   목록을 받은 뒤(첫 장이 올린 사진이면 그 사진까지 받은 뒤, 최대 2초) 서서히 보인다. */
+   목록을 받은 뒤(첫 장이 올린 사진이면 그 사진까지 받은 뒤, 최대 2초) 서서히 보인다.
+   동영상을 올린 칸(data/posts.json의 heroVideo, 2안)은 그 칸 사진(첫 장면)을 대기 사진으로 깔고 영상을 소리 없이 튼다 —
+   영상은 영상 전용 저장소(MEDIA_BASE)에 있다. 드라이브 영상은 다른 사이트에서 재생되지 않음(2026-10-16 시험). */
 (function(){
   var hero=document.getElementById('hero');
   if(!hero) return;
   var SLOTS=['dance','music','art','trad'],
+      MEDIA_BASE='https://kartsgifted.github.io/home-media/',   /* admin.js의 MEDIA_BASE와 맞출 것 */
+      PHOTO_MS=6000, VIDEO_MIN=6, VIDEO_MAX=20, VIDEO_WAIT=3000,   /* 사진 칸 6초, 영상 칸은 영상 길이(6~20초), 3초 안에 시작 못 하면 사진처럼 */
       dotsBox=hero.querySelector('.dots'), anchor=hero.querySelector('.hero-in'),
       slides=[], dots=[], idx=0, timer, shown=false;
 
@@ -16,8 +20,16 @@
   }
   function photoWidth(){ return window.innerWidth*(window.devicePixelRatio||1)>1600 ? 2400 : 1600; }
 
-  function build(custom){
-    var list=SLOTS.filter(function(k){ return custom[k] || hasDefault(k); });
+  /* 영상을 틀어도 되는 기기인가 — '움직임 줄이기', 데이터 절약, 느린 연결(2G · 3G)이면 대기 사진만 (2026-10-16 사용자 결정).
+     아이폰 Safari는 연결 정보를 주지 않아 늘 튼다 */
+  function canVideo(){
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return false;
+    var c=navigator.connection;
+    return !(c && (c.saveData || /2g|3g/.test(c.effectiveType||'')));
+  }
+
+  function build(custom,videos){
+    var list=SLOTS.filter(function(k){ return custom[k] || hasDefault(k); }), useVideo=canVideo();
     if(!list.length) list=['music'];   /* 사진이 하나도 없으면 음악 칸의 바탕색만 */
     [].slice.call(hero.querySelectorAll('.slide')).forEach(function(s){ s.parentNode.removeChild(s); });
     dotsBox.textContent='';
@@ -26,7 +38,8 @@
       s.className='slide s-'+k+(i===0?' on':'');
       /* 파일ID는 관문이 만든 영숫자라 따옴표가 들어갈 일이 없고, photoUrl이 한 번 더 인코딩한다 */
       if(custom[k]) s.style.setProperty('--img-hero-'+k,'url("'+Board.photoUrl(custom[k].fileId,photoWidth())+'")');
-      if(custom[k] && custom[k].fg) addDepth(s,custom[k]);
+      if(custom[k] && videos[k] && videos[k].src && useVideo){ s._video=videos[k]; s.classList.add('vd'); }   /* 영상은 차례가 가까워지면 부른다(prep) */
+      else if(custom[k] && custom[k].fg) addDepth(s,custom[k]);
       hero.insertBefore(s,anchor);   /* .slide가 #hero의 첫 div들이어야 main.css의 nth-of-type(확대 · 축소 번갈아)이 맞는다 */
       return s;
     });
@@ -63,11 +76,48 @@
   }
   window.addEventListener('resize',function(){ slides.forEach(place); });
 
+  /* 영상 칸의 <video>를 만든다(지금 칸과 다음 칸만 — 전송량 절약). 재생이 시작되면 대기 사진 위로 서서히 보이고,
+     불러오지 못하면 영상을 빼고 사진 칸처럼 넘어간다 */
+  function prep(s){
+    if(!s || !s._video || s._v) return;
+    var v=document.createElement('video');
+    v.className='vid'; v.muted=true; v.playsInline=true; v.preload='auto';
+    v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.setAttribute('aria-hidden','true');
+    v.addEventListener('playing',function(){ v.classList.add('on'); });
+    v.addEventListener('error',function(){ if(v.parentNode) s.removeChild(v); s._v=null; s._video=null; });
+    v.src=MEDIA_BASE+s._video.src;
+    s.appendChild(v); s._v=v;
+  }
+
   function go(n){ if(!slides.length) return; idx=(n+slides.length)%slides.length;
     slides.forEach(function(s,i){s.classList.toggle('on',i===idx)});
     dots.forEach(function(d,i){d.classList.toggle('on',i===idx)}); }
-  function play(){ clearInterval(timer); if(slides.length>1) timer=setInterval(function(){go(idx+1)},6000); }
-  hero.querySelector('.h-nav.next').addEventListener('click',function(){go(idx+1);play()});
+  function next(){ go(idx+1); play(); }
+  /* 지금 칸에 맞춰 다음으로 넘어갈 때를 정한다. 사진 칸 6초, 영상 칸은 처음부터 다시 틀고 영상 길이만큼(6~20초,
+     6초보다 짧으면 반복). 영상이 3초 안에 시작하지 못하면 사진 칸처럼 모두 6초 */
+  function play(){
+    clearTimeout(timer);
+    var s=slides[idx], single=slides.length<2;
+    if(!s) return;
+    slides.forEach(function(o){ if(o!==s && o._v) o._v.pause(); });
+    prep(s); if(!single) prep(slides[(idx+1)%slides.length]);
+    var v=s._v;
+    if(!v){ if(!single) timer=setTimeout(next,PHOTO_MS); return; }
+    v.loop=single;
+    try{ v.currentTime=0; }catch(e){}
+    var pr=v.play(); if(pr && pr.catch) pr.catch(function(){});
+    if(single) return;
+    var onPlaying=function(){
+      v.removeEventListener('playing',onPlaying);
+      if(slides[idx]!==s || s._v!==v) return;
+      var d=isFinite(v.duration) ? v.duration : VIDEO_MIN;
+      if(d<VIDEO_MIN) v.loop=true;
+      clearTimeout(timer); timer=setTimeout(next,Math.min(VIDEO_MAX,Math.max(VIDEO_MIN,d))*1000);
+    };
+    v.addEventListener('playing',onPlaying);
+    timer=setTimeout(function(){ v.removeEventListener('playing',onPlaying); timer=setTimeout(next,PHOTO_MS-VIDEO_WAIT); },VIDEO_WAIT);
+  }
+  hero.querySelector('.h-nav.next').addEventListener('click',next);
   hero.querySelector('.h-nav.prev').addEventListener('click',function(){go(idx-1);play()});
 
   /* 사진을 보이고 움직임을 켠다 (바로 켜면 첫 장은 움직임이 끝난 모습으로 시작함) */
@@ -78,9 +128,9 @@
     play();
   }
   var started=false;
-  function start(custom){
+  function start(custom,videos){
     if(started) return; started=true;
-    var first=build(custom||{});
+    var first=build(custom||{},videos||{});
     if(!custom || !custom[first]) return show();
     var urls=[custom[first].fileId].concat(custom[first].fg ? [custom[first].fg.fileId] : []), left=urls.length;
     urls.forEach(function(id){   /* 첫 장은 누끼까지 받은 뒤 보인다 (인물이 나중에 튀어나오지 않게) */
@@ -88,7 +138,7 @@
     });
     setTimeout(show,2000);
   }
-  if(window.Board) Board.load().then(function(d){ start(d&&d.hero); });
+  if(window.Board) Board.load().then(function(d){ start(d&&d.hero,d&&d.heroVideo); });
   else start(null);
   setTimeout(function(){ start(null); },3000);   /* 목록이 너무 늦으면 기본 사진으로 (이미 시작했으면 무시) */
 })();
