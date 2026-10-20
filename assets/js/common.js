@@ -6,10 +6,11 @@
    ============================================================ */
 var SITE = {
   name : "2026 K예술영재 프로젝트",
-  org  : "한국예술영재교육연구원",
+  brand: "K예술영재 프로젝트",       /* 로고 · 푸터 첫 줄 (연도는 로고 위 작은 글자) */
+  host : "문화체육관광부",           /* 주최 (WBS 9.8) */
+  org  : "한국예술영재교육연구원",   /* 주관 */
   mail : "kgifted2026@naver.com",
-  addr : "한국예술영재교육연구원 · 2026 K예술영재 프로젝트",
-  /* 푸터 SNS — url을 넣으면 새 탭 링크가 된다. 비어 있으면 아이콘만 보이고 눌러도 이동하지 않는다.
+  /* SNS(머리 오른쪽 · 1100px 이하는 전체메뉴 안, WBS 9.9) — url을 넣으면 새 탭 링크가 된다. 비어 있으면 아이콘만 보이고 눌러도 이동하지 않는다.
      주소는 2026-10-14 차장님 전달 (인스타그램만 계정 이름이 kartgifted — 실제 프로젝트 계정임을 확인함) */
   sns  : [
     { id:"youtube",   name:"유튜브",     url:"https://www.youtube.com/@kartsgifted" },
@@ -32,6 +33,10 @@ var SITEMAP = [
       {t:"프로젝트 개요", h:"about.html#overview"},
       {t:"추진체계·참여기관", h:"about.html#system"},
       {t:"연간 로드맵",     h:"about.html#road"}
+  ]},
+  /* 해마다 새 연도 탭을 더하는 곳 (WBS 9.4) — 탭 id는 y+연도 */
+  { id:"recruit", en:"RECRUIT", ko:"모집 및 선발", href:"recruit.html", sub:[
+      {t:"2026", h:"recruit.html#y2026"}
   ]},
   /* pages: 이 메뉴를 현재 위치로 표시할 페이지(body의 data-page)
      경로 표시의 <li data-menu="programs">도 이 sub로 「프로그램 ▾」 목록을 만든다 (WBS 8.9) */
@@ -56,15 +61,27 @@ var SITEMAP = [
     return '<li class="'+(on?'on':'')+'"><a href="'+m.href+'">'+m.ko+'</a></li>';
   }).join('');
 
+  /* SNS 아이콘 줄 — 머리(.hd-sns) · 전체메뉴(.am-sns)에 같은 모양으로 */
+  function snsLinks(cls){
+    return '<div class="'+cls+'">'+SITE.sns.map(function(s){
+      var svg = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">'+SNS_ICON[s.id]+'</svg>';
+      return s.url
+        ? '<a href="'+s.url+'" target="_blank" rel="noopener noreferrer" aria-label="'+s.name+' (새 창)" title="'+s.name+'">'+svg+'</a>'
+        : '<a aria-label="'+s.name+' (준비 중)" title="'+s.name+'">'+svg+'</a>';
+    }).join('')+'</div>';
+  }
+
+  /* 로고 = 작은 연도 + 서체 「K예술영재 프로젝트」 (WBS 9.6 — 리본 로고 교체) */
   var header =
   '<div class="inner hd-in">'+
-    '<a href="index.html" class="logo">'+
-      '<span class="yr">2026 THE 1<sup>ST</sup></span>'+
-      '<span class="nm">K ARTS<br>GIFTED<br>PROJECT</span>'+
-      '<span class="kr">한국예술영재</span>'+
+    '<a href="index.html" class="logo" aria-label="'+SITE.name+' 처음으로">'+
+      '<span class="yr">2026</span>'+
+      '<span class="nm">'+SITE.brand+'</span>'+
     '</a>'+
     '<nav><ul id="gnb">'+gnb+'</ul></nav>'+
-    '<button class="ham" type="button" aria-label="전체메뉴"><span></span><span></span><span></span></button>'+
+    '<div class="hd-tools">'+snsLinks('hd-sns')+
+      '<button class="ham" type="button" aria-label="전체메뉴"><span></span><span></span><span></span></button>'+
+    '</div>'+
   '</div>';
 
   var cols = SITEMAP.map(function(m){
@@ -72,27 +89,17 @@ var SITEMAP = [
       m.sub.map(function(s){return '<li><a href="'+s.h+'">'+s.t+'</a></li>'}).join('')+
     '</ul></div>';
   }).join('');
-  var allmenu = '<div class="inner"><div class="cols">'+cols+'</div></div>';
+  var allmenu = '<div class="inner"><div class="cols">'+cols+'</div>'+snsLinks('am-sns')+'</div>';
 
-  var ftCols = SITEMAP.map(function(m){
-    return '<div class="ft-col"><h4>'+m.ko+'</h4><ul>'+
-      m.sub.map(function(s){return '<li><a href="'+s.h+'">'+s.t+'</a></li>'}).join('')+
-    '</ul></div>';
-  }).join('');
+  /* 간단 푸터 (WBS 9.9 · 9.8 — 시안 B안): 이름 / 주최 · 주관 · 메일, 오른쪽 © */
   var footer =
-  '<div class="inner">'+
-    '<div class="ft-top">'+ftCols+
-      '<div class="ft-sns">'+SITE.sns.map(function(s){
-        var svg = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">'+SNS_ICON[s.id]+'</svg>';
-        return s.url
-          ? '<a href="'+s.url+'" target="_blank" rel="noopener noreferrer" aria-label="'+s.name+' (새 창)" title="'+s.name+'">'+svg+'</a>'
-          : '<a aria-label="'+s.name+' (준비 중)" title="'+s.name+'">'+svg+'</a>';
-      }).join('')+'</div>'+
+  '<div class="inner ft-in">'+
+    '<div class="ft-info">'+
+      '<p class="ft-name">'+SITE.brand+'</p>'+
+      '<p class="ft-org">주최 '+SITE.host+' · 주관 '+SITE.org+' · '+
+        '<a href="mailto:'+SITE.mail+'" data-site="mail">'+SITE.mail+'</a></p>'+
     '</div>'+
-    '<div class="ft-bot">'+
-      '<nav class="ft-nav"><a href="index.html">HOME</a></nav>'+
-      '<address><span data-site="addr">'+SITE.addr+'</span> · <span data-site="mail">'+SITE.mail+'</span><br>&copy; K ARTS GIFTED PROJECT. All Rights Reserved.</address>'+
-    '</div>'+
+    '<p class="ft-copy">&copy; '+SITE.name+'</p>'+
   '</div>';
 
   function fill(id,html,tag,cls){
@@ -141,7 +148,7 @@ var SITEMAP = [
   function setNav(open){
     clearTimeout(leaveT);
     if(open) panelHeight();   /* 웹글꼴이 늦게 들어와 목록 높이가 바뀌어도 열 때마다 맞춘다 */
-    hdEl.classList.toggle('nav-open', open && pc.matches);
+    hdEl.classList.toggle('nav-open', open && pc.matches && !document.body.classList.contains('menu-open'));   /* 전체메뉴(☰) 연 동안은 펼치지 않음 */
   }
   function enter(){ clearTimeout(leaveT); if(!shut) setNav(true); }
   function leave(){ clearTimeout(leaveT); leaveT=setTimeout(function(){ shut=false; setNav(false); },120); }   /* 글자와 판 사이를 지나는 동안 끊기지 않게 */
@@ -157,8 +164,8 @@ var SITEMAP = [
     if(word){ quiet=true; word.focus(); }   /* 숨는 목록 안에 있던 포커스를 그 메뉴 글자로 */
   });
   window.addEventListener('resize',panelHeight); panelHeight();
-  /* 1100px 이하로 줄면 판을 닫고, 1101px 이상으로 넓히면 전체메뉴(☰ — 1100px 이하 전용)를 닫는다 */
-  pc.addEventListener('change',function(e){ if(e.matches) document.body.classList.remove('menu-open'); else setNav(false); });
+  /* 1100px 이하로 줄면 판을 닫는다. ☰ 전체메뉴는 PC에서도 쓴다 (WBS 9.9 — 8.12의 PC 숨김을 되돌림) */
+  pc.addEventListener('change',function(e){ if(!e.matches) setNav(false); });
 
   document.querySelectorAll('#crumb [data-menu]').forEach(function(li){
     var m=SITEMAP.filter(function(x){return x.id===li.dataset.menu})[0];
@@ -193,7 +200,7 @@ var SITEMAP = [
   topBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
 
   document.querySelector('.ham').addEventListener('click',function(){
-    document.body.classList.toggle('menu-open');
+    if(document.body.classList.toggle('menu-open')) setNav(false);   /* 펼친 메뉴 판은 닫고 전체메뉴를 연다 */
   });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') document.body.classList.remove('menu-open'); });
 
