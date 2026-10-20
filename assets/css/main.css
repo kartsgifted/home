@@ -85,9 +85,9 @@
 #about .lead{font-size:clamp(28px,3vw,44px);line-height:1.45}
 #about .txt p{font-size:17px;line-height:1.9;color:var(--ink);letter-spacing:-.02em}
 #about .txt p + p{margin-top:14px}
-.pill{display:inline-flex;align-items:center;padding:14px 24px;border:1px solid var(--teal);border-radius:999px;color:var(--teal);
+.ab-btn{display:inline-flex;align-items:center;padding:14px 24px;border:1px solid var(--teal);border-radius:999px;color:var(--teal);
   font-size:16px;font-weight:700;letter-spacing:-.02em;transition:background .3s,color .3s}
-.pill:hover{background:var(--teal);color:#fff}
+.ab-btn:hover,.ab-btn:focus-visible{background:var(--teal);color:#fff}   /* common.css .pill(하위 페이지 채운 단추)과 이름을 나눔 */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0 30px;margin-top:80px;border-top:2px solid var(--ink)}
 .stat{padding:36px 0 6px}
 .stat dt{font-size:15px;color:var(--gray-lt);letter-spacing:-.02em}
