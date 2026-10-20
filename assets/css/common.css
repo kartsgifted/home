@@ -135,7 +135,7 @@ body.menu-open .ham span:nth-child(3){transform:translateY(-8.25px) rotate(-45de
 body.menu-open #allmenu{opacity:1;pointer-events:auto}
 #allmenu .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;width:100%;padding:var(--hd) 0 40px}
 #allmenu h3{font-family:"GmarketSans",Pretendard,sans-serif;font-size:24px;color:#fff;padding-bottom:16px;border-bottom:1px solid var(--line-dk)}
-#allmenu h3 span{display:block;font-family:"Playfair Display",serif;font-size:12px;letter-spacing:.18em;color:var(--gold);margin-bottom:8px}
+#allmenu h3 span{display:block;font-size:12px;font-weight:500;letter-spacing:.2em;color:var(--coral-lt);margin-bottom:8px}   /* #sv .en과 같은 산호색 고딕 (WBS 9절) */
 #allmenu li a{display:block;padding:11px 0;color:rgba(255,255,255,.82);font-size:16px;transition:color .25s,padding-left .25s}
 #allmenu li a:hover{color:#fff;padding-left:8px}
 #allmenu ul{margin-top:10px}
