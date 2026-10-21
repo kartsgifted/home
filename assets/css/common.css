@@ -400,10 +400,15 @@ body.sub #footer{border-top:1px solid var(--line-lt)}
 .ft-org{margin-top:8px;font-size:14px;line-height:1.7;color:var(--gray);letter-spacing:-.01em}
 .ft-org a:hover,.ft-org a:focus-visible{color:var(--teal);text-decoration:underline;text-underline-offset:3px}
 .ft-copy{font-size:14px;line-height:1.7;color:var(--gray);letter-spacing:-.01em}
-.top{position:fixed;right:28px;bottom:28px;width:48px;height:48px;border-radius:50%;background:var(--teal);color:#fff;border:0;
+.top{position:fixed;right:28px;bottom:86px;width:48px;height:48px;border-radius:50%;background:var(--teal);color:#fff;border:0;
   cursor:pointer;z-index:60;opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;font-size:16px}
 .top.on{opacity:1;pointer-events:auto}
 .top:hover{transform:translateY(-3px)}
+/* 맨 아래로 — 맨 위로 단추 바로 아래 (2026-10-21, 사용자: ↑ 위 · ↓ 아래) */
+.go-end{position:fixed;right:28px;bottom:28px;width:48px;height:48px;border-radius:50%;background:var(--teal);color:#fff;border:0;
+  cursor:pointer;z-index:60;opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;font-size:16px}
+.go-end.on{opacity:1;pointer-events:auto}
+.go-end:hover{transform:translateY(3px)}
 
 /* ============ 게시글 (board.js — 관리자 미리보기 · 방문자 화면 공용) ============ */
 .post{border-top:2px solid var(--ink)}
@@ -626,4 +631,36 @@ html.zv-open{overflow:hidden}
   .og-ic{width:48px;height:48px}
   .og-ic svg{width:26px;height:26px}
   .og-f b{font-size:15px}
+}
+
+/* 추진 목표 (2026-10-21 사용자 결정, 시안 A3 「성장 계단」) — 발굴 → 육성 → 개선 카드가 한 칸씩 높아지고 연한 → 진한 청록, 카드 사이 아래쪽에 작은 금색 꺾쇠.
+   목표마다 이어지는 프로그램 알약. 768px 이하는 세로로 쌓고 꺾쇠는 아래 방향 */
+.gl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:42px;align-items:end;margin-top:40px;border-bottom:3px solid var(--ink)}
+.gl-c{position:relative;display:flex;flex-direction:column;padding:30px 30px 28px;border-radius:16px 16px 0 0;color:#fff}
+.gl-c:nth-child(1){min-height:330px;background:#4C93A9}
+.gl-c:nth-child(2){min-height:400px;background:var(--teal)}
+.gl-c:nth-child(3){min-height:470px;background:var(--teal-dp)}
+.gl-no{font-family:"Playfair Display",serif;font-size:15px;letter-spacing:.1em;opacity:.85}
+.gl-ic{display:grid;place-items:center;width:58px;height:58px;margin-top:14px;border-radius:50%;background:rgba(255,255,255,.16)}
+.gl-ic svg{width:28px;height:28px}
+.gl-c h4{margin-top:auto;padding-top:24px;font-family:"Nanum Myeongjo",serif;font-size:44px;font-weight:800;line-height:1.2;letter-spacing:-.02em}
+.gl-c p{margin-top:12px;font-size:16px;line-height:1.65;letter-spacing:-.02em;opacity:.94}
+.gl-pg{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.gl-pg li{padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.16);font-size:13.5px;font-weight:600;letter-spacing:-.02em}
+.gl-c + .gl-c::before{content:"";position:absolute;left:-29px;bottom:26px;width:14px;height:14px;border-top:2px solid var(--gold-dp);border-right:2px solid var(--gold-dp);transform:rotate(45deg)}
+@media(max-width:1100px){
+  .gl{gap:34px}
+  .gl-c{padding:26px 24px 24px}
+  .gl-c h4{font-size:36px}
+  .gl-c p{font-size:15px}
+  .gl-c + .gl-c::before{left:-24px;width:12px;height:12px}
+}
+@media(max-width:768px){
+  .gl{grid-template-columns:1fr;gap:34px;border-bottom:0}
+  .gl-c{border-radius:16px}
+  .gl-c:nth-child(n){min-height:0}
+  .gl-ic{position:absolute;right:24px;top:22px;margin:0;width:48px;height:48px}
+  .gl-ic svg{width:24px;height:24px}
+  .gl-c h4{padding-top:8px;font-size:34px}
+  .gl-c + .gl-c::before{left:50%;top:-23px;bottom:auto;margin-left:-6px;transform:rotate(135deg)}
 }
