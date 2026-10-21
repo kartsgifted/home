@@ -28,43 +28,60 @@
 <p class="h-en" lang="en">K-Arts Gifted Youth Project</p>
 <p class="h-date">2026. 3. 1. – 2027. 1. 30.</p>
 <div class="h-foot">
-<p class="h-org"><span><b>주최</b>문화체육관광부</span> <span><b>주관</b>한국예술영재교육연구원</span></p>
+<!-- 기관 대표 로고 자리 (10.1) — 로고 파일이 오면 .h-lg 안의 글자(<b>주최</b>문화체육관광부)를 지우고 흰색 로고 하나만 넣는다:
+     <span class="h-lg"><img alt="문화체육관광부" src="assets/img/logo-….png"/></span>
+     높이 · 사이 세로 구분선은 main.css 「표지 로고」가 맞춘다(로고가 둘 다 들어가야 구분선이 보임). 그 전에는 글자로 보인다. -->
+<div class="h-logos"><span class="h-lg"><b>주최</b>문화체육관광부</span><span class="h-lg"><b>주관</b>한국예술영재교육연구원</span></div>
 <div aria-label="표지 분야" class="h-tabs" role="group"></div>
 </div>
 </div>
 </div>
 </section>
-<!-- ============ ABOUT · 숫자 4칸 (A안) ============ -->
+<!-- ============ ABOUT · 여정 도식 (5차 피드백) ============ -->
 <section id="about">
 <div class="inner">
 <div class="ab-grid">
 <p class="lead" data-k="index.about.9" data-rv="">예술영재의 <b>가능성</b>을<br/>발견하고 <b>키우는</b><br/>가장 긴 호흡의 여정</p>
 <div class="txt" data-d="1" data-rv="">
 <p data-k="index.about.10">K예술영재 프로젝트는 무용·음악·미술·전통예술 네 개 분야의 예술영재를 발굴하고, 분야별 워크숍과 심화 멘토링, 겨울캠프로 이어지는 성장 과정을 운영합니다.</p>
-<p data-k="index.about.11">모든 과정은 기록으로 남아 다음 해 교육과정 설계의 근거가 됩니다.</p>
+<p data-k="index.about.11">한 해의 성과는 다음 해 교육과정 설계의 근거가 됩니다.</p>
 <div class="btns"><a class="ab-btn" data-k="index.about.12" href="about.html">사업소개 자세히 보기</a></div>
 </div>
 </div>
-<dl class="stats">
-<div class="stat" data-rv=""><dt data-k="index.about.13">분야</dt><dd data-k="index.about.14">4<small>개 분야</small></dd><p class="cap" data-k="index.about.15">무용 · 음악 · 미술 · 전통예술</p></div>
-<div class="stat" data-d="1" data-rv=""><dt data-k="index.about.16">워크숍</dt><dd data-k="index.about.17">2<small>개월</small></dd><p class="cap" data-k="index.about.18">분야별 정규 워크숍</p></div>
-<div class="stat" data-d="2" data-rv=""><dt data-k="index.about.19">심화 멘토링</dt><dd data-k="index.about.20">3<small>개월</small></dd><p class="cap" data-k="index.about.21">분야별 전담 멘토 지도</p></div>
-<div class="stat" data-d="3" data-rv=""><dt data-k="index.about.22">겨울캠프</dt><dd data-k="index.about.23">7<small>일</small></dd><p class="cap" data-k="index.about.24">합숙 집중과정과 갈라공연</p></div>
-</dl>
+<!-- 여정 도식 (10.2) — 네 분야 → 곡선이 한 점으로 모임 → 단계별 성장 과정 카드 3장. 곡선은 화면에 들어오면 그려진다(main.css 「여정 도식」, 공통 등장 효과 .on) -->
+<div class="jr">
+<div class="jr-map" data-rv="">
+<p class="jr-k" lang="en">ONE YEAR JOURNEY</p>
+<h2 class="jr-t">네 개 분야, 세 단계의 성장 과정</h2>
+<ul class="jr-fields">
+<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6l-3 7M12 13l3 7M5 6l7 3 7-4"/></svg></i><b>무용</b></li>
+<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg></i><b>음악</b></li>
+<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-1.3-1-1.6-1-2.6 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg></i><b>미술</b></li>
+<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><ellipse cx="6" cy="12" rx="3" ry="6"/><ellipse cx="18" cy="12" rx="3" ry="6"/><path d="M6 6h12M6 18h12M9 6l6 12M15 6l-6 12"/></svg></i><b>전통예술</b></li>
+</ul>
+<!-- 곡선: 원 줄(.jr-fields)과 같은 폭 · 같은 4칸(가운데 95 · 285 · 475 · 665)으로 늘어난다. 선 굵기 · 끝점은 늘어나도 그대로 -->
+<svg aria-hidden="true" class="jr-wire" fill="none" preserveAspectRatio="none" viewBox="0 0 760 110">
+<path d="M95 0C95 60 380 40 380 96" pathLength="1"/>
+<path d="M285 0C285 50 380 50 380 96" pathLength="1"/>
+<path d="M475 0C475 50 380 50 380 96" pathLength="1"/>
+<path d="M665 0C665 60 380 40 380 96" pathLength="1"/>
+<path class="jr-dot" d="M380 100h0"/>
+</svg>
+<p class="jr-badge">단계별 성장 과정</p>
 </div>
-</section>
-<!-- ============ 프로그램 흐름 STEP 1~3 (차장님 B안 하단) ============ -->
-<section id="flow">
-<div class="inner">
-<p class="kicker" data-rv="">프로그램</p>
-<h2 class="flow-title" data-rv="">발견에서 무대까지, 한 해의 흐름</h2>
-<div class="steps">
-<a class="step" data-rv="" href="programs.html"><div class="thumb"><i></i></div>
-<p class="no">STEP 1</p><h3>워크숍</h3><p class="desc">분야마다 다른 커리큘럼으로 기본기와 표현력을 다지는 정규 과정</p></a>
-<a class="step" data-d="1" data-rv="" href="mentoring.html"><div class="thumb"><i></i></div>
-<p class="no">STEP 2</p><h3>심화 멘토링</h3><p class="desc">분야별 전담 멘토가 개인의 목표에 맞춰 이어가는 지도</p></a>
-<a class="step" data-d="2" data-rv="" href="camp.html"><div class="thumb"><i></i></div>
-<p class="no">STEP 3</p><h3>겨울캠프</h3><p class="desc">네 분야가 함께하는 합숙 집중과정과 갈라공연</p></a>
+<div class="jr-steps">
+<a class="jr-s" data-rv="" href="programs.html"><div class="jr-ph"></div><div class="jr-bd">
+<div class="jr-hd"><span class="jr-no">STEP 01</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H3zM21 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg></i></div>
+<h3>워크숍</h3><p class="jr-n">2<small>개월</small></p><p class="jr-tx">분야마다 다른 커리큘럼으로 기본기와 표현력을 다지는 정규 과정</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
+<div aria-hidden="true" class="jr-arr"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+<a class="jr-s" data-d="1" data-rv="" href="mentoring.html"><div class="jr-ph"></div><div class="jr-bd">
+<div class="jr-hd"><span class="jr-no">STEP 02</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M13.5 20a3.6 3.6 0 0 1 7.2 0"/></svg></i></div>
+<h3>심화 멘토링</h3><p class="jr-n">3<small>개월</small></p><p class="jr-tx">분야별 전담 멘토가 개인의 목표에 맞춰 이어가는 지도</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
+<div aria-hidden="true" class="jr-arr"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+<a class="jr-s" data-d="2" data-rv="" href="camp.html"><div class="jr-ph"></div><div class="jr-bd">
+<div class="jr-hd"><span class="jr-no">STEP 03</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 3v17M8 20l4-6 4 6"/></svg></i></div>
+<h3>겨울캠프</h3><p class="jr-n">7<small>일</small></p><p class="jr-tx">네 분야가 함께하는 합숙 집중과정과 갈라공연</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
+</div>
 </div>
 </div>
 </section>
