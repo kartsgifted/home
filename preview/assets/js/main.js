@@ -218,13 +218,13 @@
   setTimeout(function(){ start(null); },3000);   /* 목록이 너무 늦으면 기본 사진으로 (이미 시작했으면 무시) */
 })();
 
-/* 한 번 스크롤로 다음 칸 이동 — 마우스 · 터치패드를 쓰는 창이면 크기와 상관없이 (휴대폰 · 태블릿 터치는 일반 스크롤).
-   화면보다 긴 칸은 안에서 일반 스크롤하다가 끝에 닿으면 다음 칸으로 넘어간다. */
+/* 표지 ↔ 본문만 한 번 스크롤로 이동 — 마우스 · 터치패드를 쓰는 창이면 크기와 상관없이 (휴대폰 · 태블릿 터치는 일반 스크롤).
+   표지에서 아래로 = 본문 첫 칸 위로, 본문 첫 칸 위쪽(화면 높이 15% 안)에서 위로 = 표지 맨 위로. 그 밖의 본문은 일반 스크롤
+   (2026-10-21 사용자 요청 — 예전에는 모든 칸을 한 번에 넘김) */
 (function(){
-  var blocks=[].slice.call(document.querySelectorAll('body > section[id]'));
-  var foot=document.getElementById('footer');
-  if(!blocks.length) return;
-  if(foot) blocks.push(foot);
+  var hero=document.getElementById('hero'), next=hero && hero.nextElementSibling;
+  while(next && next.tagName!=='SECTION') next=next.nextElementSibling;
+  if(!hero || !next) return;
 
   var mouse=window.matchMedia('(pointer:fine)'),
       still=window.matchMedia('(prefers-reduced-motion:reduce)'),
@@ -235,25 +235,14 @@
 
   /* 이동할 위치를 정해 움직이면 true, 일반 스크롤에 맡기면 false */
   function step(dir){
-    var y=window.scrollY, vh=window.innerHeight, max=root.scrollHeight-vh, i=0, to;
-    blocks.forEach(function(b,k){ if(b.offsetTop<=y+2) i=k; });
-    /* 화면보다 10% 넘게 길어야 긴 칸으로 본다 (표지처럼 조금만 긴 칸은 한 칸으로 이동) */
-    var b=blocks[i], top=b.offsetTop, h=b.offsetHeight, long=h>vh*1.1;
+    var y=window.scrollY, top=next.offsetTop, to;
     if(dir>0){
-      if(long && y+vh<top+h-2) return false;          /* 긴 칸의 아래가 남음 */
-      if(i+1>=blocks.length) return false;
-      to=Math.min(blocks[i+1].offsetTop,max);
+      if(y>=top-2) return false;                        /* 이미 본문 — 일반 스크롤 */
+      to=top;
     }else{
-      if(long && y>top+2) return false;                /* 긴 칸의 위가 남음 */
-      if(y>top+vh*.1){
-        to=top;                                        /* 짧은 칸에서 많이 어긋나 있으면 칸 위로 맞춤 */
-      }else{
-        if(i===0) return false;
-        var p=blocks[i-1];
-        to=p.offsetHeight>vh*1.1 ? top-vh : p.offsetTop;   /* 긴 칸으로 올라가면 그 칸의 끝 화면부터 */
-      }
+      if(y<=2 || y>top+window.innerHeight*.15) return false;   /* 맨 위이거나 본문 깊은 곳 — 일반 스크롤 */
+      to=0;
     }
-    if(Math.abs(to-y)<2) return false;
     animate(to);
     return true;
   }

@@ -187,17 +187,24 @@ var SITEMAP = [
     var b=document.createElement('button');b.className='top';b.type='button';
     b.setAttribute('aria-label','맨 위로');b.innerHTML='&#8593;';document.body.appendChild(b);
   }
+  /* 맨 아래로 (2026-10-21 사용자 요청, 모든 페이지) — 맨 위로 단추 위에 같은 모양. 페이지가 짧거나 맨 아래 근처면 숨김 */
+  if(!document.querySelector('.go-end')){
+    var e2=document.createElement('button');e2.className='go-end';e2.type='button';
+    e2.setAttribute('aria-label','맨 아래로');e2.innerHTML='&#8595;';document.body.appendChild(e2);
+  }
 
   /* ---------- 인터랙션 ---------- */
   var hd=document.getElementById('header'), topBtn=document.querySelector('.top'),
-      hero=document.getElementById('hero');
+      endBtn=document.querySelector('.go-end'), hero=document.getElementById('hero');
   function onScroll(){
-    var y=window.scrollY;
+    var y=window.scrollY, max=document.documentElement.scrollHeight-window.innerHeight;
     if(hero) hd.classList.toggle('solid', y > hero.offsetHeight-120);
     topBtn.classList.toggle('on', y>600);
+    endBtn.classList.toggle('on', max>600 && y<max-200 && !(hero && y<hero.offsetHeight-120));   /* 메인 표지 위에서는 숨김(오른쪽 아래 분야 탭과 겹침) */
   }
-  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  window.addEventListener('scroll',onScroll,{passive:true}); window.addEventListener('resize',onScroll); window.addEventListener('load',onScroll); onScroll();
   topBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  endBtn.addEventListener('click',function(){window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})});
 
   document.querySelector('.ham').addEventListener('click',function(){
     if(document.body.classList.toggle('menu-open')) setNav(false);   /* 펼친 메뉴 판은 닫고 전체메뉴를 연다 */
