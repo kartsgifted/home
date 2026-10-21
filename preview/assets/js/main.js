@@ -1,6 +1,6 @@
 /* 메인 페이지 전용 — 표지 슬라이드(분야 탭) / 한 번 스크롤 / 소식(공지 · 언론홍보를 섞은 최신 4개) */
 
-/* 표지 — 분야마다 한 장씩 무용 → 음악 → 미술 → 전통예술 순서로 넘어간다 (docs/decisions.md 2절).
+/* 표지 — 분야마다 한 장씩 음악 → 무용 → 전통예술 → 미술 순서로 넘어간다 (docs/decisions.md 2절, 분야 순서는 2026-10-21 피드백 WBS 9.10).
    관리자 페이지에서 올린 사진(data/posts.json의 hero)이 있으면 그 사진, 없으면 기본 사진(main.css --img-hero-*),
    둘 다 없는 칸은 건너뛴다. 기본 사진이 올린 사진으로 바뀌며 깜박이지 않도록 #hero.wait 동안은 사진을 숨겨 두고
    목록을 받은 뒤(첫 장이 올린 사진이면 그 사진까지 받은 뒤, 최대 2초) 서서히 보인다.
@@ -10,7 +10,7 @@
 (function(){
   var hero=document.getElementById('hero');
   if(!hero) return;
-  var SLOTS=['dance','music','art','trad'], NAMES={ dance:'무용', music:'음악', art:'미술', trad:'전통예술' },
+  var SLOTS=['music','dance','trad','art'], NAMES={ dance:'무용', music:'음악', art:'미술', trad:'전통예술' },
       MEDIA_BASE='https://kartsgifted.github.io/home-media/',   /* admin.js의 MEDIA_BASE와 맞출 것 */
       PHOTO_MS=6000, VIDEO_MIN=6, VIDEO_MAX=20, VIDEO_WAIT=3000,   /* 사진 칸 6초, 영상 칸은 영상 길이(6~20초), 3초 안에 시작 못 하면 사진처럼 */
       tabsBox=hero.querySelector('.h-tabs'), anchor=hero.querySelector('.hero-in'),

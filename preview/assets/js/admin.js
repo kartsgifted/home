@@ -25,7 +25,8 @@
   /* 갤러리 앨범 과정 · 분야 — 관문 GALLERY_COURSES_ · GALLERY_FIELDS_(Setup.js)와 같은 코드. 프로그램 페이지가 이 코드로 공개 앨범 사진을 모은다.
      분야 ''(공통)은 그 과정 전체, 과정 ''은 지정 안 함 (WBS 8.10) */
   var GALLERY_COURSES = [['workshop', '워크숍'], ['mentoring', '심화멘토링'], ['camp', '겨울캠프']];
-  var GALLERY_FIELDS = [['dance', '무용'], ['music', '음악'], ['art', '미술'], ['trad', '전통예술'], ['', '공통']];
+  var GALLERY_FIELDS = [['music', '음악'], ['dance', '무용'], ['trad', '전통예술'], ['art', '미술'], ['', '공통']];   /* 화면 순서 = 분야 순서(2026-10-21, WBS 9.10). 코드는 관문과 같음 */
+  var HERO_ORDER = ['music', 'dance', 'trad', 'art'];   /* 표지 칸 순서 — main.js SLOTS와 맞출 것 */
   function codeName(list, code){ var x = list.filter(function(i){ return i[0] === code; })[0]; return x ? x[1] : ''; }
   // ('workshop', 'dance') → '워크숍 · 무용'. 지정 안 함이면 ''
   function galleryLabel(course, field){
@@ -257,7 +258,12 @@
   }
   function visBadge(v){ return h('span', { class:'badge ' + (v === '공개' ? 'on' : 'off'), text:v }); }
   function boardOf(id){ return BOARDS.filter(function(b){ return b.id === id; })[0]; }
-  function itemsOf(id){ var d = S.data; return (id === 'notice' ? d.notices : id === 'press' ? d.press : id === 'gallery' ? d.gallery : d.hero) || []; }
+  function itemsOf(id){
+    var d = S.data, list = (id === 'notice' ? d.notices : id === 'press' ? d.press : id === 'gallery' ? d.gallery : d.hero) || [];
+    /* 표지 칸은 화면(main.js SLOTS)과 같은 분야 순서로 보여 준다 — 관문 · 시트의 칸 순서는 그대로 (분야 순서 2026-10-21, WBS 9.10) */
+    if(id === 'hero') list = list.slice().sort(function(a, b){ return HERO_ORDER.indexOf(a.slot) - HERO_ORDER.indexOf(b.slot); });
+    return list;
+  }
 
   /* 표지 사진 — 분야 칸 4개(순서 고정). 올린 사진 > 기본 사진 > 건너뜀 */
   function heroState(slot){
