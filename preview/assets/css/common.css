@@ -360,10 +360,21 @@ body.menu-open #allmenu{opacity:1;pointer-events:auto}
 .flow-tx p{margin-top:12px;font-size:16px;line-height:1.75;color:var(--gray);letter-spacing:-.02em}
 .flow-also{margin-top:30px;font-size:16px;color:var(--gray);letter-spacing:-.02em}
 .flow-also b{margin-left:6px;color:var(--ink);font-weight:700}
-.pts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.pt{background:var(--cream);border-radius:16px;padding:40px 32px}
-.pt h4{font-size:21px;font-weight:700;letter-spacing:-.03em}
-.pt p{margin-top:14px;font-size:16px;line-height:1.75;color:var(--gray);letter-spacing:-.02em}
+/* 교육 포인트 (2026-10-21 사용자 결정, 시안 C) — 큰 아이콘 원 3개를 한 줄 선(연한 → 진한 청록)으로 잇고, 금색 번호 · 짧은 이름표 · 서체 제목.
+   760px 이하는 세로 목록(원 왼쪽, 선은 세로). 2차 때 다른 분야도 같은 틀 */
+.ep{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:6px}
+.ep::before{content:"";position:absolute;left:16.67%;right:16.67%;top:70px;height:2px;background:linear-gradient(90deg,#7FB2C2,var(--teal-dp))}
+.ep-c{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 24px}
+.ep-o{position:relative;flex:none;display:grid;place-items:center;width:140px;height:140px;border:2px solid var(--teal);border-radius:50%;background:#fff}
+.ep-ic{display:grid;place-items:center;width:96px;height:96px;border-radius:50%;color:#fff}
+.ep-ic svg{width:44px;height:44px}
+.ep-c:nth-child(1) .ep-ic{background:#7FB2C2}
+.ep-c:nth-child(2) .ep-ic{background:var(--teal)}
+.ep-c:nth-child(3) .ep-ic{background:var(--teal-dp)}
+.ep-o em{position:absolute;right:-2px;top:-2px;display:grid;place-items:center;width:34px;height:34px;border:3px solid #fff;border-radius:50%;background:var(--gold-dp);color:#fff;font-style:normal;font-size:14px;font-weight:700}
+.ep-tx small{display:block;margin-top:22px;font-size:13px;font-weight:700;color:var(--gold-dp);letter-spacing:.04em}
+.ep-tx h4{margin-top:6px;font-family:"Nanum Myeongjo",serif;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.ep-tx p{margin-top:10px;font-size:16.5px;line-height:1.7;color:var(--gray);letter-spacing:-.02em}
 .more{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 24px;margin-top:96px;padding:30px 36px;
   border:1px solid var(--line);border-radius:16px}
 .more p{font-size:17px;letter-spacing:-.02em}
@@ -480,7 +491,16 @@ html.zv-open{overflow:hidden}
 @media(max-width:760px){
   .flow{grid-template-columns:1fr;gap:44px}
   .flow > li+li::before{left:50%;top:-34px;width:24px;margin:0 0 0 -12px;transform:rotate(90deg)}
-  .pts{grid-template-columns:1fr}
+  .ep{grid-template-columns:1fr;gap:26px}
+  .ep::before{left:49px;right:auto;top:50px;bottom:50px;width:2px;height:auto;background:linear-gradient(180deg,#7FB2C2,var(--teal-dp))}
+  .ep-c{flex-direction:row;align-items:center;gap:22px;padding:0;text-align:left}
+  .ep-o{width:100px;height:100px}
+  .ep-ic{width:70px;height:70px}
+  .ep-ic svg{width:32px;height:32px}
+  .ep-o em{width:28px;height:28px;font-size:12px}
+  .ep-tx small{margin-top:0}
+  .ep-tx h4{font-size:24px}
+  .ep-tx p{font-size:15.5px}
 }
 @media(max-width:640px){
   .boxes.c2,.boxes.c3,.boxes.c4{grid-template-columns:1fr}
