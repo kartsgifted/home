@@ -8,6 +8,9 @@ function handleUpload_(req) {
   var auth = requireAuth_(req);
   if (!auth.ok) return jsonResponse_(false, auth.error, null);
 
+  // 표지 동영상은 조각으로 나눠 받는다 (Media.js)
+  if (req.kind === 'video') return handleVideoPart_(req, auth);
+
   // cutout: 표지 2.5D용 누끼 사진(투명 배경 PNG). 관리자 화면이 원본과 같은 크기로 맞춰 PNG 그대로 올린다 (docs/decisions.md 2절)
   var kind = req.kind === 'photo' || req.kind === 'file' || req.kind === 'cutout' ? req.kind : null;
   var name = cleanFileName_(req.name);
@@ -62,7 +65,7 @@ function handleUpload_(req) {
 }
 
 // 업로드 종류 → 「첨부」 탭의 구분
-var KIND_LABELS_ = { photo: '사진', file: '파일', cutout: '누끼' };
+var KIND_LABELS_ = { photo: '사진', file: '파일', cutout: '누끼', video: '동영상' };
 
 // 경로 문자와 제어 문자를 빼고 길이를 줄인다. 드라이브에 이 이름으로 저장돼 내려받을 때 그대로 쓰인다.
 function cleanFileName_(raw) {
@@ -79,6 +82,14 @@ function getUploadFolder_() {
   var id = PropertiesService.getScriptProperties().getProperty('DRIVE_FOLDER_ID');
   if (!id) throw new Error('DRIVE_FOLDER_ID가 없음 — Setup.js의 setup()을 먼저 실행할 것');
   return DriveApp.getFolderById(id);
+}
+
+// 「첨부」 한 줄의 파일을 버린다. 동영상은 드라이브 조각들(공유 안 함)을 휴지통으로 보내고,
+// 저장된 적이 있으면(글ID가 있음) 영상 저장소의 파일도 지운다 — 저장소 이력에는 남는다 (Media.js)
+function discardAttachment_(a) {
+  if (a['구분'] !== '동영상') return discardFile_(a['파일ID']);
+  String(a['파일ID']).split(',').forEach(function (id) { if (id) discardFile_(id); });
+  if (a['글ID']) removeVideo_(a['첨부ID']);
 }
 
 // 공유를 끊고 휴지통으로 보낸다. 이미 지워졌거나 열 수 없는 파일은 넘어간다.
@@ -105,7 +116,7 @@ function cleanupOrphanUploads() {
       var at = r['올린시각'] instanceof Date ? r['올린시각'].getTime() : 0;
       return !r['글ID'] && at && at < dayAgo;
     });
-    orphans.forEach(function (r) { discardFile_(r['파일ID']); });
+    orphans.forEach(function (r) { discardAttachment_(r); });
     deleteRows_('첨부', orphans.map(function (r) { return r._row; }));
     Logger.log('정리한 첨부: ' + orphans.length + '개');
   } finally {

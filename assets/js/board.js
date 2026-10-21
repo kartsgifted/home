@@ -156,8 +156,9 @@ window.Board = (function(){
       return r.json();
     }).then(function(d){
       d = d || {};
-      var hero = d.hero && typeof d.hero === 'object' && !Array.isArray(d.hero) ? d.hero : {};
-      return { notices:arr(d.notices).map(fix), press:arr(d.press), gallery:arr(d.gallery).map(fix), hero:hero };
+      var obj = function(v){ return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; };
+      // heroVideo: 표지 동영상(2안 WBS 8.6) — 영상을 올린 칸만 { src, w, h }. 1안 화면은 쓰지 않는다
+      return { notices:arr(d.notices).map(fix), press:arr(d.press), gallery:arr(d.gallery).map(fix), hero:obj(d.hero), heroVideo:obj(d.heroVideo) };
     }).catch(function(){ return null; });
     return loading;
   }
@@ -246,16 +247,19 @@ window.Board = (function(){
     else{ V.img.removeAttribute('width'); V.img.removeAttribute('height'); }
     V.img.src = photoUrl(p.fileId, 1600);
     V.num.textContent = (V.i + 1) + ' / ' + n;
+    if(V.caps) V.cap.textContent = V.caps[V.i] || '';
     [V.i - 1, V.i + 1].forEach(function(k){   // 옆 사진을 미리 받아 넘길 때 덜 기다리게 한다
       if(n > 1) new Image().src = photoUrl(V.photos[(k + n) % n].fileId, 1600);
     });
   }
+  // caption: 모든 사진에 같은 글자(문자열) 또는 사진마다 다른 글자(photos와 같은 길이의 배열 — 프로그램 페이지 사진 줄)
   function viewer(photos, start, caption){
     if(!photos || !photos.length) return;
     if(!V) buildViewer();
     V.photos = photos;
     V.back = document.activeElement;
-    V.cap.textContent = caption || '';
+    V.caps = Array.isArray(caption) ? caption : null;
+    V.cap.textContent = V.caps ? '' : (caption || '');
     V.prev.hidden = V.next.hidden = V.num.hidden = photos.length < 2;
     show(start || 0);
     V.box.hidden = false;

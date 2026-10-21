@@ -8,7 +8,7 @@
 var TAB_HEADERS_ = {
   '읽어보기': [],
   '공지':     ['글ID', '분류', '제목', '본문', '게시일', '상단고정', '사진위치', '사진링크', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
-  '갤러리':   ['글ID', '제목', '설명', '게시일', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
+  '갤러리':   ['글ID', '제목', '설명', '게시일', '공개여부', '작성자', '작성시각', '수정자', '수정시각', '분야'],
   '언론홍보': ['글ID', '언론사', '제목', '게시일', '기사주소', '공개여부', '작성자', '작성시각', '수정자', '수정시각'],
   '표지':     ['글ID', '칸', '작성자', '작성시각', '수정자', '수정시각', '입체효과', '입체중심'],
   '첨부':     ['첨부ID', '글ID', '구분', '순서', '파일ID', '파일명', '크기', '가로', '세로', '공유', '올린사람', '올린시각'],
@@ -26,6 +26,14 @@ var TEXT_COLUMNS_ = {
   '첨부': ['첨부ID', '글ID', '파일ID'],
   '접근코드': ['코드', '사용기한']
 };
+
+// 갤러리 앨범의 과정 · 분야 (2026-10-16 WBS 8.10). 시트 「분야」 열에는 「워크숍 · 무용」처럼 한글 두 값을 이어 쓰고(지정 안 함은 빈칸),
+// data/posts.json에는 course · field 코드로 나간다. 분야 「공통」(코드 '')은 그 과정 전체. 프로그램 페이지가 이 코드로 앨범 사진을 모은다
+var GALLERY_COURSES_ = { '워크숍': 'workshop', '심화멘토링': 'mentoring', '겨울캠프': 'camp' };
+var GALLERY_FIELDS_ = { '무용': 'dance', '음악': 'music', '미술': 'art', '전통예술': 'trad', '공통': '' };
+// 8.5 때(과정 없이 분야 하나) 쓰던 시트 값 → [과정, 분야]. 읽기만 하고, 저장하면 새 모양으로 쓴다
+var GALLERY_OLD_VALUES_ = { '무용': ['workshop', 'dance'], '음악': ['workshop', 'music'], '미술': ['workshop', 'art'], '전통예술': ['workshop', 'trad'],
+  '심화멘토링': ['mentoring', ''], '겨울캠프': ['camp', ''] };
 
 var DROPDOWNS_ = {
   '접근코드': { '상태': ['사용', '정지'] }
@@ -99,7 +107,7 @@ function setupTabs_() {
   });
 }
 
-// 이미 있는 탭은 내용을 건드리지 않고, 나중에 생긴 머리글(예: 표지 입체효과 · 입체중심, 2026-10-15)만 1행 맨 뒤에 붙인다.
+// 이미 있는 탭은 내용을 건드리지 않고, 나중에 생긴 머리글(예: 표지 입체효과 · 입체중심 2026-10-15, 갤러리 분야 2026-10-16)만 1행 맨 뒤에 붙인다.
 // 관문은 머리글 글자로 열을 찾으므로 열 순서는 상관없다.
 function addMissingHeaders_(sheet, name) {
   var lastCol = sheet.getLastColumn();
@@ -132,7 +140,10 @@ function setupScriptProperties_() {
     Logger.log('TOKEN_SECRET: 만듦');
   }
   // 발행 대상 기본값. 개발 중에는 data-test, 운영 전환 때 GITHUB_BRANCH만 main으로 바꾼다 (docs/decisions.md 3절).
-  var defaults = { GITHUB_REPO: 'kartsgifted/home', GITHUB_BRANCH: 'data-test', GITHUB_PATH: 'data/posts.json' };
+  // MEDIA_*: 표지 동영상을 올리는 영상 전용 공개 저장소(GitHub Pages, 2안 WBS 8.6 — Media.js). 토큰은 GITHUB_TOKEN이
+  // 이 저장소에도 쓰기 권한이 있으면 그대로 쓰고, 따로 만들었으면 MEDIA_GITHUB_TOKEN에 넣는다
+  var defaults = { GITHUB_REPO: 'kartsgifted/home', GITHUB_BRANCH: 'data-test', GITHUB_PATH: 'data/posts.json',
+                   MEDIA_REPO: 'kartsgifted/home-media', MEDIA_BRANCH: 'main' };
   Object.keys(defaults).forEach(function (key) {
     if (!props.getProperty(key)) { props.setProperty(key, defaults[key]); Logger.log(key + ': ' + defaults[key]); }
   });

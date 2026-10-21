@@ -6,10 +6,11 @@
    ============================================================ */
 var SITE = {
   name : "2026 K예술영재 프로젝트",
-  org  : "한국예술영재교육연구원",
+  brand: "K예술영재 프로젝트",       /* 로고 · 푸터 첫 줄 (연도는 로고 위 작은 글자) */
+  host : "문화체육관광부",           /* 주최 (WBS 9.8) */
+  org  : "한국예술영재교육연구원",   /* 주관 */
   mail : "kgifted2026@naver.com",
-  addr : "한국예술영재교육연구원 · 2026 K예술영재 프로젝트",
-  /* 푸터 SNS — url을 넣으면 새 탭 링크가 된다. 비어 있으면 아이콘만 보이고 눌러도 이동하지 않는다.
+  /* SNS(머리 오른쪽 · 1100px 이하는 전체메뉴 안, WBS 9.9) — url을 넣으면 새 탭 링크가 된다. 비어 있으면 아이콘만 보이고 눌러도 이동하지 않는다.
      주소는 2026-10-14 차장님 전달 (인스타그램만 계정 이름이 kartgifted — 실제 프로젝트 계정임을 확인함) */
   sns  : [
     { id:"youtube",   name:"유튜브",     url:"https://www.youtube.com/@kartsgifted" },
@@ -33,16 +34,16 @@ var SITEMAP = [
       {t:"추진체계·참여기관", h:"about.html#system"},
       {t:"연간 로드맵",     h:"about.html#road"}
   ]},
-  { id:"programs", en:"WORKSHOP", ko:"워크숍", href:"programs.html", sub:[
-      {t:"무용",     h:"programs.html#dance"},
-      {t:"음악",     h:"programs.html#music"},
-      {t:"미술",     h:"programs.html#art"},
-      {t:"전통예술", h:"programs.html#trad"},
-      {t:"전체일정", h:"programs.html#sched"}
+  /* 해마다 새 연도 탭을 더하는 곳 (WBS 9.4) — 탭 id는 y+연도 */
+  { id:"recruit", en:"RECRUIT", ko:"모집 및 선발", href:"recruit.html", sub:[
+      {t:"2026", h:"recruit.html#y2026"}
   ]},
-  { id:"course", en:"ADVANCED", ko:"심화과정", href:"course.html", sub:[
-      {t:"심화 멘토링", h:"course.html#mentoring"},
-      {t:"겨울캠프",   h:"course.html#camp"}
+  /* pages: 이 메뉴를 현재 위치로 표시할 페이지(body의 data-page)
+     경로 표시의 <li data-menu="programs">도 이 sub로 「프로그램 ▾」 목록을 만든다 (WBS 8.9) */
+  { id:"programs", en:"PROGRAMS", ko:"프로그램", href:"programs.html", pages:["programs","mentoring","camp"], sub:[
+      {t:"워크숍",     h:"programs.html"},
+      {t:"심화 멘토링", h:"mentoring.html"},
+      {t:"겨울캠프",   h:"camp.html"}
   ]},
   { id:"news", en:"NEWS", ko:"소식", href:"news.html", sub:[
       {t:"공지사항",   h:"news.html#notice"},
@@ -56,18 +57,31 @@ var SITEMAP = [
   var cur = document.body.dataset.page || "";
 
   var gnb = SITEMAP.map(function(m){
-    return '<li class="'+(m.id===cur?'on':'')+'"><a href="'+m.href+'">'+m.ko+'</a></li>';
+    var on = m.id===cur || (m.pages && m.pages.indexOf(cur)>=0);
+    return '<li class="'+(on?'on':'')+'"><a href="'+m.href+'">'+m.ko+'</a></li>';
   }).join('');
 
+  /* SNS 아이콘 줄 — 머리(.hd-sns) · 전체메뉴(.am-sns)에 같은 모양으로 */
+  function snsLinks(cls){
+    return '<div class="'+cls+'">'+SITE.sns.map(function(s){
+      var svg = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">'+SNS_ICON[s.id]+'</svg>';
+      return s.url
+        ? '<a href="'+s.url+'" target="_blank" rel="noopener noreferrer" aria-label="'+s.name+' (새 창)" title="'+s.name+'">'+svg+'</a>'
+        : '<a aria-label="'+s.name+' (준비 중)" title="'+s.name+'">'+svg+'</a>';
+    }).join('')+'</div>';
+  }
+
+  /* 로고 = 작은 연도 + 서체 「K예술영재 프로젝트」 (WBS 9.6 — 리본 로고 교체) */
   var header =
   '<div class="inner hd-in">'+
-    '<a href="index.html" class="logo">'+
-      '<span class="yr">2026 THE 1<sup>ST</sup></span>'+
-      '<span class="nm">K ARTS<br>GIFTED<br>PROJECT</span>'+
-      '<span class="kr">한국예술영재</span>'+
+    '<a href="index.html" class="logo" aria-label="'+SITE.name+' 처음으로">'+
+      '<span class="yr">2026</span>'+
+      '<span class="nm">'+SITE.brand+'</span>'+
     '</a>'+
     '<nav><ul id="gnb">'+gnb+'</ul></nav>'+
-    '<button class="ham" type="button" aria-label="전체메뉴"><span></span><span></span><span></span></button>'+
+    '<div class="hd-tools">'+snsLinks('hd-sns')+
+      '<button class="ham" type="button" aria-label="전체메뉴"><span></span><span></span><span></span></button>'+
+    '</div>'+
   '</div>';
 
   var cols = SITEMAP.map(function(m){
@@ -75,27 +89,17 @@ var SITEMAP = [
       m.sub.map(function(s){return '<li><a href="'+s.h+'">'+s.t+'</a></li>'}).join('')+
     '</ul></div>';
   }).join('');
-  var allmenu = '<div class="inner"><div class="cols">'+cols+'</div></div>';
+  var allmenu = '<div class="inner"><div class="cols">'+cols+'</div>'+snsLinks('am-sns')+'</div>';
 
-  var ftCols = SITEMAP.map(function(m){
-    return '<div class="ft-col"><h4>'+m.ko+'</h4><ul>'+
-      m.sub.map(function(s){return '<li><a href="'+s.h+'">'+s.t+'</a></li>'}).join('')+
-    '</ul></div>';
-  }).join('');
+  /* 간단 푸터 (WBS 9.9 · 9.8 — 시안 B안): 이름 / 주최 · 주관 · 메일, 오른쪽 © */
   var footer =
-  '<div class="inner">'+
-    '<div class="ft-top">'+ftCols+
-      '<div class="ft-sns">'+SITE.sns.map(function(s){
-        var svg = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">'+SNS_ICON[s.id]+'</svg>';
-        return s.url
-          ? '<a href="'+s.url+'" target="_blank" rel="noopener noreferrer" aria-label="'+s.name+' (새 창)" title="'+s.name+'">'+svg+'</a>'
-          : '<a aria-label="'+s.name+' (준비 중)" title="'+s.name+'">'+svg+'</a>';
-      }).join('')+'</div>'+
+  '<div class="inner ft-in">'+
+    '<div class="ft-info">'+
+      '<p class="ft-name">'+SITE.brand+'</p>'+
+      '<p class="ft-org">주최 '+SITE.host+' · 주관 '+SITE.org+' · '+
+        '<a href="mailto:'+SITE.mail+'" data-site="mail">'+SITE.mail+'</a></p>'+
     '</div>'+
-    '<div class="ft-bot">'+
-      '<nav class="ft-nav"><a href="index.html">HOME</a></nav>'+
-      '<address><span data-site="addr">'+SITE.addr+'</span> · <span data-site="mail">'+SITE.mail+'</span><br>&copy; K ARTS GIFTED PROJECT. All Rights Reserved.</address>'+
-    '</div>'+
+    '<p class="ft-copy">&copy; '+SITE.name+'</p>'+
   '</div>';
 
   function fill(id,html,tag,cls){
@@ -107,24 +111,103 @@ var SITEMAP = [
   fill('header',header,'header');
   fill('allmenu',allmenu);
   fill('footer',footer,'footer');
+
+  /* ---------- 하위 목록 — 머리 메뉴 판(8.12) · 경로 표시 「프로그램 ▾」(8.9). 모두 SITEMAP의 sub로 만든다 ----------
+     지금 페이지 항목은 aria-current. 같은 페이지의 탭 항목(about.html#system 등)은 지금 보는 탭을 따라간다(아래 탭 코드가 __navTab 호출) */
+  function pageOf(h){ return h.split('#')[0].replace(/\.html$/,''); }
+  function subList(m,cls){
+    var ul=document.createElement('ul'); ul.className=cls;
+    m.sub.forEach(function(s){
+      var li=document.createElement('li'), a=document.createElement('a');
+      a.href=s.h; a.textContent=s.t;
+      if(s.h.indexOf('#')<0 && pageOf(s.h)===cur) a.setAttribute('aria-current','page');
+      li.appendChild(a); ul.appendChild(li);
+    });
+    return ul;
+  }
+  window.__navTab=function(tab){
+    document.querySelectorAll('.gnb-list a[href*="#"]').forEach(function(a){
+      var h=a.getAttribute('href');
+      if(pageOf(h)===cur && h.split('#')[1]===tab) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+    });
+  };
+
+  /* ---------- 머리 메뉴 판 (WBS 8.12) — PC(1101px 이상)에서 메뉴 줄에 마우스를 올리거나 Tab으로 들어가면
+     메뉴 범위(#gnb ±56px) 판이 내려오고, 메뉴마다 목록이 그 글자 밑에 놓인다. 메뉴 줄 · 판 밖으로 나가거나 Esc · 항목을 누르면 닫힌다 ---------- */
+  var hdEl=document.getElementById('header'), nav=hdEl.querySelector('nav'),
+      panel=document.createElement('div'), pc=window.matchMedia('(min-width:1101px)'),
+      shut=false, leaveT=null;   /* shut: Esc · 항목 누름으로 닫은 뒤 마우스가 한 번 나갈 때까지 다시 열지 않음 */
+  var gnbItems=document.querySelectorAll('#gnb > li');
+  SITEMAP.forEach(function(m,i){ gnbItems[i].appendChild(subList(m,'gnb-list')); });
+  panel.className='gnb-panel'; panel.setAttribute('aria-hidden','true');
+  nav.appendChild(panel);   /* nav 안 — 판 가로 범위가 #gnb ±56px로 따라간다 (8.15, common.css) */
+  function panelHeight(){   /* 판 높이 = 가장 긴 목록. 구분선 길이도 이 값을 쓴다 */
+    var h=0; document.querySelectorAll('.gnb-list').forEach(function(u){ h=Math.max(h,u.offsetHeight); });
+    hdEl.style.setProperty('--gnb-panel-h',h+'px');
+  }
+  function setNav(open){
+    clearTimeout(leaveT);
+    if(open) panelHeight();   /* 웹글꼴이 늦게 들어와 목록 높이가 바뀌어도 열 때마다 맞춘다 */
+    hdEl.classList.toggle('nav-open', open && pc.matches && !document.body.classList.contains('menu-open'));   /* 전체메뉴(☰) 연 동안은 펼치지 않음 */
+  }
+  function enter(){ clearTimeout(leaveT); if(!shut) setNav(true); }
+  function leave(){ clearTimeout(leaveT); leaveT=setTimeout(function(){ shut=false; setNav(false); },120); }   /* 글자와 판 사이를 지나는 동안 끊기지 않게 */
+  [nav,panel].forEach(function(el){ el.addEventListener('mouseenter',enter); el.addEventListener('mouseleave',leave); });
+  var quiet=false;   /* Esc로 닫으며 포커스를 메뉴 글자로 옮길 때는 다시 열지 않음 */
+  nav.addEventListener('focusin',function(){ if(quiet){ quiet=false; return; } shut=false; setNav(true); });
+  nav.addEventListener('focusout',function(e){ if(!nav.contains(e.relatedTarget)) setNav(false); });
+  nav.addEventListener('click',function(e){ if(e.target.closest('.gnb-list a')){ shut=true; setNav(false); } });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape' || !hdEl.classList.contains('nav-open')) return;
+    shut=true; setNav(false);
+    var f=document.activeElement, word=f && f.closest && f.closest('.gnb-list') && f.closest('#gnb > li').querySelector('a');
+    if(word){ quiet=true; word.focus(); }   /* 숨는 목록 안에 있던 포커스를 그 메뉴 글자로 */
+  });
+  window.addEventListener('resize',panelHeight); panelHeight();
+  /* 1100px 이하로 줄면 판을 닫는다. ☰ 전체메뉴는 PC에서도 쓴다 (WBS 9.9 — 8.12의 PC 숨김을 되돌림) */
+  pc.addEventListener('change',function(e){ if(!e.matches) setNav(false); });
+
+  document.querySelectorAll('#crumb [data-menu]').forEach(function(li){
+    var m=SITEMAP.filter(function(x){return x.id===li.dataset.menu})[0];
+    if(!m) return;
+    var btn=document.createElement('button'), caret=document.createElement('span'), list=subList(m,'crumb-sub');
+    btn.type='button'; btn.className='crumb-btn'; btn.textContent=m.ko;
+    caret.className='crumb-caret'; caret.setAttribute('aria-hidden','true'); caret.textContent='▾';
+    btn.appendChild(caret);
+    list.id='crumb-sub-'+m.id; list.hidden=true;
+    btn.setAttribute('aria-controls',list.id); btn.setAttribute('aria-expanded','false');
+    li.textContent=''; li.className='crumb-menu';
+    li.appendChild(btn); li.appendChild(list);
+    function set(open){ list.hidden=!open; btn.setAttribute('aria-expanded',String(open)); }
+    btn.addEventListener('click',function(){ set(list.hidden); });
+    document.addEventListener('click',function(e){ if(!li.contains(e.target)) set(false); });   /* 바깥을 누르면 닫힘 */
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !list.hidden){ set(false); btn.focus(); } });
+  });
   if(!document.querySelector('.top')){
     var b=document.createElement('button');b.className='top';b.type='button';
     b.setAttribute('aria-label','맨 위로');b.innerHTML='&#8593;';document.body.appendChild(b);
   }
+  /* 맨 아래로 (2026-10-21 사용자 요청, 모든 페이지) — 맨 위로 단추 위에 같은 모양. 페이지가 짧거나 맨 아래 근처면 숨김 */
+  if(!document.querySelector('.go-end')){
+    var e2=document.createElement('button');e2.className='go-end';e2.type='button';
+    e2.setAttribute('aria-label','맨 아래로');e2.innerHTML='&#8595;';document.body.appendChild(e2);
+  }
 
   /* ---------- 인터랙션 ---------- */
   var hd=document.getElementById('header'), topBtn=document.querySelector('.top'),
-      hero=document.getElementById('hero');
+      endBtn=document.querySelector('.go-end'), hero=document.getElementById('hero');
   function onScroll(){
-    var y=window.scrollY;
+    var y=window.scrollY, max=document.documentElement.scrollHeight-window.innerHeight;
     if(hero) hd.classList.toggle('solid', y > hero.offsetHeight-120);
     topBtn.classList.toggle('on', y>600);
+    endBtn.classList.toggle('on', max>600 && y<max-200 && !(hero && y<hero.offsetHeight-120));   /* 메인 표지 위에서는 숨김(오른쪽 아래 분야 탭과 겹침) */
   }
-  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  window.addEventListener('scroll',onScroll,{passive:true}); window.addEventListener('resize',onScroll); window.addEventListener('load',onScroll); onScroll();
   topBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  endBtn.addEventListener('click',function(){window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'})});
 
   document.querySelector('.ham').addEventListener('click',function(){
-    document.body.classList.toggle('menu-open');
+    if(document.body.classList.toggle('menu-open')) setNav(false);   /* 펼친 메뉴 판은 닫고 전체메뉴를 연다 */
   });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') document.body.classList.remove('menu-open'); });
 
@@ -146,9 +229,10 @@ var SITEMAP = [
   function open(id,push){
     btns.forEach(function(b){b.classList.toggle('on',b.dataset.tab===id)});
     panels.forEach(function(p){p.classList.toggle('on',p.id===id)});
-    var c=document.querySelector('#crumb li:last-child'),
+    var c=document.querySelector('#crumb ol > li:last-child'),   /* ol > : 「프로그램 ▾」 목록 안의 li는 빼고 */
         b=tabs.querySelector('[data-tab="'+id+'"]');
     if(c&&b) c.textContent=b.textContent;
+    if(window.__navTab) window.__navTab(id);   /* 머리 메뉴 판의 지금 탭 표시 */
     if(push) history.replaceState(null,'','#'+id);
     if(window.__rvObserve) window.__rvObserve(document.getElementById(id));
   }

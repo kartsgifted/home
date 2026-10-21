@@ -134,6 +134,14 @@ main.mg-in{padding:34px 0 120px}
 @keyframes mgDepthBg{from{transform:scale(1)}to{transform:scale(1.06)}}
 @keyframes mgDepthFg{from{transform:scale(1)}to{transform:scale(1.14)}}
 
+/* 표지 동영상 (admin.js drawVideo, 2안 WBS 8.6) */
+.mg-video{border-top:1px solid #DCDDDA;padding-top:24px}
+.mg-video-pv{position:relative;max-width:640px;aspect-ratio:16/9;background:#111}
+.mg-video-pv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.mg-video-pv .state{position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.8);font-size:13.5px;font-weight:600;text-align:center;padding:12px}
+.mg-video-pv .state.err{color:#B42B38}
+.mg-video .add .hint{flex:1 1 260px}
+
 /* 파일 */
 .files{border-top:1px solid var(--line)}
 .fl{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);font-size:15px}

@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>2026 K예술영재 프로젝트</title>
-<meta content="무용·음악·미술·전통예술 네 개 분야 예술영재를 발굴하고 키우는 2026 K예술영재 프로젝트 공식 홍보 사이트" name="description"/>
+<meta content="음악·무용·전통예술·미술 네 개 분야 예술영재를 발굴하고 키우는 2026 K예술영재 프로젝트 공식 홍보 사이트" name="description"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=Nanum+Myeongjo:wght@400;700&amp;display=swap" rel="stylesheet"/>
@@ -17,113 +17,85 @@
 <body data-page="index">
 <header id="header"></header>
 <div id="allmenu"></div>
-<!-- ============ HERO ============ -->
+<!-- ============ HERO (차장님 A안 상단) ============ -->
 <section class="wait" id="hero">
 <h2 class="blind">메인비주얼 슬라이드</h2>
-<!-- 표지 슬라이드(.slide)와 아래 점은 assets/js/main.js가 만든다 — 관리자 페이지 「표지 사진」에서 올린 사진, 없으면 main.css의 기본 사진 -->
+<!-- 표지 슬라이드(.slide)와 분야 탭(.h-tabs 안 단추)은 assets/js/main.js가 만든다 — 관리자 페이지 「표지 사진」에서 올린 사진, 없으면 main.css의 기본 사진 -->
 <div class="hero-in">
-<div class="inner hero-grid">
-<div>
-<h1 class="h-title serif" data-k="index.hero.1">K ARTS<br/>GIFTED<br/>PROJECT <em class="script">Bloom</em></h1>
-<p class="h-tag" data-k="index.hero.2">2026 K예술영재 프로젝트</p>
-<p class="h-date serif" data-k="index.hero.3">2026.03.01<sup>SUN</sup> <span class="dash">–</span> 2027.01.30<sup>SAT</sup></p>
-<div class="h-org">
-<span data-k="index.hero.901"><b>주관</b>한국예술영재교육연구원</span>
+<div class="inner">
+<p class="h-fields">음악 · 무용 · 전통예술 · 미술</p>
+<h1 class="h-title"><span>2026</span> K예술영재 프로젝트</h1>
+<p class="h-en" lang="en">K-Arts Gifted Youth Project</p>
+<p class="h-date">2026. 3. 1. – 2027. 1. 30.</p>
+<div class="h-foot">
+<!-- 주최 · 주관 + 기관 로고 (10.13, 2026-10-21 사용자 결정) — 「주최」「주관」 글자 뒤 기관 이름 자리에 흰색 로고(받은 파일, 여백만 자름).
+     로고 img를 지우고 기관 이름 글자를 넣으면 예전 글자 모양으로 돌아간다 -->
+<div class="h-logos"><span class="h-lg"><b>주최</b><img alt="문화체육관광부" class="lg-mcst" src="assets/img/logo-mcst-w.png"/></span><span class="h-lg"><b>주관</b><img alt="한국예술영재교육연구원" class="lg-kniga" src="assets/img/logo-kniga-w.png"/></span></div>
+<div aria-label="표지 분야" class="h-tabs" role="group"></div>
 </div>
 </div>
 </div>
-</div>
-<button aria-label="이전" class="h-nav prev" type="button">❮</button>
-<button aria-label="다음" class="h-nav next" type="button">❯</button>
-<div class="dots"></div>
-<div class="scr">SCROLL</div>
 </section>
-<!-- ============ ABOUT ============ -->
+<!-- ============ ABOUT · 여정 도식 (5차 피드백) ============ -->
 <section id="about">
 <div class="inner">
 <div class="ab-grid">
-<p class="lead" data-k="index.about.9" data-rv="">예술영재의 <b>가능성</b>을<br/>발견하고 <b>키우는</b><br/>가장 긴 호흡의 여정.</p>
+<p class="lead" data-k="index.about.9" data-rv="">예술영재의 <b>가능성</b>을<br/>발견하고 <b>키우는</b><br/>가장 긴 호흡의 여정</p>
 <div class="txt" data-d="1" data-rv="">
-<p data-k="index.about.10">2026 K예술영재 프로젝트는 무용·음악·미술·전통예술 네 개 분야의 예술영재를 발굴하고, 분야별 정규 워크숍과 심화 멘토링, 겨울캠프로 이어지는 단계별 교육과정을 운영합니다.</p>
-<p data-k="index.about.11">한국예술영재교육연구원이 주관하며, 모든 과정은 만족도조사·평가회의·영상 아카이브로 기록되어 다음 해 교육과정 설계의 근거가 됩니다.</p>
-<div class="btns"><a class="btn ghost" data-k="index.about.12" href="about.html">사업소개 자세히 보기 →</a></div>
+<p data-k="index.about.10">K예술영재 프로젝트는 음악·무용·전통예술·미술 네 개 분야의 예술영재를 발굴하고, 분야별 워크숍과 심화 멘토링, 겨울캠프로 이어지는 성장 과정을 운영합니다.</p>
+<p data-k="index.about.11">한 해의 성과는 다음 해 교육과정 설계의 근거가 됩니다.</p>
+<div class="btns"><a class="ab-btn" data-k="index.about.12" href="about.html">사업소개 자세히 보기</a></div>
 </div>
 </div>
-<dl class="stats">
-<div class="stat" data-rv=""><dt data-k="index.about.13">DIVISIONS</dt><dd data-k="index.about.14">4<small>개 분야</small></dd><p class="cap" data-k="index.about.15">무용 · 음악 · 미술 · 전통예술</p></div>
-<div class="stat" data-d="1" data-rv=""><dt data-k="index.about.16">WORKSHOP</dt><dd data-k="index.about.17">2<small>개월</small></dd><p class="cap" data-k="index.about.18">분야별 워크숍 진행</p></div>
-<div class="stat" data-d="2" data-rv=""><dt data-k="index.about.19">MENTORING</dt><dd data-k="index.about.20">3<small>개월</small></dd><p class="cap" data-k="index.about.21">2026.10 ~ 12 심화 멘토링</p></div>
-<div class="stat" data-d="3" data-rv=""><dt data-k="index.about.22">WINTER CAMP</dt><dd data-k="index.about.23">7<small>일</small></dd><p class="cap" data-k="index.about.24">7일간의 겨울캠프 및 갈라공연</p></div>
-</dl>
+<!-- 여정 도식 (10.2) — 네 분야 → 곡선이 한 점으로 모임 → 단계별 성장 과정 카드 3장. 곡선은 화면에 들어오면 그려진다(main.css 「여정 도식」, 공통 등장 효과 .on) -->
+<div class="jr">
+<div class="jr-map" data-rv="">
+<p class="jr-k" lang="en">ONE YEAR JOURNEY</p>
+<h2 class="jr-t">네 개 분야, 세 단계의 성장 과정</h2>
+<ul class="jr-fields">
+<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg></i><b>음악</b></li>
+<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6l-3 7M12 13l3 7M5 6l7 3 7-4"/></svg></i><b>무용</b></li>
+<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><ellipse cx="6" cy="12" rx="3" ry="6"/><ellipse cx="18" cy="12" rx="3" ry="6"/><path d="M6 6h12M6 18h12M9 6l6 12M15 6l-6 12"/></svg></i><b>전통예술</b></li>
+<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-1.3-1-1.6-1-2.6 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg></i><b>미술</b></li>
+</ul>
+<!-- 곡선: 원 줄(.jr-fields)과 같은 폭 · 같은 4칸(가운데 95 · 285 · 475 · 665)으로 늘어난다. 선 굵기 · 끝점은 늘어나도 그대로 -->
+<svg aria-hidden="true" class="jr-wire" fill="none" preserveAspectRatio="none" viewBox="0 0 760 110">
+<path d="M95 0C95 60 380 40 380 96" pathLength="1"/>
+<path d="M285 0C285 50 380 50 380 96" pathLength="1"/>
+<path d="M475 0C475 50 380 50 380 96" pathLength="1"/>
+<path d="M665 0C665 60 380 40 380 96" pathLength="1"/>
+<path class="jr-dot" d="M380 100h0"/>
+</svg>
+<p class="jr-badge">단계별 성장 과정</p>
 </div>
-</section>
-<!-- ============ WORKSHOP (id는 programs 그대로) ============ -->
-<section id="programs">
-<div class="inner">
-<div class="sec-head" data-rv="">
-<h2 data-k="index.programs.8">WORKSHOP<span class="ko">4개 분야별 정규 워크숍 · 분야마다 다른 커리큘럼으로 운영됩니다</span></h2>
-<div class="arrows">
-<button aria-label="이전" data-rail="prev" type="button">←</button>
-<button aria-label="다음" data-rail="next" type="button">→</button>
-</div>
-</div>
-<div class="rail" data-list="cards" id="rail">
-<a class="card" data-rv="" href="programs.html#dance"><div class="thumb"><i></i></div>
-<p class="ko">무용</p><p class="en">Ballet &amp; Dance</p>
-<p class="tt">클래식 발레 워크숍</p><p class="tt-en">Classical Ballet Workshop</p>
-<p class="meta">2026.07 ~ 08<br/>한국예술영재교육원 광주캠퍼스</p></a>
-<a class="card" data-d="1" data-rv="" href="programs.html#music"><div class="thumb"><i></i></div>
-<p class="ko">음악</p><p class="en">Music</p>
-<p class="tt">전공별 마스터클래스</p><p class="tt-en">Masterclass by Major</p>
-<p class="meta">2026.07 ~ 08<br/>한국예술종합학교 서초동캠퍼스</p></a>
-<a class="card" data-d="2" data-rv="" href="programs.html#art"><div class="thumb"><i></i></div>
-<p class="ko">미술</p><p class="en">Arts</p>
-<p class="tt">창작 활동 및 작품 전시</p><p class="tt-en">Creative Practice &amp; Exhibition</p>
-<p class="meta">2026.08<br/>한국과학기술원 일대</p></a>
-<a class="card" data-d="3" data-rv="" href="programs.html#trad"><div class="thumb"><i></i></div>
-<p class="ko">전통예술</p><p class="en">Traditional Arts</p>
-<p class="tt">전통예술 집중 워크숍</p><p class="tt-en">Traditional Arts Intensive</p>
-<p class="meta">2026.08<br/>한국예술종합학교 석관동캠퍼스</p></a>
-</div>
-</div>
-</section>
-<!-- ============ COURSE ============ -->
-<section id="course">
-<div class="inner">
-<h2 data-k="index.course.25" data-rv="">ADVANCED COURSE<span class="ko">심화과정 안내 · 멘토링과 겨울캠프</span></h2>
-<div class="cs">
-<div class="box2" data-rv="">
-<p class="no">01</p><h3 data-k="index.course.26">심화 멘토링</h3><p class="en" data-k="index.course.27">Advanced Mentoring</p>
-<ul><li data-k="index.course.28"><b>기간</b>2026년 10월 ~ 12월</li><li data-k="index.course.29"><b>대상</b>4개 분야 워크숍 수료생 중 선발</li>
-<li data-k="index.course.30"><b>운영</b>분야별 전담 교강사 1:N 멘토링</li></ul>
-<a class="more" data-k="index.course.32" href="course.html#mentoring">자세히 보기 →</a>
-</div>
-<div class="box2" data-d="1" data-rv="">
-<p class="no">02</p><h3 data-k="index.course.33">겨울캠프</h3><p class="en" data-k="index.course.34">Winter Camp</p>
-<ul><li data-k="index.course.35"><b>기간</b>2027.01.24(일) ~ 01.30(토)</li><li data-k="index.course.36"><b>장소</b>한국예술영재교육원 광주캠퍼스</li>
-<li data-k="index.course.37"><b>운영</b>6박 7일 합숙 집중과정 · 갈라공연</li></ul>
-<a class="more" data-k="index.course.39" href="course.html#camp">자세히 보기 →</a>
+<div class="jr-steps">
+<a class="jr-s" data-rv="" href="programs.html"><div class="jr-ph"></div><div class="jr-bd">
+<div class="jr-hd"><span class="jr-no">STEP 01</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H3zM21 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg></i></div>
+<h3>워크숍</h3><p class="jr-n">2<small>개월</small></p><p class="jr-tx">분야마다 다른 커리큘럼으로 기본기와 표현력을 다지는 정규 과정</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
+<div aria-hidden="true" class="jr-arr"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+<a class="jr-s" data-d="1" data-rv="" href="mentoring.html"><div class="jr-ph"></div><div class="jr-bd">
+<div class="jr-hd"><span class="jr-no">STEP 02</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M13.5 20a3.6 3.6 0 0 1 7.2 0"/></svg></i></div>
+<h3>심화 멘토링</h3><p class="jr-n">3<small>개월</small></p><p class="jr-tx">분야별 전담 멘토가 개인의 목표에 맞춰 이어가는 지도</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
+<div aria-hidden="true" class="jr-arr"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+<a class="jr-s" data-d="2" data-rv="" href="camp.html"><div class="jr-ph"></div><div class="jr-bd">
+<div class="jr-hd"><span class="jr-no">STEP 03</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 3v17M8 20l4-6 4 6"/></svg></i></div>
+<h3>겨울캠프</h3><p class="jr-n">7<small>일</small></p><p class="jr-tx">네 분야가 함께하는 합숙 집중과정과 갈라공연</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
 </div>
 </div>
 </div>
 </section>
-<!-- ============ NEWS ============ -->
+<!-- ============ 청록 띠 — 모집 및 선발 · 소식 (B안) ============ -->
 <section id="news">
-<div class="inner">
-<div class="nw-grid">
-<div class="nw" data-rv="">
-<h3>공지사항 <a href="news.html#notice">MORE</a></h3>
-<!-- 공지 · 언론홍보 최신 3개씩은 assets/js/main.js가 data/posts.json으로 채운다 -->
-<ul data-board="latest"></ul>
+<div class="inner news-grid">
+<div class="recruit" data-rv="">
+<p class="kicker">모집 및 선발</p>
+<h2>연도별 선발 개요를<br/>한눈에 확인하세요</h2>
+<a class="go" href="recruit.html">2026 선발 개요 보기</a>
 </div>
 <div class="nw" data-d="1" data-rv="">
-<h3>언론홍보 <a href="news.html#press">MORE</a></h3>
-<ul data-board="latest-press"></ul>
-</div>
-<div class="contact" data-d="2" data-rv="">
-<p class="ic" data-k="index.news.40">✉</p><a class="mail" data-site="mail" href="mailto:kgifted2026@naver.com">kgifted2026@naver.com</a>
-<span data-k="index.news.905">문의는 메일로 받습니다</span><span data-k="index.news.906">한국예술영재교육연구원 사무국</span>
-</div>
+<h3>소식 <a href="news.html">더보기</a></h3>
+<!-- 공지사항 · 언론홍보를 섞은 최신 4개는 assets/js/main.js가 data/posts.json으로 채운다 -->
+<ul data-board="latest"></ul>
 </div>
 </div>
 </section>

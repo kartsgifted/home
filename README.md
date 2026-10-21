@@ -10,13 +10,16 @@
 ├─ index.html          메인 (히어로 슬라이드 / PROGRAMS / 소개 / 심화과정 / 소식)
 ├─ about.html          사업소개   — 프로젝트 개요 · 추진체계 · 연간 로드맵 · 오시는 길
 ├─ programs.html       분야별 프로그램 — 무용 · 음악 · 미술 · 전통예술 · 전체일정
-├─ course.html         심화과정   — 심화 멘토링 · 겨울캠프 · 참여 신청
+├─ mentoring.html      심화 멘토링 (메뉴 「프로그램」 아래)
+├─ camp.html           겨울캠프   (메뉴 「프로그램」 아래)
+├─ course.html         예전 심화과정 주소 — mentoring.html · camp.html로 넘김
 ├─ news.html           소식·아카이브 — 공지사항 · 아카이브 · 갤러리
 └─ assets/
    ├─ css/common.css   토큰 · 헤더 · 서브비주얼 · 탭 · 본문 컴포넌트 · 푸터 (전 페이지 공통)
    ├─ css/main.css     메인 전용
    ├─ js/common.js     SITEMAP + 헤더/전체메뉴/푸터 렌더 + 탭 · 리빌 · 스크롤
    ├─ js/main.js       메인 히어로 슬라이더 · 프로그램 레일
+   ├─ js/program-photos.js  프로그램 페이지의 「갤러리」 사진 줄 (분야가 지정된 갤러리 앨범)
    └─ img/             이미지 넣는 곳
 ```
 
