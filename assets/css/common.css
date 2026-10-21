@@ -499,6 +499,7 @@ html.zv-open{overflow:hidden}
 .og{display:flex;flex-direction:column;align-items:center;margin-top:40px}
 .og-box{display:flex;align-items:center;gap:22px;max-width:100%;padding:24px 34px;border:1.5px solid var(--line);border-radius:14px;background:#fff}
 .og-logo{display:block;flex:none;width:auto;height:48px}   /* 로고 파일 자리 (10.9) — 이름 글자 왼쪽 */
+.og-host{flex-direction:column;gap:12px;padding:20px 34px 24px}   /* 주최 — 「주최」 이름표 위, 문체부 시그니처(이름 글자 포함) 아래 (10.9) */
 .og-lab{font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.04em}
 .og-box h4{margin-top:4px;font-size:22px;font-weight:700;letter-spacing:-.03em}
 .og-main{padding:32px 44px;background:var(--teal);border-color:var(--teal);color:#fff}

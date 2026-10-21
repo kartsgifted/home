@@ -65,14 +65,15 @@
 .h-en{margin-top:24px;font-size:13px;letter-spacing:.24em;color:rgba(255,255,255,.78)}
 .h-date{margin-top:30px;font-size:clamp(18px,1.6vw,22px);font-weight:700;letter-spacing:-.01em}
 .h-foot{margin-top:40px;padding-top:22px;border-top:1px solid rgba(255,255,255,.32);display:flex;align-items:center;justify-content:space-between;gap:14px 40px;flex-wrap:wrap}
-/* 표지 로고 (10.1) — 기관마다 .h-lg 하나. 지금은 글자(주최 · 주관), 로고 파일이 오면 .h-lg 안에 흰색 로고 img 하나만 넣는다(index.html 주석).
-   로고는 높이 40px(1100px 이하 32px · 640px 이하 28px), 로고끼리는 세로 구분선으로 나눈다(로고가 든 칸끼리만 — 글자일 때는 지금 모양 그대로) */
+/* 표지 로고 (10.1 · 10.9) — 기관마다 .h-lg 하나에 로고 img(원래 색 판). img 대신 글자를 넣으면 예전 글자 모양(주최 · 주관)으로 보인다.
+   로고는 높이 34px(1100px 이하 30px · 640px 이하 26px), 로고끼리는 옅은 세로 구분선으로 나눈다 */
 .h-logos{display:flex;flex-wrap:wrap;align-items:center;gap:6px 28px;font-size:15px;color:rgba(255,255,255,.88)}
 .h-lg{position:relative;display:flex;align-items:center;white-space:nowrap}
 .h-lg b{font-weight:700;color:#fff;margin-right:10px}
-.h-lg img{display:block;height:40px;width:auto;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
-.h-logos:has(img){gap:12px 57px}
-.h-lg:has(img) + .h-lg:has(img)::before{content:"";position:absolute;left:-29px;top:50%;width:1px;height:28px;margin-top:-14px;background:rgba(255,255,255,.4)}
+/* 10.9 — 받은 로고는 원래 색 판뿐이고(문체부 시그니처는 공공누리 4유형 = 변경 금지라 흰색으로 바꾸지 않음), 어두운 표지 위에서도 보이게 흰 판 하나에 두 로고를 올린다 */
+.h-lg img{display:block;height:34px;width:auto}
+.h-logos:has(img){gap:8px 37px;padding:10px 20px;border-radius:8px;background:#fff;box-shadow:0 4px 18px rgba(0,0,0,.22)}
+.h-lg:has(img) + .h-lg:has(img)::before{content:"";position:absolute;left:-19px;top:50%;width:1px;height:26px;margin-top:-13px;background:rgba(0,0,0,.14)}
 /* 분야 탭 — 지금 칸은 흰 굵은 글자 + 산호색 밑줄. 굵어져도 폭이 변하지 않게 굵은 글자 폭을 미리 잡아 둔다(::before) */
 .h-tabs{display:flex;gap:28px}
 .h-tabs[hidden]{display:none}
@@ -172,7 +173,7 @@
 @media(max-width:1100px){
   #hero{height:100svh;min-height:600px}
   .hero-in{padding-bottom:44px}
-  .h-lg img{height:32px}
+  .h-lg img{height:30px}
   .ab-grid{grid-template-columns:1fr;gap:38px}
   .jr{margin-top:70px;padding-top:60px}
   /* 769~1100: 카드 3장 한 줄 유지, 글 조금 작게 */
@@ -216,9 +217,9 @@
   .h-foot{margin-top:28px;padding-top:18px}
   .h-logos{font-size:13.5px;gap:4px 18px}
   .h-lg b{margin-right:7px}
-  .h-lg img{height:28px}
-  .h-logos:has(img){gap:10px 41px}
-  .h-lg:has(img) + .h-lg:has(img)::before{left:-21px;height:22px;margin-top:-11px}
+  .h-lg img{height:26px}
+  .h-logos:has(img){gap:6px 29px;padding:8px 14px}
+  .h-lg:has(img) + .h-lg:has(img)::before{left:-15px;height:20px;margin-top:-10px}
   .h-tabs{gap:20px;max-width:100%;overflow-x:auto;scrollbar-width:none}   /* 한 줄 유지, 좁으면 가로로 넘김 */
   .h-tabs::-webkit-scrollbar{display:none}  .nw li a{flex-wrap:wrap;gap:4px 12px;padding:16px 0}
   .nw li .kind{flex:0 0 auto}
