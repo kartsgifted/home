@@ -1,6 +1,6 @@
 @charset "utf-8";
 /* 2026 K예술영재 프로젝트 — main.css (메인 페이지 전용) */
-/* 메인 = 차장님 A안 상단(표지 · 소개 · 숫자 4칸) + B안 하단(STEP 1~3 · 청록 띠) (2026-10-20 4차 피드백, 사용자 결정) */
+/* 메인 = 차장님 A안 상단(표지 · 소개) + 여정 도식(5차 피드백, 2026-10-21) + B안 청록 띠 (2026-10-20 4차 피드백, 사용자 결정) */
 
 :root{
   /* 주소는 이 파일(assets/css/) 기준 → url("../img/hero1.jpg"). 사진 출처는 docs/decisions.md 2절 */
@@ -65,9 +65,15 @@
 .h-en{margin-top:24px;font-size:13px;letter-spacing:.24em;color:rgba(255,255,255,.78)}
 .h-date{margin-top:30px;font-size:clamp(18px,1.6vw,22px);font-weight:700;letter-spacing:-.01em}
 .h-foot{margin-top:40px;padding-top:22px;border-top:1px solid rgba(255,255,255,.32);display:flex;align-items:center;justify-content:space-between;gap:14px 40px;flex-wrap:wrap}
-.h-org{display:flex;flex-wrap:wrap;gap:6px 28px;font-size:15px;color:rgba(255,255,255,.88)}
-.h-org span{white-space:nowrap}
-.h-org b{font-weight:700;color:#fff;margin-right:10px}
+/* 표지 로고 (10.1 · 10.9) — 기관마다 .h-lg 하나에 로고 img(원래 색 판). img 대신 글자를 넣으면 예전 글자 모양(주최 · 주관)으로 보인다.
+   로고는 높이 34px(1100px 이하 30px · 640px 이하 26px), 로고끼리는 옅은 세로 구분선으로 나눈다 */
+.h-logos{display:flex;flex-wrap:wrap;align-items:center;gap:6px 28px;font-size:15px;color:rgba(255,255,255,.88)}
+.h-lg{position:relative;display:flex;align-items:center;white-space:nowrap}
+.h-lg b{font-weight:700;color:#fff;margin-right:10px}
+/* 10.9 — 받은 로고는 원래 색 판뿐이고(문체부 시그니처는 공공누리 4유형 = 변경 금지라 흰색으로 바꾸지 않음), 어두운 표지 위에서도 보이게 흰 판 하나에 두 로고를 올린다 */
+.h-lg img{display:block;height:34px;width:auto}
+.h-logos:has(img){gap:8px 37px;padding:10px 20px;border-radius:8px;background:#fff;box-shadow:0 4px 18px rgba(0,0,0,.22)}
+.h-lg:has(img) + .h-lg:has(img)::before{content:"";position:absolute;left:-19px;top:50%;width:1px;height:26px;margin-top:-13px;background:rgba(0,0,0,.14)}
 /* 분야 탭 — 지금 칸은 흰 굵은 글자 + 산호색 밑줄. 굵어져도 폭이 변하지 않게 굵은 글자 폭을 미리 잡아 둔다(::before) */
 .h-tabs{display:flex;gap:28px}
 .h-tabs[hidden]{display:none}
@@ -79,7 +85,7 @@
 .h-tabs button.on::after{transform:none}
 .h-tabs button:focus-visible{outline:2px solid #fff;outline-offset:4px}
 
-/* ============ ABOUT · 숫자 4칸 (A안) ============ */
+/* ============ ABOUT · 여정 도식 (A안 소개 + 5차 피드백 도식) ============ */
 #about{background:var(--cream);padding:var(--pad-sec) 0}
 .ab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:80px;align-items:start}
 #about .lead{font-size:clamp(28px,3vw,44px);line-height:1.45}
@@ -88,34 +94,59 @@
 .ab-btn{display:inline-flex;align-items:center;padding:14px 24px;border:1px solid var(--teal);border-radius:999px;color:var(--teal);
   font-size:16px;font-weight:700;letter-spacing:-.02em;transition:background .3s,color .3s}
 .ab-btn:hover,.ab-btn:focus-visible{background:var(--teal);color:#fff}   /* common.css .pill(하위 페이지 채운 단추)과 이름을 나눔 */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0 30px;margin-top:80px;border-top:2px solid var(--ink)}
-.stat{padding:36px 0 6px}
-.stat dt{font-size:15px;color:var(--gray-lt);letter-spacing:-.02em}
-.stat dd{font-size:44px;font-weight:700;color:var(--teal);margin-top:16px;line-height:1;letter-spacing:-.02em}
-.stat dd small{font-size:18px;font-weight:700;color:var(--ink);margin-left:8px}
-.stat .cap{font-size:15px;color:var(--gray);margin-top:16px;letter-spacing:-.02em}
-
-/* ============ 프로그램 흐름 STEP 1~3 (B안) ============ */
-#flow{padding:var(--pad-sec) 0;background:#fff}
-.kicker{font-size:15px;font-weight:700;color:var(--teal);letter-spacing:-.01em}
-.flow-title{margin-top:12px;font-size:clamp(28px,2.8vw,40px);font-weight:800;letter-spacing:-.04em;line-height:1.3}
-.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:58px}
-.step{display:block}
-.step .thumb{position:relative;aspect-ratio:3/2;overflow:hidden;border-radius:4px;background:#DDE3E6}
-.step .thumb i{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .8s cubic-bezier(.22,1,.36,1)}
-.step:nth-child(1) .thumb i{background-image:var(--img-step1),linear-gradient(150deg,#3F2E7E,#171041)}
-.step:nth-child(2) .thumb i{background-image:var(--img-step2),linear-gradient(150deg,#7A3D8C,#2B1236)}
-.step:nth-child(3) .thumb i{background-image:var(--img-step3),linear-gradient(150deg,#6E8FB8,#12303F)}
-.step:hover .thumb i{transform:scale(1.06)}
-.step .no{margin-top:24px;font-size:15px;font-weight:700;color:var(--teal);letter-spacing:.02em}
-.step h3{margin-top:12px;font-size:26px;font-weight:700;letter-spacing:-.03em;transition:color .3s}
-.step:hover h3{color:var(--teal)}
-.step .desc{margin-top:14px;font-size:17px;line-height:1.75;color:var(--gray);letter-spacing:-.02em}
+/* 여정 도식 (10.2) — 진한 가로줄 아래: 제목 → 분야 원 4개 → 곡선이 한 점으로 → 검정 알약 → 카드 3장(사진 위에 글) */
+.jr{margin-top:90px;padding-top:70px;border-top:2px solid var(--ink)}
+.jr-k{text-align:center;font-size:15px;font-weight:700;color:var(--teal);letter-spacing:.02em}
+.jr-t{text-align:center;margin-top:12px;font-size:30px;font-weight:700;letter-spacing:-.03em}
+/* 원 줄과 곡선(SVG)은 같은 폭 · 같은 4칸 — SVG는 폭에 맞춰 늘어나고(preserveAspectRatio none) 선 굵기는 그대로(non-scaling-stroke) */
+.jr-fields,.jr-wire{width:760px;max-width:100%;margin-left:auto;margin-right:auto}
+.jr-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:54px}
+.jr-fields li{display:flex;flex-direction:column;align-items:center;gap:12px}
+.jr-fields i{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;background:#fff;border:1.5px solid var(--teal);color:var(--teal);box-shadow:0 8px 24px rgba(23,108,134,.12)}
+.jr-fields svg{width:36px;height:36px}
+.jr-fields b{font-size:17px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
+.jr-wire{display:block;height:110px;overflow:visible}
+.jr-wire path{stroke:var(--teal);stroke-width:1.5px;vector-effect:non-scaling-stroke}
+/* 곡선(pathLength="1")은 화면에 들어오면(공통 등장 효과 .on) 1.2초 동안 그려지고, 다 그려지면 가운데 점이 나타난다.
+   [pathLength] 속성 선택자는 Chrome이 .on이 붙어도 다시 계산하지 않아 선이 안 그려지므로 :not(.jr-dot)으로 고른다 */
+.jr-wire path:not(.jr-dot){stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.2s cubic-bezier(.45,0,.25,1) .35s}
+.jr-wire .jr-dot{stroke-width:10px;stroke-linecap:round;opacity:0;transition:opacity .4s ease 1.4s}
+.jr-map.on .jr-wire path:not(.jr-dot){stroke-dashoffset:0}
+.jr-map.on .jr-wire .jr-dot{opacity:1}
+@media(prefers-reduced-motion:reduce){
+  .jr-wire path:not(.jr-dot){stroke-dashoffset:0;transition:none}
+  .jr-wire .jr-dot{opacity:1;transition:none}
+}
+.jr-badge{display:table;margin:-6px auto 0;padding:9px 20px;border-radius:999px;background:var(--ink);color:#fff;font-size:14px;font-weight:600;letter-spacing:-.01em}
+/* 카드 3장 — 사진이 카드 전체, 아래로 갈수록 청록빛 어둠(1 → 3으로 조금씩 진하게). 카드 전체가 링크 */
+.jr-steps{display:grid;grid-template-columns:minmax(0,1fr) 56px minmax(0,1fr) 56px minmax(0,1fr);margin-top:40px}
+.jr-s{position:relative;display:block;height:600px;border-radius:14px;overflow:hidden;background:#000;color:#fff}
+.jr-s:focus-visible{outline:3px solid var(--teal);outline-offset:4px}
+.jr-ph{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.jr-s:nth-child(1) .jr-ph{background-image:var(--img-step1),linear-gradient(150deg,#3F2E7E,#171041)}
+.jr-s:nth-child(3) .jr-ph{background-image:var(--img-step2),linear-gradient(150deg,#7A3D8C,#2B1236)}
+.jr-s:nth-child(5) .jr-ph{background-image:var(--img-step3),linear-gradient(150deg,#6E8FB8,#12303F)}
+.jr-s:hover .jr-ph,.jr-s:focus-visible .jr-ph{transform:scale(1.06)}
+.jr-s::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 20%,rgba(10,40,52,.55) 52%,rgba(8,34,44,.92))}
+.jr-s:nth-child(3)::after{background:linear-gradient(180deg,rgba(0,0,0,.05) 20%,rgba(15,74,92,.6) 52%,rgba(12,60,75,.95))}
+.jr-s:nth-child(5)::after{background:linear-gradient(180deg,rgba(0,0,0,.05) 20%,rgba(10,50,62,.7) 52%,rgba(8,40,50,.97))}
+.jr-bd{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 32px 32px}
+.jr-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.jr-no{font-size:14px;font-weight:700;letter-spacing:.06em;color:var(--gold-lt,#E2C46A)}   /* --gold-lt는 common.css(세션 A) — 합치기 전에도 보이게 대체값 */
+.jr-hd i{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.jr-hd svg{width:26px;height:26px}
+.jr-s h3{margin-top:14px;font-size:24px;font-weight:700;letter-spacing:-.03em}
+.jr-n{margin-top:10px;font-size:52px;font-weight:800;line-height:1;letter-spacing:-.04em}
+.jr-n small{font-size:22px;font-weight:700;margin-left:6px;letter-spacing:-.02em}
+.jr-tx{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.3);font-size:16px;line-height:1.7;letter-spacing:-.02em;color:rgba(255,255,255,.88)}
+.jr-more{display:inline-block;margin-top:18px;font-size:15px;font-weight:700}
+.jr-arr{display:grid;place-items:center;color:var(--teal)}
+.jr-arr svg{width:30px;height:30px}
 
 /* ============ 청록 띠 — 모집 및 선발 · 소식 (B안) ============ */
 #news{background:var(--teal-dk);color:#fff;padding:110px 0 100px}
 .news-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.22fr);gap:60px;align-items:start}
-.recruit .kicker{color:var(--coral-lt)}
+.recruit .kicker{font-size:15px;font-weight:700;color:var(--coral-lt);letter-spacing:-.01em}
 .recruit h2{margin-top:14px;font-size:clamp(26px,2.5vw,36px);font-weight:800;line-height:1.32;letter-spacing:-.04em}
 .recruit .go{display:inline-block;margin-top:36px;padding:16px 26px;background:#fff;border-radius:4px;color:var(--ink);
   font-size:16px;font-weight:700;letter-spacing:-.02em;transition:background .3s,color .3s}
@@ -136,28 +167,61 @@
 .nw li .d{flex:0 0 auto;margin-left:auto;padding-left:10px;font-size:15px;color:rgba(255,255,255,.7)}
 .nw .bd-msg{padding:28px 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:15px;color:rgba(255,255,255,.7);letter-spacing:-.02em}
 
+@media(max-width:1280px){
+  .jr-s{height:540px}
+}
 @media(max-width:1100px){
   #hero{height:100svh;min-height:600px}
   .hero-in{padding-bottom:44px}
+  .h-lg img{height:30px}
   .ab-grid{grid-template-columns:1fr;gap:38px}
-  .stats{grid-template-columns:repeat(2,1fr);margin-top:60px}
-  .stat{padding:30px 0 22px}
-  .steps{grid-template-columns:1fr;gap:44px;max-width:640px}
+  .jr{margin-top:70px;padding-top:60px}
+  /* 769~1100: 카드 3장 한 줄 유지, 글 조금 작게 */
+  .jr-steps{grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr) 36px minmax(0,1fr)}
+  .jr-s{height:480px}
+  .jr-bd{padding:0 22px 24px}
+  .jr-hd i{width:38px;height:38px}
+  .jr-hd svg{width:22px;height:22px}
+  .jr-s h3{font-size:20px;margin-top:10px}
+  .jr-n{font-size:42px}
+  .jr-n small{font-size:18px}
+  .jr-tx{font-size:14.5px;margin-top:12px;padding-top:12px}
+  .jr-more{margin-top:14px;font-size:14px}
+  .jr-arr svg{width:24px;height:24px}
   #news{padding:80px 0}
   .news-grid{grid-template-columns:minmax(0,1fr);gap:56px}   /* 1fr만 쓰면 긴 제목이 칸을 화면 밖으로 밀어냄 */
+}
+@media(max-width:768px){
+  /* 카드를 세로로 쌓고 화살표는 아래로. 분야 원은 한 줄 4개 유지, 곡선은 원 줄과 함께 줄어든다 */
+  .jr{margin-top:56px;padding-top:48px}
+  .jr-t{font-size:24px}
+  .jr-fields{margin-top:36px}
+  .jr-fields li{gap:10px}
+  .jr-fields i{width:64px;height:64px}
+  .jr-fields svg{width:28px;height:28px}
+  .jr-fields b{font-size:15px}
+  .jr-wire{height:80px}
+  .jr-steps{grid-template-columns:minmax(0,1fr);margin-top:32px}
+  .jr-s{height:440px}
+  .jr-bd{padding:0 26px 28px}
+  .jr-s h3{font-size:22px}
+  .jr-n{font-size:46px}
+  .jr-tx{font-size:15px}
+  .jr-arr{height:48px}
+  .jr-arr svg{transform:rotate(90deg)}
 }
 @media(max-width:640px){
   .h-fields{font-size:13.5px}
   .h-en{font-size:12px;letter-spacing:.18em;margin-top:18px}
   .h-date{margin-top:22px}
   .h-foot{margin-top:28px;padding-top:18px}
-  .h-org{font-size:13.5px;gap:4px 18px}
-  .h-org b{margin-right:7px}
+  .h-logos{font-size:13.5px;gap:4px 18px}
+  .h-lg b{margin-right:7px}
+  .h-lg img{height:26px}
+  .h-logos:has(img){gap:6px 29px;padding:8px 14px}
+  .h-lg:has(img) + .h-lg:has(img)::before{left:-15px;height:20px;margin-top:-10px}
   .h-tabs{gap:20px;max-width:100%;overflow-x:auto;scrollbar-width:none}   /* 한 줄 유지, 좁으면 가로로 넘김 */
-  .h-tabs::-webkit-scrollbar{display:none}
-  .stat dd{font-size:38px}
-  .step h3{font-size:22px}
-  .nw li a{flex-wrap:wrap;gap:4px 12px;padding:16px 0}
+  .h-tabs::-webkit-scrollbar{display:none}  .nw li a{flex-wrap:wrap;gap:4px 12px;padding:16px 0}
   .nw li .kind{flex:0 0 auto}
   .nw li .t{flex:1 0 100%;order:5;white-space:normal}
 }
