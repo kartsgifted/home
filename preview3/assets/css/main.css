@@ -1,0 +1,233 @@
+@charset "utf-8";
+/* 2026 K예술영재 프로젝트 — main.css (메인 페이지 전용) */
+/* 메인 = 시안 3 (WBS 11.12, 레퍼런스 ③ · 시안 docs/private/v2/ref3/mock3-main.png) — 어두운 바탕, 강조는 금색, 큰 제목은 송명체(.brush).
+   화면 가득 표지 → 소개(도장 · 엇갈림) → 성장 과정 카드 → 모집 사진 띠 → 소식 카드 줄.
+   스크롤 효과([data-rv] 나타나기 · [data-zoom] 사진 확대 → 원래 · [data-par] 엇갈림)는 공통(common.js)이 맡고 여기서는 속성만 붙인다.
+   [data-zoom] 칸은 overflow:hidden이고 그 안 첫 사진(img)이 줄어든다. [data-par]가 붙은 요소에는 transform을 따로 주지 않는다 */
+
+:root{
+  /* 주소는 이 파일(assets/css/) 기준 → url("../img/hero1.jpg"). 사진 출처는 docs/decisions.md 2절 */
+  /* 표지 기본 사진 — 관리자 페이지 「표지 사진」에서 올린 사진이 있으면 그 사진이 대신 보인다. 기본 사진이 없는(var(--none)) 칸은 올린 사진이 없으면 건너뜀 */
+  --img-hero-dance:var(--none);                 /* 표지 : 무용 (사진 대기) */
+  --img-hero-music:url("../img/hero-music.jpg"); /* 표지 : 음악 */
+  --img-hero-art  :var(--none);                 /* 표지 : 미술 (사진 대기) */
+  --img-hero-trad :url("../img/hero-trad.jpg");  /* 표지 : 전통예술 */
+}
+body[data-page="index"]{background:var(--d-bg);color:#fff}
+.mn3-in{position:relative;width:min(1290px,calc(100% - 150px));margin:0 auto}
+/* 작은 금색 머리글 · 가운데 구역 머리(금색 작은 글 + 송명체 제목) · 사진 칸(모서리 6) */
+.mn3-k{font-size:16px;color:var(--d-gold);letter-spacing:.06em}
+.mn3-sh{text-align:center}
+.mn3-sh .mn3-k{font-size:15px;letter-spacing:.08em}
+.mn3-sh h2{margin-top:14px;font-size:min(56px,3.9vw);line-height:1.25}
+.mn3-ph{position:relative;overflow:hidden;border-radius:6px;background:#222}
+.mn3-ph img{width:100%;height:100%;max-width:none;object-fit:cover}
+
+/* ============ 표지 — 화면 가득(최소 640 · 최대 1000), 머리가 위에 겹친다 ============ */
+#hero{position:relative;height:clamp(640px,100vh,1000px);overflow:hidden;background:#000}
+@supports(height:100svh){ #hero{height:clamp(640px,100svh,1000px)} }
+/* 슬라이드 묶음 — 스크롤하면 1.1(맨 위) → 1(표지를 다 지남), main.js 「표지 확대」가 --hz를 바꾼다 */
+.mn3-hz{position:absolute;inset:0;transform:scale(var(--hz,1.1))}
+@media(prefers-reduced-motion:reduce){ .mn3-hz{transform:none} }
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+.slide.on{opacity:1}
+#hero.wait .slide{opacity:0}   /* 사진 목록을 받기 전 (main.js) — 기본 사진이 올린 사진으로 바뀌며 깜박이지 않게 */
+/* 사진 움직임 — 홀수 장은 크게 → 원래(축소), 짝수 장은 원래 → 크게(확대). 크기는 1.08, 시간은 8s를 바꾸면 된다.
+   #hero.ready는 main.js가 첫 화면을 그린 뒤 붙여서 첫 장도 움직이며 시작한다. */
+.slide::before{content:"";position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.08);transition:transform 8s linear}
+.slide:nth-of-type(even)::before{transform:scale(1)}
+#hero.ready .slide.on::before{transform:scale(1)}
+#hero.ready .slide.on:nth-of-type(even)::before{transform:scale(1.08)}
+@media(prefers-reduced-motion:reduce){ .slide::before{transition:none} }
+/* 2.5D 입체 효과 (관리자 페이지에서 켠 칸, main.js addDepth) — 누끼(.fg)를 사진 위에 겹쳐 배경은 1 → 1.06, 인물은 1 → 1.14로 키운다.
+   커진 인물이 원래 윤곽을 덮으므로 배경을 고칠 필요가 없다. 켠 칸은 번갈아 하지 않고 늘 다가오며, 중심(--org)은 main.js가 인물 영역 가운데로 정한다.
+   크기를 바꾸면 admin.css의 미리보기도 맞출 것 (2026-10-15 사용자 결정: 세기 하나로 고정) */
+.slide .fg{position:absolute;inset:0;background-size:cover;background-position:center}
+.slide.pz::before,.slide.pz:nth-of-type(even)::before,.slide.pz .fg{transform:scale(1);transform-origin:var(--org,center);transition:transform 8s cubic-bezier(.25,.1,.25,1)}
+#hero.ready .slide.pz.on::before,#hero.ready .slide.pz.on:nth-of-type(even)::before{transform:scale(1.06)}
+#hero.ready .slide.pz.on .fg{transform:scale(1.14)}
+@media(prefers-reduced-motion:reduce){ #hero .slide.pz::before,#hero .slide.pz .fg{transform:none!important;transition:none} }
+/* 동영상 칸 (2안, main.js prep) — 대기 사진(첫 장면)은 움직이지 않고, 영상이 재생되기 시작하면 그 위로 서서히 보인다. 어두운 덧칠(::after)은 영상 위에 그대로 */
+.slide .vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease}
+.slide .vid.on{opacity:1}
+#hero .slide.vd::before,#hero.ready .slide.vd.on::before{transform:none;transition:none}
+/* 세로 화면(휴대폰 등)은 사진 가운데만 보이므로, 표지 사진 규칙(주인공은 가운데~오른쪽)에 맞춰 62% 지점을 중심으로 (2026-10-14 사용자 결정) */
+@media(max-aspect-ratio:1/1){ .slide::before,.slide .fg{background-position:62% center} .slide .vid{object-position:62% center} }
+.s-dance::before{background-image:var(--img-hero-dance),linear-gradient(160deg,#3a3a3a,#1a1a1a)}
+.s-music::before{background-image:var(--img-hero-music),linear-gradient(160deg,#3a3a3a,#1a1a1a)}
+.s-art::before{background-image:var(--img-hero-art),linear-gradient(160deg,#3a3a3a,#1a1a1a)}
+.s-trad::before{background-image:var(--img-hero-trad),linear-gradient(160deg,#3a3a3a,#1a1a1a)}
+/* 표지 덧칠 — 검정 50% (가운데 글 · 아래 탭이 어느 사진에서나 읽히게) */
+.slide::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.5)}
+/* 가운데 글 — 금색 2026 → 송명체 문장 → 사업 이름 */
+.hero-in{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:0 20px;color:#fff;text-align:center}
+.mn3-year{padding-left:.3em;font-size:16px;color:var(--d-gold);letter-spacing:.3em}
+.h-title{margin-top:20px;font-size:clamp(56px,5.28vw,76px);line-height:1.2}
+.h-title .mn3-m{display:none}   /* 좁은 휴대폰(560 이하)에서만 「가능성을」 뒤에서 줄바꿈 (「키우는」 한 낱말만 줄에 남지 않게) */
+.mn3-name{margin-top:20px;font-size:20px;font-weight:300;color:var(--d-w8)}
+/* 번호 밑줄 탭(.ntab, common.css) — 아래 80px. 자동으로 넘어갈 때(.run) 지금 칸 밑줄이 다음 장까지 남은 시간(--t) 동안 왼쪽에서 오른쪽으로 차오른다 */
+#hero .h-tabs{position:absolute;left:0;right:0;bottom:80px}
+#hero .h-tabs[hidden]{display:none}
+#hero .h-tabs button{position:relative;flex:0 0 auto;border-style:solid;border-width:0 0 2px;font-family:inherit;line-height:1.5;white-space:nowrap}
+#hero .h-tabs button::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:#fff;transform:scaleX(0);transform-origin:0 50%}
+#hero .h-tabs button.on.run{border-bottom-color:var(--d-w3)}
+#hero .h-tabs button.on.run::after{animation:mn3-fill var(--t,6s) linear forwards}
+#hero .h-tabs button:focus-visible{outline:2px solid #fff;outline-offset:4px}
+@keyframes mn3-fill{to{transform:none}}
+@media(prefers-reduced-motion:reduce){ #hero .h-tabs button.on.run{border-bottom-color:#fff} #hero .h-tabs button.on.run::after{animation:none} }
+/* 주최 · 주관 (10.13) — 오른쪽 아래 26px, 「주최」「주관」 글자 + 흰색 로고. 교육원 로고는 위아래 사선 때문에 크게 두고 위아래를 겹친다 */
+.h-logos{position:absolute;right:40px;bottom:26px;display:flex;align-items:center;gap:22px;font-size:13px;color:var(--d-w6)}
+.h-lg{display:flex;align-items:center;white-space:nowrap}
+.h-lg b{margin-right:10px;font-weight:400}
+.h-lg img{display:block;width:auto}
+.h-lg .lg-mcst{height:22px}
+.h-lg .lg-kniga{height:34px;margin:-6px 0}
+
+/* ============ 소개 — 왼쪽 큰 사진(640 × 840) + 도장, 오른쪽 맞춤 글 + 작은 사진 ============ */
+#about{padding-top:170px}
+.mn3-ab{display:grid;grid-template-columns:minmax(0,640fr) minmax(0,570fr);gap:0 80px;align-items:start}
+.mn3-ab-ph{position:relative}
+.mn3-ab-ph .mn3-ph{aspect-ratio:640/840}
+/* 도장 — 흰 원(지름 200)이 사진 오른쪽 아래에 걸치고, 원 둘레 송명체 글자가 40초에 한 바퀴 돈다 */
+.mn3-stamp{position:absolute;right:-100px;bottom:-60px;z-index:2;width:200px;height:200px;border-radius:50%;background:#fff}
+.mn3-stamp svg{display:block;width:100%;height:100%;animation:mn3-spin 40s linear infinite}
+.mn3-stamp text{font-family:var(--f-brush);font-size:17px;fill:#111}
+@keyframes mn3-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){ .mn3-stamp svg{animation:none} }
+.mn3-ab-tx{padding-top:64px;text-align:right}
+.mn3-ab-tx h2{margin-top:30px;font-size:min(84px,5.834vw);line-height:1.18}
+.mn3-ab-p{max-width:560px;margin:56px 0 0 auto;text-align:left;font-size:18px;font-weight:300;line-height:1.85;color:var(--d-w8)}
+.mn3-ab-bt{margin-top:36px}
+.mn3-ab-ph2{width:min(420px,100%);margin:90px 0 0 auto}
+.mn3-ab-ph2 .mn3-ph{aspect-ratio:420/300}
+
+/* ============ 성장 과정 — 카드 3장(사진 → 금색 번호 · 제목 → 기간 · 내용), 카드 전체가 링크 ============ */
+#journey{padding-top:180px}
+.mn3-st{margin-top:70px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px}
+.mn3-st a{display:block}
+.mn3-st a:focus-visible{outline:2px solid #fff;outline-offset:8px;border-radius:6px}
+.mn3-st .mn3-ph{height:300px}
+.mn3-st img{transition:scale .8s cubic-bezier(.22,1,.36,1)}   /* 스크롤 확대(transform)와 따로 — 마우스를 올리면 조금 더 커진다 */
+.mn3-st a:hover img,.mn3-st a:focus-visible img{scale:1.06}
+.mn3-st .mn3-c70{object-position:center 70%}
+.mn3-st h3{margin-top:26px;font-size:24px;font-weight:600;letter-spacing:-.03em}
+.mn3-st h3 small{display:block;margin-bottom:8px;font-size:17px;color:var(--d-gold)}
+.mn3-st dl{margin-top:14px;display:flex;flex-direction:column;gap:8px;font-size:16px;font-weight:300;line-height:1.6;color:var(--d-w8)}
+.mn3-st dl div{display:flex;align-items:baseline}
+.mn3-st dt{flex:0 0 auto;margin-right:12px;font-size:14px;line-height:1.7;color:var(--d-gold)}
+
+/* ============ 모집 — 화면 가득 사진 띠(높이 620), 왼쪽 → 오른쪽 어둠 ============ */
+#recruit{position:relative;margin-top:170px;height:620px;display:flex;align-items:center;overflow:hidden}
+.mn3-rc-bg{position:absolute;inset:0;overflow:hidden;background:#000}
+.mn3-rc-bg img{width:100%;height:100%;max-width:none;object-fit:cover;object-position:center 35%}
+.mn3-rc-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.85),rgba(0,0,0,.35) 60%,rgba(0,0,0,.2))}
+.mn3-rc h2{margin-top:18px;font-size:min(64px,4.45vw);line-height:1.25}
+.mn3-rc-p{margin-top:22px;font-size:18px;font-weight:300;color:var(--d-w8)}
+.mn3-rc-bt{margin-top:40px}
+.mn3-rc-bt span{margin-left:6px}   /* 화살표 — 단추(inline-flex) 안에서는 앞 띄어쓰기가 사라진다 */
+
+/* ============ 소식 — 가운데 머리, 오른쪽 ← → · 더 보기, 어두운 카드 줄(한 화면 4장) ============ */
+#news{padding:160px 0 180px}
+.mn3-nw-ctl{margin-top:50px;display:flex;justify-content:flex-end;gap:10px}
+.mn3-arr{display:inline-flex;align-items:center;justify-content:center;width:70px;height:42px;border:1px solid var(--d-w4);border-radius:4px;background:none;color:var(--d-w8);cursor:pointer;transition:background .25s,color .25s,border-color .25s,opacity .25s}
+.mn3-arr svg{width:22px;height:22px}
+.mn3-arr:hover,.mn3-arr:focus-visible{background:#fff;color:#111;border-color:#fff}
+.mn3-arr:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.mn3-arr[aria-disabled="true"]{opacity:.3;cursor:default;background:none;color:var(--d-w8);border-color:var(--d-w4)}   /* 끝 — 흐리게 */
+/* 카드 줄은 안쪽에서만 가로로 넘긴다(← → 단추 · 휴대폰 밀기 · 트랙패드). 한 장씩 맞춰 멈춘다 */
+.mn3-nw-vp{margin-top:26px;overflow:auto hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.mn3-nw-vp::-webkit-scrollbar{display:none}
+.mn3-nw{display:flex;gap:20px}
+.mn3-nw li{flex:0 0 calc((100% - 60px)/4);min-width:0;scroll-snap-align:start}
+/* 카드 — board.js의 목록 줄(.t 제목 · .ext 새 창 · .d 날짜) 앞에 main.js가 분류(.kind, 언론홍보는 그 안에 언론사 .cat)를 붙인다 */
+.mn3-nw li a{position:relative;display:flex;flex-direction:column;height:250px;padding:28px 26px;border:1px solid var(--d-ln);border-radius:6px;background:var(--d-card);transition:border-color .3s}
+.mn3-nw li a[href]:hover{border-color:var(--d-w4)}
+.mn3-nw li a:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+.mn3-nw li a.empty{cursor:default}   /* 내용 없는 공지: 이동 없음 */
+.mn3-nw .kind{padding-right:24px;font-size:14px;color:var(--d-gold)}
+.mn3-nw .t{margin-top:16px;font-size:19px;font-weight:500;line-height:1.5;letter-spacing:-.03em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+.mn3-nw .ext{position:absolute;top:26px;right:24px;font-size:15px;color:var(--d-w4)}
+.mn3-nw .d{margin-top:auto;padding-top:12px;font-size:15px;font-weight:300;color:var(--d-w6)}
+.mn3-nw .bd-msg{flex:1 0 100%;padding:60px 0;border:1px solid var(--d-ln);border-radius:6px;text-align:center;font-size:16px;color:var(--d-w6)}
+
+/* ============ 1101~1280 — 비율대로 ============ */
+@media(max-width:1280px){
+  .mn3-in{width:calc(100% - 128px)}
+}
+/* ============ 769~1100 ============ */
+@media(max-width:1100px){
+  .mn3-in{width:calc(100% - 80px)}
+  .h-title{font-size:56px}
+  .h-logos{right:30px}
+  .mn3-sh h2{font-size:46px}
+  /* 소개 — 사진 위(높이 560) · 글 아래 한 칸 */
+  #about{padding-top:120px}
+  .mn3-ab{grid-template-columns:minmax(0,1fr)}
+  .mn3-ab-ph .mn3-ph{aspect-ratio:auto;height:560px}
+  .mn3-stamp{right:30px;bottom:-50px;width:140px;height:140px}
+  .mn3-ab-tx{margin-top:90px;padding-top:0}
+  .mn3-ab-tx h2{font-size:64px}
+  /* 성장 과정 — 카드 3장 한 줄 유지, 글 작게 */
+  #journey{padding-top:130px}
+  .mn3-st{margin-top:56px;gap:24px}
+  .mn3-st .mn3-ph{height:220px}
+  .mn3-st h3{margin-top:20px;font-size:20px}
+  .mn3-st h3 small{font-size:15px;margin-bottom:6px}
+  .mn3-st dl{font-size:14.5px}
+  .mn3-st dt{font-size:13px;margin-right:8px}
+  #recruit{margin-top:130px;height:520px}
+  .mn3-rc h2{font-size:52px}
+  #news{padding:130px 0 140px}
+  .mn3-nw li{flex-basis:calc((100% - 40px)/3)}
+}
+/* ============ 768 이하 ============ */
+@media(max-width:768px){
+  .mn3-in{width:calc(100% - 40px)}
+  .mn3-k{font-size:14px}
+  .mn3-sh h2{margin-top:10px;font-size:40px}
+  /* 표지 — 제목 38px, 번호 탭은 가로로 넘기고(지금 칸이 보이게 main.js가 맞춤) 로고 줄은 탭 위 가운데 */
+  .mn3-year{font-size:14px}
+  .h-title{margin-top:16px;font-size:38px}
+  .mn3-name{margin-top:16px;font-size:17px}
+  #hero .h-tabs{bottom:30px;justify-content:flex-start;gap:16px;padding:0 20px;overflow-x:auto;scrollbar-width:none}
+  #hero .h-tabs::-webkit-scrollbar{display:none}
+  #hero .h-tabs button{min-width:100px;font-size:15px}
+  #hero .h-tabs button:first-child{margin-left:auto}   /* 넘치지 않으면 가운데, 넘치면 왼쪽부터 */
+  #hero .h-tabs button:last-child{margin-right:auto}
+  .h-logos{left:0;right:0;bottom:96px;justify-content:center;gap:18px;font-size:12px}
+  .h-lg b{margin-right:8px}
+  .h-lg .lg-mcst{height:18px}
+  .h-lg .lg-kniga{height:28px;margin:-5px 0}
+  #about{padding-top:90px}
+  .mn3-ab-ph .mn3-ph{height:460px}
+  .mn3-stamp{right:16px;bottom:-40px;width:110px;height:110px}
+  .mn3-ab-tx{margin-top:70px}
+  .mn3-ab-tx h2{margin-top:20px;font-size:52px}
+  .mn3-ab-p{margin-top:36px;font-size:16px}
+  .mn3-ab-bt{margin-top:28px}
+  .mn3-ab-ph2{margin-top:56px}
+  /* 성장 과정 — 카드 1열 */
+  #journey{padding-top:100px}
+  .mn3-st{margin-top:44px;grid-template-columns:minmax(0,1fr);gap:50px}
+  .mn3-st .mn3-ph{height:240px}
+  .mn3-st h3{font-size:22px}
+  .mn3-st dl{font-size:15px}
+  /* 모집 — 띠 480, 글이 사진 가운데까지 오므로 어둠을 넓게 */
+  #recruit{margin-top:100px;height:480px}
+  .mn3-rc-bg::after{background:linear-gradient(90deg,rgba(0,0,0,.85),rgba(0,0,0,.6) 70%,rgba(0,0,0,.45))}
+  .mn3-rc h2{margin-top:14px;font-size:40px}
+  .mn3-rc-p{margin-top:18px;font-size:16px}
+  .mn3-rc-bt{margin-top:30px}
+  /* 소식 — 카드 1.2장 */
+  #news{padding:100px 0 110px}
+  .mn3-nw-ctl{margin-top:30px}
+  .mn3-arr{width:56px}
+  .mn3-nw{gap:12px}
+  .mn3-nw li{flex-basis:calc((100% - 12px)/1.2)}
+  .mn3-nw li a{height:230px;padding:24px 22px}
+  .mn3-nw .t{font-size:17px}
+}
+/* 좁은 휴대폰 — 표지 제목 첫 줄이 넘치므로 「가능성을」 뒤에서 줄바꿈 */
+@media(max-width:560px){
+  .h-title .mn3-m{display:inline}
+}

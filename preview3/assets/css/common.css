@@ -1,0 +1,635 @@
+@charset "utf-8";
+/* ============================================================
+   2026 K예술영재 프로젝트 — common.css
+   전 페이지 공통: 토큰 / 리셋 / 헤더 / 전체메뉴 / 서브비주얼 /
+                  탭 / 본문 공통 컴포넌트 / 푸터
+   시안 3(WBS 11.11) — 레퍼런스 ③ thehouseconcert.com: 어두운 바탕 · 흰 글자 밝기 단계 · 송명체 제목 · 금색 가는 선
+   관리자 페이지(body.admin)도 이 파일을 쓰므로 어두운 바탕 · 글자색은 body:not(.admin)에서만 바꾼다
+   ============================================================ */
+
+:root{
+  --none:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0));   /* 빈 사진 자리 (main.css --img-hero-*) */
+  /* ---- 컬러 (관리자 페이지 · 게시글 미리보기용 밝은 값 — 공개 페이지는 아래 body:not(.admin)에서 어두운 값으로 바뀜) ---- */
+  --teal:#176C86;  --teal-dk:#1C6077;  --teal-dp:#0F4A5C;  --teal-lt:#E7F0F3;
+  --cream:#FAF9F5; --ink:#212326;      --ink-dp:#141413;
+  --coral:#E84958; --gold:#C9A227;     --sand:#EFE3D7;
+  --coral-lt:#F2A88E;
+  --coral-bg:#FDECEC;
+  --gold-dp:#B8912A;
+  --gold-lt:#E2C46A;
+  --gray:#5A6065;  --gray-lt:#6B7075;
+  --line:#DDDDDD;  --line-lt:#EAEAEA;  --line-dk:rgba(255,255,255,.22);
+  --txt:#4A4F54;   --paper:#fff;   --line-st:var(--ink);   /* 본문 글자 · 상자 바탕 · 목록 위 굵은 줄 */
+  /* 시안3(WBS 11.10) — 어두운 바탕 · 흰 글자 밝기 단계 · 금색 가는 선, 제목은 송명체(Song Myung, 구글 글꼴 — 사용자 승인 2026-10-23) */
+  --d-bg:#111;  --d-bg2:#0B0B0B;  --d-card:#191919;  --d-w8:rgba(255,255,255,.8);  --d-w6:rgba(255,255,255,.6);  --d-w4:rgba(255,255,255,.4);  --d-w3:rgba(255,255,255,.3);  --d-ln:rgba(255,255,255,.14);
+  --d-gold:#C9A961;  --d-gold-dk:#8C7440;
+  --f-brush:"Song Myung",serif;
+
+  /* ---- 레이아웃 ---- 본문 폭 1290(1440 화면 좌우 75), 1101~1280은 화면 − 좌우 64 */
+  --inner:1290px; --hd:90px; --pad-sec:120px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:18px;color:var(--ink);background:#fff;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+/* 공개 페이지 — 어두운 바탕. 본문 공통 요소가 쓰는 색 이름을 어두운 바탕 값으로 바꿔 끼운다(청록 → 금색, 회색 글자는 흰 60% 이상) */
+body:not(.admin){background:var(--d-bg);color:#fff;
+  --ink:#fff; --ink-dp:#fff; --gray:rgba(255,255,255,.7); --gray-lt:var(--d-w6); --txt:var(--d-w8);
+  --line:var(--d-ln); --line-lt:var(--d-ln); --line-st:var(--d-w6); --cream:var(--d-card); --paper:var(--d-card);
+  --teal:var(--d-gold); --teal-dk:var(--d-gold); --teal-dp:var(--d-gold); --teal-lt:rgba(201,169,97,.12);
+  --coral:var(--d-gold); --coral-bg:rgba(201,169,97,.12); --gold-dp:var(--d-gold); --gold-lt:var(--d-gold)}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+li{list-style:none}
+table{border-collapse:collapse;width:100%}
+button{font-family:inherit}
+.inner{width:min(var(--inner),calc(100% - 128px));margin:0 auto}
+.blind{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+section[id]{scroll-margin-top:var(--hd)}
+
+/* ---------- 스크롤 효과 (common.js 「스크롤 효과」 — 메인 · 하위 공통) ----------
+   [data-rv] 나타나기: 아래 40px에서 1초 동안 떠오르며(data-d 지연), [data-rv="fade"]는 제자리에서 투명 → 선명(투명도만).
+   [data-zoom] 사진 칸: 칸 안 첫 사진을 common.js가 scale(시작 배율 → 1)로 줄인다. 사진(img)이 없는 칸은 --zoom 값을 배경 층에 쓴다.
+   [data-par] 엇갈려 움직이기: common.js가 translate3d(0,y,0). data-rv와 같은 요소에 함께 쓰지 않는다(둘 다 transform) — 감싼 칸에 따로 */
+[data-rv]{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.22,1,.36,1),transform 1s cubic-bezier(.22,1,.36,1)}
+[data-rv="fade"]{transform:none;transition:opacity 1.2s ease}   /* 사진 칸 — 투명도만(칸 안 사진의 data-zoom transform과 부딪히지 않게 칸에는 transform을 걸지 않음) */
+[data-rv].on{opacity:1;transform:none}
+[data-rv][data-d="1"]{transition-delay:.12s}[data-rv][data-d="2"]{transition-delay:.24s}
+[data-rv][data-d="3"]{transition-delay:.36s}[data-rv][data-d="4"]{transition-delay:.48s}
+[data-zoom]{overflow:hidden}
+[data-zoom] img{transform-origin:50% 50%;will-change:transform}
+@media(prefers-reduced-motion:reduce){
+  [data-rv]{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}
+
+/* ============ HEADER (시안 3) ============
+   높이 90 · 왼쪽 메뉴 4개 · 가운데 이름(금색 2026 + 송명체) · 오른쪽 SNS 4개 + 테두리 네모 ☰.
+   메인 표지(#hero) · 하위 머리(#sv) 사진 위에서는 투명(#header.on-photo — common.js가 붙임), 사진을 지나면 어두운 바탕 + 아래 가는 줄. 글자는 늘 흰색 */
+#header{position:fixed;top:0;left:0;width:100%;height:var(--hd);z-index:100;color:#fff;background:var(--d-bg);border-bottom:1px solid var(--d-ln);
+  transition:background-color .4s,border-color .4s}
+#header.on-photo{background:transparent;border-bottom-color:transparent}
+#header.on-photo.nav-open,body.menu-open #header{background:var(--d-bg2);border-bottom-color:var(--d-ln)}
+#header .hd-in{position:relative;height:100%;display:flex;align-items:center;padding:0 40px}
+.logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;text-align:center;line-height:1.05;white-space:nowrap}
+.logo .yr{display:block;font-size:12px;font-weight:500;letter-spacing:.2em;color:var(--d-gold)}
+.logo .nm{display:block;font-family:var(--f-brush);font-size:26px;font-weight:400}
+#header nav{position:relative;align-self:stretch;display:flex}
+#gnb{display:flex;gap:40px;height:100%}
+#gnb > li{position:relative;display:flex;align-items:center}
+#gnb > li > a{display:block;font-size:16px;font-weight:500;color:var(--d-w8);transition:color .25s}
+#gnb > li > a:hover,#gnb > li > a:focus-visible,#gnb > li.on > a{color:#fff}
+.hd-tools{margin-left:auto;display:flex;align-items:center;gap:30px}
+.hd-sns{display:flex;align-items:center;gap:18px}
+.hd-sns a{display:block;color:#fff;cursor:pointer;transition:opacity .25s}
+.hd-sns a:hover,.hd-sns a:focus-visible{opacity:.65}
+.hd-sns svg{display:block;width:20px;height:20px}
+/* ☰ — 테두리 네모 46×40, 전체메뉴가 열리면 X */
+.ham{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3.5px;flex:0 0 auto;width:46px;height:40px;padding:0;
+  border:1px solid var(--d-w6);border-radius:4px;background:none;color:#fff;cursor:pointer;transition:border-color .25s}
+.ham:hover,.ham:focus-visible{border-color:#fff}
+.ham span{display:block;width:16px;height:1.5px;background:currentColor;transition:transform .3s,opacity .3s}
+body.menu-open .ham span:nth-child(1){transform:translateY(5px) rotate(45deg)}
+body.menu-open .ham span:nth-child(2){opacity:0}
+body.menu-open .ham span:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+/* ---------- 머리 메뉴 판 (common.js · WBS 8.12) ----------
+   PC(1101px 이상)에서 메뉴 줄에 마우스를 올리거나 Tab으로 들어가면 #header.nav-open(머리도 어둡게) — 마우스를 올린(포커스가 있는) 메뉴의 목록만
+   그 글자 밑에 어두운 판(--d-bg2 · 가는 줄)으로 내려온다. 시안 3은 메뉴 간격이 40px라 네 목록을 한꺼번에 펴면 서로 겹쳐서 하나씩 보인다(넓은 판 .gnb-panel은 쓰지 않음) */
+.gnb-panel{display:none}
+.gnb-list{position:absolute;left:-24px;top:100%;z-index:2;min-width:190px;padding:14px 0 16px;background:var(--d-bg2);border:1px solid var(--d-ln);border-top:0;
+  opacity:0;visibility:hidden;transform:translateY(-10px);transition:opacity .3s,visibility .3s,transform .35s cubic-bezier(.22,1,.36,1)}
+.gnb-list a{display:block;padding:9px 24px;font-size:15px;font-weight:300;color:var(--d-w8);white-space:nowrap;transition:color .2s}
+.gnb-list a:hover,.gnb-list a:focus-visible{color:#fff;outline:none;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+.gnb-list a[aria-current="page"]{color:var(--d-gold)}
+#header.nav-open #gnb > li:hover > .gnb-list,#header.nav-open #gnb > li:focus-within > .gnb-list{opacity:1;visibility:visible;transform:none}
+
+/* ---------- 전체메뉴 (☰ — PC에서도 보임) — 어두운 판, 메뉴 이름 송명체 ---------- */
+#allmenu{position:fixed;inset:0;background:var(--d-bg2);color:#fff;z-index:90;opacity:0;pointer-events:none;
+  transition:opacity .5s ease;display:flex;align-items:center;overflow-y:auto}
+body.menu-open #allmenu{opacity:1;pointer-events:auto}
+#allmenu .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;width:100%;padding:var(--hd) 0 40px}
+#allmenu h3{font-family:var(--f-brush);font-size:30px;font-weight:400;padding-bottom:16px;border-bottom:1px solid var(--d-ln)}
+#allmenu ul{margin-top:10px}
+#allmenu li a{display:block;padding:11px 0;color:var(--d-w8);font-size:16px;font-weight:300;transition:color .25s,padding-left .25s}
+#allmenu li a:hover,#allmenu li a:focus-visible{color:#fff;padding-left:8px}
+/* 전체메뉴 안 SNS — 머리의 SNS가 숨는 1100px 이하에서만 */
+.am-sns{display:none;gap:24px;padding-bottom:40px;color:#fff}
+.am-sns a{display:block;color:inherit;opacity:.85;transition:opacity .25s}
+.am-sns a:hover,.am-sns a:focus-visible{opacity:1}
+.am-sns svg{display:block;width:22px;height:22px}
+
+/* ============ SUB VISUAL (시안 3) — 화면 가득 사진(페이지별 --sv-img · --sv-pos) + 위→아래 어둠, 가운데 송명체 제목 · 설명, 아래 번호 밑줄 탭 ============ */
+#sv{position:relative;height:620px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#000;overflow:hidden}
+#sv::before{content:"";position:absolute;inset:0;background:#1A1A1A var(--sv-img,none) var(--sv-pos,center)/cover no-repeat}
+#sv::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.45) 50%,var(--d-bg))}
+#sv[data-page="about"]    {--sv-img:url("../img/hero-trad.jpg");--sv-pos:center 60%}
+#sv[data-page="programs"] {--sv-img:url("../img/hero-music.jpg");--sv-pos:center 55%}
+#sv[data-page="recruit"]  {--sv-img:url("../img/p1.jpg")}
+#sv[data-page="mentoring"]{--sv-img:url("../img/p3.jpg")}
+#sv[data-page="camp"]     {--sv-img:url("../img/hero-trad.jpg");--sv-pos:center 15%}
+#sv[data-page="news"]     {--sv-img:url("../img/p4.jpg")}
+#sv[data-page="news"]::after{background:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,.62) 50%,var(--d-bg))}   /* 소식은 더 어둡게 */
+#sv .in{position:relative;z-index:2;color:#fff}
+#sv .en{display:none}
+#sv h1{font-family:var(--f-brush);font-size:72px;font-weight:400;line-height:1.2}
+#sv .desc{margin-top:16px;font-size:18px;font-weight:300;color:var(--d-w8)}
+/* 번호 밑줄 탭 — #tabs.ntab(지금 페이지의 하위 탭, 탭 동작은 common.js). 모양은 「시안3 공통 부품」 .ntab, 넘치면 가로로 밀어 본다 */
+#sv #tabs{position:absolute;left:0;right:0;bottom:56px;z-index:2}
+#tabs.ntab{justify-content:flex-start;overflow-x:auto;scrollbar-width:none}
+#tabs.ntab::-webkit-scrollbar{display:none}
+#tabs.ntab > :first-child{margin-left:auto}
+#tabs.ntab > :last-child{margin-right:auto}
+#tabs.ntab button{flex:none;padding:0 20px 12px;border-top:0;border-left:0;border-right:0;white-space:nowrap;font-family:inherit}
+#tabs.ntab button:focus-visible{outline:1px solid var(--d-w6);outline-offset:4px}
+
+/* ---------- breadcrumb — 화면에서는 숨기고 높이 0으로 자리만 남김(news.js가 #crumb 아래 끝 = 하위 머리 끝을 「본문 맨 위」로 씀) ---------- */
+#crumb{height:0;overflow:hidden;visibility:hidden}
+#crumb ol{display:flex;align-items:center;gap:10px;height:56px;font-size:14px}
+#crumb ol > li.crumb-menu{position:relative;display:flex;align-items:center}
+.crumb-btn{display:inline-flex;align-items:center;gap:7px;background:none;border:0;padding:6px 0;font:inherit;color:inherit}
+.crumb-caret{display:none}
+.crumb-sub[hidden]{display:none}
+
+/* ---------- 모집 및 선발 연도 단추 (#tabs.yr-tabs — 탭 코드는 같고 테두리 네모 단추) ---------- */
+#tabs.yr-tabs{padding:100px 0 0}
+#tabs.yr-tabs ul{display:flex;gap:10px}
+#tabs.yr-tabs button{min-width:100px;height:46px;padding:0 24px;border:1px solid var(--d-w4);border-radius:4px;background:none;
+  font-size:17px;font-weight:500;color:var(--d-w8);cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+#tabs.yr-tabs button:hover{border-color:#fff;color:#fff}
+#tabs.yr-tabs button.on{background:#fff;border-color:#fff;color:#111}
+#tabs.yr-tabs ~ main .panel{padding-top:50px}
+
+/* ============ 본문 공통 컴포넌트 (모집 · 심화 멘토링 · 겨울캠프 · 소식 · 워크숍 다른 분야) ============ */
+.panel{display:none;padding:120px 0 0}
+.panel.on{display:block}
+.h-sec{font-family:var(--f-brush);font-size:46px;font-weight:400;line-height:1.25}
+.h-sec .ko{display:block;font-family:"Pretendard Variable",Pretendard,sans-serif;font-size:16px;font-weight:400;color:var(--d-gold);margin-top:12px}
+.h-sub{font-size:24px;font-weight:600;padding-left:16px;position:relative;margin:80px 0 26px}
+.h-sub::before{content:"";position:absolute;left:0;top:7px;width:2px;height:20px;background:var(--teal)}
+.h-sub:first-child{margin-top:0}
+.lead{font-family:var(--f-brush);font-size:clamp(28px,2.6vw,40px);font-weight:400;line-height:1.5}
+.lead b{color:var(--teal);font-weight:400}
+.txt{font-size:17px;font-weight:300;line-height:1.95;color:var(--txt)}
+.txt p+p{margin-top:16px}
+.txt b{font-weight:600;color:var(--ink)}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:70px;align-items:start}
+
+/* 정보 테이블 — 위 굵은 줄 · 가는 줄, 항목 이름은 송명체 금색 */
+.tbl{border-top:1px solid var(--line-st)}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:20px 22px;font-size:17px;text-align:left;vertical-align:top;line-height:1.7}
+.tbl th{font-family:var(--f-brush);font-weight:400;color:var(--teal);width:190px}
+.tbl td{font-weight:300}
+.tbl.center td,.tbl.center th{text-align:center}
+.tbl thead th{font-family:inherit;font-weight:600;color:var(--ink);width:auto;border-bottom:1px solid var(--line-st)}
+
+/* 박스 / 카드 — 어두운 칸 · 가는 줄 */
+.boxes{display:grid;gap:20px}
+.boxes.c2{grid-template-columns:repeat(2,1fr)}
+.boxes.c3{grid-template-columns:repeat(3,1fr)}
+.boxes.c4{grid-template-columns:repeat(4,1fr)}
+.box{border:1px solid var(--line);border-radius:6px;padding:36px 32px;background:var(--paper);transition:border-color .35s}
+.box:hover{border-color:var(--line-st)}
+.box .no{font-family:var(--f-brush);font-size:20px;color:var(--teal)}
+.box h4{font-size:20px;font-weight:600;margin-top:12px}
+.box .en{font-size:13px;color:var(--gray-lt);margin-top:4px}
+.box p{font-size:16.5px;font-weight:300;line-height:1.8;color:var(--txt);margin-top:14px}
+.box.fill{background:var(--cream);border-color:transparent}
+
+/* 도트 리스트 */
+.dot li{position:relative;padding-left:16px;font-size:17px;font-weight:300;line-height:1.95;color:var(--txt)}
+.dot li::before{content:"";position:absolute;left:0;top:14px;width:5px;height:5px;border-radius:50%;background:var(--teal)}
+.dot li+li{margin-top:4px}
+
+/* 안내 */
+.note{background:var(--teal-lt);border-left:2px solid var(--teal);padding:24px 28px;font-size:16.5px;line-height:1.85;color:var(--txt)}
+.note b{color:var(--ink)}
+
+/* 버튼 — 테두리 네모 */
+.btn{display:inline-flex;align-items:center;gap:12px;height:48px;padding:0 26px;border:1px solid var(--d-w4);border-radius:4px;background:none;color:var(--d-w8);
+  font-size:16px;font-weight:400;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+.btn:hover,.btn:focus-visible{background:#fff;border-color:#fff;color:#111}
+.btn.ghost{background:none}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+
+/* 타임라인 */
+.tl{border-left:1px solid var(--line);padding-left:34px}
+.tl li{position:relative;padding-bottom:38px}
+.tl li::before{content:"";position:absolute;left:-40px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--d-bg);border:2px solid var(--teal)}
+.tl li:last-child{padding-bottom:0}
+.tl .d{font-size:14px;color:var(--teal);font-weight:500}
+.tl h4{font-size:19px;font-weight:600;margin-top:8px}
+.tl p{font-size:16.5px;font-weight:300;color:var(--txt);margin-top:6px;line-height:1.8}
+
+/* 게시판 리스트 */
+.bbs{border-top:1px solid var(--line-st)}
+.bbs li a{display:flex;align-items:center;gap:24px;padding:24px 8px;border-bottom:1px solid var(--line-lt);transition:background .3s}
+.bbs li a:hover{background:rgba(255,255,255,.04)}
+.bbs .cat{flex:0 0 auto;font-size:12.5px;font-weight:500;color:var(--teal);border:1px solid var(--teal);padding:5px 12px}
+.bbs .t{flex:1;font-size:17px;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbs .d{flex:0 0 auto;font-size:14px;color:var(--gray-lt)}
+.bbs li a.empty{cursor:pointer}  /* 내용 없는 공지: 반응은 같고 이동만 없음 */
+/* 언론홍보: 언론사는 분류 자리, 제목 바로 뒤에 새 창 표시 */
+.bbs .press .cat{min-width:86px;text-align:center}   /* 언론사 이름 길이가 달라도 제목 시작 위치를 맞춘다 */
+.bbs .press .t{flex:0 1 auto}
+.bbs .press.empty .ext{visibility:hidden}   /* 자리는 남겨 날짜를 오른쪽에 둔다 */
+.bbs .press .ext{flex:0 0 auto;margin:0 auto 0 -14px;font-size:14px;color:var(--gray-lt)}
+.paging{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:50px}
+.paging button{width:40px;height:40px;display:grid;place-items:center;font-size:15px;color:var(--d-w8);border:1px solid var(--d-ln);border-radius:4px;background:none;cursor:pointer}
+.paging button:hover{border-color:var(--d-w6);color:#fff}
+.paging button.on{background:#fff;border-color:#fff;color:#111;font-weight:600;cursor:default}
+/* 글이 없음 · 불러오기 실패 (board.js MSG) */
+.bd-msg{border-top:1px solid var(--line-st);border-bottom:1px solid var(--line-lt);padding:70px 0;text-align:center;font-size:16px;color:var(--gray-lt)}
+
+/* 갤러리 */
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.gal figure{position:relative}
+.gal .th{display:block;width:100%;border:0;padding:0;aspect-ratio:4/3;border-radius:6px;background:var(--d-card);overflow:hidden}
+.gal button.th{cursor:pointer}
+.gal button.th::after{content:"";position:absolute;inset:0}  /* 제목·설명을 눌러도 열리게 칸 전체로 넓힘 */
+.gal button.th:focus-visible{outline:2px solid var(--d-gold);outline-offset:3px}
+.gal .th img,.gal .th .ph{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.gal .th .ph{background:inherit}  /* 사진 없는 앨범: 칸도 같이 커진다 */
+.gal figure.empty{cursor:pointer}
+.gal figure:hover .th img,.gal figure:hover .th .ph{transform:scale(1.07)}
+.gal figcaption{margin-top:14px;font-size:16px;font-weight:500}
+.gal .m{font-size:13.5px;color:var(--gray-lt);margin-top:5px}
+
+/* 프로그램 페이지 갤러리 사진 줄 (program-photos.js). 사진이 없으면 칸째 숨김 */
+.pg-photos{margin-top:80px}
+.pg-photos[hidden]{display:none}
+.pg-photos-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}
+.pg-photos-head .h-sub{margin:0}
+.pg-arrows{display:flex;gap:10px}
+.pg-arrows button{width:70px;height:42px;border:1px solid var(--d-w4);border-radius:4px;background:none;color:var(--d-w8);font-size:18px;cursor:pointer;
+  display:grid;place-items:center;transition:background .25s,color .25s,border-color .25s}
+.pg-arrows button:hover,.pg-arrows button:focus-visible{background:#fff;border-color:#fff;color:#111}
+.pg-rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
+.pg-rail::-webkit-scrollbar{display:none}
+.pg-item{position:relative;flex:0 0 calc((100% - 60px)/4);min-width:250px;scroll-snap-align:start}
+.pg-item .th{display:block;width:100%;border:0;padding:0;aspect-ratio:292/262;border-radius:6px;overflow:hidden;background:var(--d-card);cursor:pointer}
+.pg-item .th::after{content:"";position:absolute;inset:0}  /* 제목·설명을 눌러도 열리게 칸 전체로 넓힘 */
+.pg-item .th:focus-visible{outline:2px solid var(--d-gold);outline-offset:-2px}
+.pg-item img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.pg-item:hover img{transform:scale(1.07)}
+.pg-item figcaption{margin-top:16px;font-size:16px;font-weight:500}
+.pg-item .m{font-size:13.5px;color:var(--gray-lt);margin-top:5px}
+
+/* ============ 모집 및 선발 · 겨울캠프 (WBS 9절 본문 — 어두운 바탕용 색만 맞춤) ============ */
+.lead.big{font-size:clamp(32px,3.4vw,52px);line-height:1.35}
+.h-plain{font-size:24px;font-weight:600;margin:110px 0 30px}
+.rc-head h2{font-family:var(--f-brush);font-size:40px;font-weight:400}
+.rc-head p{margin-top:14px;font-size:17px;font-weight:300;color:var(--txt)}
+.rc-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:40px}
+.rc-card{border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:40px 28px 36px}
+.rc-card h3{font-family:var(--f-brush);font-size:28px;font-weight:400;color:var(--teal)}
+.rc-card dl{margin-top:24px}
+.rc-card dt{font-size:14px;color:var(--gray-lt)}
+.rc-card dd{margin-top:6px;font-size:17px;font-weight:500}
+.rc-card dd+dt{margin-top:22px}
+.rc-cards + .h-plain{margin-top:76px}
+.rc-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.rc-steps li{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:30px 24px}
+.rc-steps .no{display:block;font-family:var(--f-brush);font-size:20px;color:var(--teal)}
+.rc-steps b{display:block;margin-top:10px;font-size:19px;font-weight:600}
+.rc-period{margin-top:30px;font-size:16px;font-weight:300;color:var(--txt)}
+.rc-wait{font-size:17px;font-weight:300;color:var(--txt)}
+.cp-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.cp-card{border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:32px 28px 36px}
+.cp-ic{display:block;color:var(--teal)}   /* 아이콘 원 없이 금색 선 아이콘만 */
+.cp-ic svg{display:block;width:28px;height:28px}
+.cp-card h4{margin-top:26px;font-size:21px;font-weight:600}
+.cp-card p{margin-top:14px;font-size:16px;font-weight:300;line-height:1.75;color:var(--txt)}
+.stay{display:grid;grid-template-columns:minmax(0,1.8fr) repeat(3,minmax(0,1fr));gap:24px;margin-top:72px;padding:52px 44px;background:var(--paper);border:1px solid var(--line);border-radius:6px}
+.stay h4{margin-top:4px;font-size:18px;font-weight:600}
+.stay p{margin-top:8px;font-size:16px;font-weight:300;line-height:1.7;color:var(--txt)}
+.stay .stay-k{margin-top:0;font-size:15px;font-weight:500;color:var(--teal)}
+.stay .stay-t{margin-top:14px;font-family:var(--f-brush);font-size:28px;font-weight:400;line-height:1.45;color:var(--ink)}
+
+/* 지도/약도 자리 */
+.mapbox{aspect-ratio:16/7;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;color:var(--gray-lt);font-size:15px}
+
+/* ============ FOOTER (시안 3) — --d-bg2 · 위 가는 줄, 왼쪽 송명체 이름 · 주최 주관 · 메일, 오른쪽 SNS 테두리 원, 아래 줄 © ============ */
+#footer{margin-top:180px;background:var(--d-bg2);border-top:1px solid var(--d-ln);color:var(--d-w4);padding:56px 0 46px;font-size:14px;line-height:1.9}
+.ft-in{padding:0 40px}
+.ft-top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px 40px;flex-wrap:wrap}
+.ft-name{font-family:var(--f-brush);font-size:24px;font-weight:400;line-height:1.3;color:#fff;margin-bottom:16px}
+.ft-mail a{transition:color .25s}
+.ft-mail a:hover,.ft-mail a:focus-visible{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.ft-sns{display:flex;gap:10px}
+.ft-sns a{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--d-w3);border-radius:50%;color:#fff;transition:border-color .25s,background .25s,color .25s}
+.ft-sns a:hover,.ft-sns a:focus-visible{border-color:#fff;background:#fff;color:#111}
+.ft-sns svg{display:block;width:15px;height:15px}
+.ft-copy{margin-top:30px;padding-top:20px;border-top:1px solid var(--d-ln);font-size:13px;color:#777}
+/* 맨 위로 · 맨 아래로 — 테두리 원(흰 40%) · 흰 화살표, 어두운 반투명 바탕 */
+.top,.go-end{position:fixed;right:28px;width:48px;height:48px;border-radius:50%;border:1px solid var(--d-w4);background:rgba(17,17,17,.6);color:#fff;
+  cursor:pointer;z-index:60;opacity:0;pointer-events:none;transition:opacity .35s,transform .35s,border-color .25s;font-size:16px}
+.top{bottom:86px}
+.go-end{bottom:28px}
+.top.on,.go-end.on{opacity:1;pointer-events:auto}
+.top:hover{transform:translateY(-3px);border-color:#fff}
+.go-end:hover{transform:translateY(3px);border-color:#fff}
+
+/* ============ 게시글 (board.js — 관리자 미리보기 · 방문자 화면 공용, 색은 위 색 이름이 페이지마다 바꿔 줌) ============ */
+.post{border-top:1px solid var(--line-st)}
+.post-head{padding:30px 0 26px;border-bottom:1px solid var(--line)}
+.post-cat{display:inline-block;font-size:12.5px;font-weight:600;color:var(--teal);border:1px solid var(--teal);padding:4px 11px}
+.post-title{font-size:26px;font-weight:600;line-height:1.4;margin-top:14px}
+.post-date{font-size:14px;color:var(--gray-lt);margin-top:10px}
+.post-photos{display:grid;gap:16px;margin-top:36px}
+.post-photos img{width:auto;max-width:100%;height:auto;margin:0 auto}
+.post-body{font-size:17px;line-height:1.95;color:var(--txt);margin-top:36px;overflow-wrap:anywhere}
+.post-body a{color:var(--teal);text-decoration:underline;text-underline-offset:3px}
+.post-body strong{font-weight:700;color:var(--ink)}
+.em-key{color:var(--teal);font-weight:600}
+.em-warn{color:#C8323F;font-weight:600}
+body:not(.admin) .em-warn{color:#FF7B7B}   /* 어두운 바탕에서 읽히는 빨강 */
+.post-files{margin-top:44px;background:var(--cream);padding:22px 26px}
+body:not(.admin) .post-files{border:1px solid var(--d-ln);border-radius:6px}
+.post-files h4{font-size:15px;font-weight:700}
+.post-files li a{display:flex;flex-wrap:wrap;gap:4px 8px;padding:8px 0;font-size:15.5px}
+.post-files li a:hover .nm{text-decoration:underline;text-underline-offset:3px}
+.post-files .sz{color:var(--gray-lt)}
+.post-zoom{display:block;max-width:100%;margin:0 auto;border:0;padding:0;background:none;cursor:zoom-in}
+.post-foot{margin-top:56px;padding-top:34px;border-top:1px solid var(--line);text-align:center}
+
+/* ============ 사진 확대 보기 (board.js viewer) — 관리자 화면의 .lb(칸 제목)와 겹치지 않게 .zv ============ */
+html.zv-open{overflow:hidden}
+.zv{position:fixed;inset:0;z-index:200;background:rgba(10,10,10,.96)}
+.zv[hidden]{display:none}
+.zv-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:72px 96px 56px}
+.zv-img{width:auto;height:auto;max-width:100%;max-height:calc(100% - 44px);min-height:0;object-fit:contain}
+.zv-cap{color:#fff;font-size:15px;line-height:1.6;margin-top:16px;text-align:center}
+.zv-num{position:absolute;top:26px;left:30px;color:rgba(255,255,255,.72);font-size:15px;letter-spacing:.06em}
+.zv button{position:absolute;border:0;background:none;color:#fff;cursor:pointer;opacity:.75;transition:opacity .25s;line-height:1}
+.zv button:hover,.zv button:focus-visible{opacity:1}
+.zv button:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+.zv-x{top:12px;right:16px;width:56px;height:56px;font-size:40px}
+.zv-prev,.zv-next{top:50%;transform:translateY(-50%);width:72px;height:110px;font-size:60px}
+.zv-prev{left:12px}
+.zv-next{right:12px}
+
+/* ============ 시안 3 하위 페이지 (WBS 11.11) — 공통 틀 p3- · 사업소개 ab3- · 워크숍 음악 wk3- ============ */
+/* 구역 — 위 160px, 가운데 송명체 제목 + 흰 60% 한 줄 */
+.p3-sec{padding-top:160px}
+.panel > .inner > .p3-sec:first-child{padding-top:0}
+.p3-sh{text-align:center}
+.p3-sh h2{font-family:var(--f-brush);font-size:56px;font-weight:400;line-height:1.25}
+.p3-sh p{margin-top:18px;font-size:17px;font-weight:300;color:var(--d-w6)}
+
+/* 사업소개 — 프로젝트 개요: 가운데 송명체 리드 + 두 문단 */
+.ab3-lead{text-align:center}
+.ab3-lead h2{font-family:var(--f-brush);font-size:52px;font-weight:400;line-height:1.35}
+.ab3-lead em{font-style:normal;color:var(--d-gold)}
+.ab3-lead p{width:min(820px,100%);margin:40px auto 0;font-size:18px;font-weight:300;line-height:1.9;color:var(--d-w8)}
+.ab3-lead p+p{margin-top:14px}
+.ab3-lead b{font-weight:600;color:#fff}
+/* 사업 개요 — 가운데 980 줄 목록, 항목 이름 송명체 금색 */
+.ab3-dl{width:min(980px,100%);margin:70px auto 0;border-top:1px solid var(--d-w6)}
+.ab3-dl > div{display:grid;grid-template-columns:200px minmax(0,1fr);padding:24px 10px;border-bottom:1px solid var(--d-ln);font-size:18px;font-weight:300}
+.ab3-dl dt{font-family:var(--f-brush);font-size:19px;color:var(--d-gold)}
+/* 추진 목표 — 어두운 칸 3개 계단(360 · 430 · 500, 아래 맞춤) */
+.ab3-gl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:end;margin-top:70px}
+.ab3-gl li{display:flex;flex-direction:column;padding:40px 36px;border:1px solid var(--d-ln);border-radius:6px;background:var(--d-card)}
+.ab3-gl li:nth-child(1){height:360px}
+.ab3-gl li:nth-child(2){height:430px}
+.ab3-gl li:nth-child(3){height:500px}
+.ab3-gl small{font-family:var(--f-brush);font-size:22px;color:var(--d-gold)}
+.ab3-gl h3{margin-top:14px;font-family:var(--f-brush);font-size:52px;font-weight:400;line-height:1.2}
+.ab3-gl p{margin-top:auto;padding-top:24px;font-size:16px;font-weight:300;line-height:1.75;color:var(--d-w8)}
+.ab3-gl .ab3-pg{margin-top:18px;padding-top:0;font-size:14px;color:var(--d-w6)}
+.ab3-gl .ab3-pg b{font-weight:500;color:#fff}
+/* 추진 체계 — 가운데 세로: 주최(흰 문체부 로고) → 금색 세로 선 → 주관(흰 교육원 로고 + 이름) → 선 → 분야 사진 4장 */
+.ab3-og{display:flex;flex-direction:column;align-items:center;margin-top:70px;text-align:center}
+.ab3-lab{font-size:15px;color:var(--d-gold)}
+.ab3-host img{height:38px;width:auto;margin:14px auto 0}
+.ab3-main img{height:56px;width:auto;margin:12px auto 0}
+.ab3-main h3{margin-top:12px;font-family:var(--f-brush);font-size:34px;font-weight:400}
+.ab3-main p:last-child{margin-top:10px;font-size:16px;font-weight:300;color:var(--d-w6)}
+.ab3-vl{display:block;width:1px;height:60px;margin:22px 0;background:linear-gradient(var(--d-gold),rgba(201,169,97,.2))}
+.ab3-fs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;width:100%;margin-top:10px}
+.ab3-fs li{position:relative;height:380px;border-radius:6px;background:#222}
+.ab3-fs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ab3-fs li::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.75))}
+.ab3-fs b{position:absolute;left:24px;bottom:22px;z-index:1;font-family:var(--f-brush);font-size:30px;font-weight:400}
+/* 운영 흐름 — 1101px 이상: 900×720 안 금색 가는 원(지름 450, 가운데 450,360) 위 다섯 점, 맨 위 1부터 시계 방향 72°씩. 1100px 이하는 세로 목록 */
+.ab3-cy{position:relative;width:900px;height:720px;margin:80px auto 0}
+.ab3-ring{position:absolute;left:225px;top:135px;width:450px;height:450px;border:1px solid var(--d-gold-dk);border-radius:50%}
+.ab3-c{position:absolute;left:0;right:0;top:318px;font-family:var(--f-brush);font-size:30px;line-height:1.4;text-align:center}
+.ab3-dt{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--d-gold);box-shadow:0 0 0 7px rgba(201,169,97,.18)}
+.ab3-ct{position:absolute;width:250px}
+.ab3-ct em{margin-right:8px;font-style:normal;font-family:var(--f-brush);font-size:20px;color:var(--d-gold)}
+.ab3-ct b{font-size:20px;font-weight:600}
+.ab3-ct p{margin-top:8px;font-size:15px;font-weight:300;line-height:1.6;color:var(--d-w6)}
+.ab3-cy li:nth-child(1) .ab3-dt{left:450px;top:135px}
+.ab3-cy li:nth-child(2) .ab3-dt{left:664px;top:290.5px}
+.ab3-cy li:nth-child(3) .ab3-dt{left:582px;top:542px}
+.ab3-cy li:nth-child(4) .ab3-dt{left:318px;top:542px}
+.ab3-cy li:nth-child(5) .ab3-dt{left:236px;top:290.5px}
+.ab3-cy li:nth-child(1) .ab3-ct{left:325px;top:10px;text-align:center}
+.ab3-cy li:nth-child(2) .ab3-ct{left:696px;top:262px}
+.ab3-cy li:nth-child(3) .ab3-ct{left:600px;top:572px}
+.ab3-cy li:nth-child(4) .ab3-ct{left:50px;top:572px;text-align:right}
+.ab3-cy li:nth-child(5) .ab3-ct{left:-48px;top:262px;text-align:right}
+/* 연간 로드맵 — 계절 머리(송명체) + 칸 사이 가는 세로줄, 12칸 위 금색 가는 막대 6줄(--s 시작 칸 · --e 끝 칸, 뒤 세 줄은 오른쪽 끝 맞춤). 768px 이하는 세로 목록 */
+.ab3-rm{position:relative;margin-top:70px}
+.ab3-rm-hd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--d-w6)}
+.ab3-rm-hd li{padding:0 0 18px 6px;font-family:var(--f-brush);font-size:32px}
+.ab3-rm-bg{position:absolute;left:0;right:0;top:66px;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.ab3-rm-bg span+span{border-left:1px solid var(--d-ln)}
+.ab3-rm ol{position:relative;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));row-gap:34px;padding-top:40px}
+.ab3-rm ol li{grid-column:var(--s) / var(--e);padding:0 6px}
+.ab3-rm ol li:nth-child(1){grid-row:1;--s:1;--e:5}
+.ab3-rm ol li:nth-child(2){grid-row:2;--s:5;--e:7}
+.ab3-rm ol li:nth-child(3){grid-row:3;--s:6;--e:8}
+.ab3-rm ol li:nth-child(4){grid-row:4;--s:8;--e:11;--w:30%}      /* 막대 폭 = (끝 − 시작) ÷ (끝 − 1) */
+.ab3-rm ol li:nth-child(5){grid-row:5;--s:11;--e:12;--w:9.09%}
+.ab3-rm ol li:nth-child(6){grid-row:6;--s:12;--e:13;--w:8.33%}
+.ab3-rm ol li.ab3-end{grid-column:1 / var(--e);text-align:right}
+.ab3-rm h3{font-size:18px;font-weight:600;white-space:nowrap}
+.ab3-bar{display:block;height:4px;margin-top:12px;background:var(--d-gold)}
+.ab3-end .ab3-bar{width:var(--w);margin-left:auto}
+.ab3-rm p{margin-top:10px;font-size:14px;font-weight:300;color:var(--d-w6);white-space:nowrap}
+.ab3-ss{display:none}
+
+/* 워크숍 음악 — 리드: 왼쪽 금색 작은 글 + 송명체 64, 오른쪽 설명 */
+.wk3-lead{display:grid;grid-template-columns:minmax(0,1fr) 560px;gap:80px;align-items:end}
+.wk3-k{font-size:16px;color:var(--d-gold)}
+.wk3-lead h2{margin-top:18px;font-family:var(--f-brush);font-size:64px;font-weight:400;line-height:1.25}
+.wk3-lead em{font-style:normal;color:var(--d-gold)}
+.wk3-tx{font-size:18px;font-weight:300;line-height:1.9;color:var(--d-w8)}
+/* 이렇게 배웁니다 — 사진 카드 3장 · 금색 송명체 번호 */
+.wk3-fw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:70px}
+.wk3-ph{position:relative;height:330px;border-radius:6px;background:#222}
+.wk3-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wk3-fw li:nth-child(2) img{object-position:70% 50%}
+.wk3-ph.empty{display:flex;align-items:center;justify-content:center;background:var(--d-card);border:1px solid var(--d-ln);font-size:15px;color:var(--d-w6)}
+.wk3-fw h3{margin-top:26px;font-size:23px;font-weight:600}
+.wk3-fw h3 small{display:block;margin-bottom:8px;font-family:var(--f-brush);font-size:18px;font-weight:400;color:var(--d-gold)}
+.wk3-fw p{margin-top:12px;font-size:16px;font-weight:300;line-height:1.7;color:var(--d-w8)}
+.wk3-also{margin-top:50px;text-align:center;font-size:16px;font-weight:300;color:var(--d-w6)}
+.wk3-also b{margin-left:12px;font-weight:500;color:#fff}
+/* 교육 포인트 — 금색 가는 원 3개(지름 220) · 원 사이 금색 가는 선, 마지막 원만 금색으로 채움 */
+.wk3-ep{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:80px;text-align:center}
+.wk3-ep::before{content:"";position:absolute;left:16.67%;right:16.67%;top:110px;height:1px;background:var(--d-gold-dk)}
+.wk3-ep li{position:relative;padding:0 16px}
+.wk3-o{display:flex;align-items:center;justify-content:center;width:220px;height:220px;margin:0 auto;border:1px solid var(--d-gold);border-radius:50%;background:var(--d-bg);
+  font-family:var(--f-brush);font-size:34px}
+.wk3-ep li:nth-child(3) .wk3-o{background:var(--d-gold);color:#111}
+.wk3-ep h3{margin-top:30px;font-size:22px;font-weight:600}
+.wk3-ep p{margin-top:10px;font-size:16px;font-weight:300;color:var(--d-w6)}
+/* 다음 단계 — 사진 두 칸(어둡게 덮음), 칸 전체가 링크 */
+.wk3-nx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:70px}
+.wk3-nx a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;height:420px;padding:0 24px;border-radius:6px;background:#222;text-align:center}
+.wk3-nx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wk3-nx a::before{content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.55);transition:background .35s}
+.wk3-nx a:hover::before,.wk3-nx a:focus-visible::before{background:rgba(0,0,0,.4)}
+.wk3-nx a > :not(img){position:relative;z-index:2}
+.wk3-nx h3{font-family:var(--f-brush);font-size:46px;font-weight:400}
+.wk3-nx p{margin-top:12px;font-size:16px;font-weight:300;color:var(--d-w8)}
+.wk3-nx .obtn{margin-top:28px}
+.wk3-nx a:hover .obtn,.wk3-nx a:focus-visible .obtn{background:#fff;color:#111;border-color:#fff}
+.wk3-nx a:focus-visible{outline:2px solid var(--d-gold);outline-offset:3px}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1280px){
+  #gnb{gap:28px}
+  .hd-tools{gap:22px}
+  .hd-sns{gap:14px}
+  .gal{grid-template-columns:repeat(3,1fr)}
+  .pg-item{flex:0 0 calc((100% - 40px)/3)}
+  .wk3-lead{grid-template-columns:minmax(0,1fr) 480px;gap:56px}
+}
+@media(max-width:1100px){
+  :root{--pad-sec:80px}
+  .inner{width:calc(100% - 80px)}
+  #gnb,.hd-sns{display:none}
+  .am-sns{display:flex}
+  #allmenu .cols{grid-template-columns:repeat(2,1fr);gap:30px 24px;padding-top:calc(var(--hd) + 24px)}
+  #allmenu h3{font-size:26px}
+  #sv{height:520px}
+  #sv h1{font-size:56px}
+  .panel{padding-top:90px}
+  .h-sec{font-size:38px}
+  .split{grid-template-columns:1fr;gap:34px}
+  .boxes.c3,.boxes.c4{grid-template-columns:repeat(2,1fr)}
+  .gal{grid-template-columns:repeat(2,1fr)}
+  .tbl th{width:130px;padding:16px 14px}
+  .tbl td{padding:16px 14px}
+  .h-plain{margin-top:80px}
+  .rc-cards,.rc-steps,.cp-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stay{grid-template-columns:repeat(3,minmax(0,1fr));padding:44px 36px}
+  .stay-head{grid-column:1/-1;margin-bottom:8px}
+  .p3-sec{padding-top:120px}
+  .p3-sh h2{font-size:46px}
+  .ab3-lead h2{font-size:42px}
+  .ab3-gl{grid-template-columns:1fr;gap:20px}
+  .ab3-gl li:nth-child(n){height:auto}
+  .ab3-gl p{padding-top:20px}
+  .ab3-fs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ab3-fs li{height:320px}
+  /* 운영 흐름 → 세로 목록: 왼쪽 금색 세로선 + 점 */
+  .ab3-cy{width:auto;height:auto;margin-top:56px}
+  .ab3-ring,.ab3-c{display:none}
+  .ab3-cy ol{position:relative;padding-left:40px}
+  .ab3-cy ol::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:var(--d-gold-dk)}
+  .ab3-cy li{position:relative;padding-bottom:34px}
+  .ab3-cy li:last-child{padding-bottom:0}
+  .ab3-cy li:nth-child(n) .ab3-dt{left:-34px;top:13px}
+  .ab3-cy li:nth-child(n) .ab3-ct{position:static;width:auto;text-align:left}
+  .ab3-ct br{display:none}
+  .wk3-lead{grid-template-columns:1fr;gap:30px}
+  .wk3-lead h2{font-size:52px}
+  .wk3-fw{gap:24px}
+  .wk3-ph{height:260px}
+  .wk3-o{width:160px;height:160px;font-size:28px}
+  .wk3-ep::before{top:80px}
+  .wk3-nx h3{font-size:40px}
+}
+@media(max-width:900px){
+  .ab3-rm-hd li{font-size:26px}
+  .ab3-rm h3{font-size:16px}
+  .ab3-rm p{font-size:13px;white-space:normal}
+}
+@media(max-width:768px){
+  :root{--hd:70px}
+  .inner{width:calc(100% - 40px)}
+  #header .hd-in{padding:0 20px}
+  .logo .yr{font-size:11px}
+  .logo .nm{font-size:22px}
+  .ham{width:42px;height:36px}
+  .ft-in{padding:0 20px}
+  #footer{margin-top:130px}
+  #sv{height:440px}
+  #sv .in{padding:0 20px}
+  #sv h1{font-size:44px}
+  #sv .desc{font-size:16px}
+  #sv #tabs{bottom:36px}
+  #tabs.ntab{gap:16px;padding:0 20px}
+  #tabs.ntab button{min-width:0;padding:0 12px 10px;font-size:15.5px}
+  #tabs.yr-tabs{padding-top:70px}
+  .panel{padding-top:70px}
+  .p3-sec{padding-top:90px}
+  .p3-sh h2{font-size:36px}
+  .p3-sh p{font-size:16px}
+  .ab3-lead h2{font-size:30px}
+  .ab3-lead p{margin-top:28px;font-size:16.5px}
+  .ab3-dl{margin-top:44px}
+  .ab3-dl > div{grid-template-columns:96px minmax(0,1fr);gap:12px;padding:18px 4px;font-size:16px}
+  .ab3-dl dt{font-size:17px}
+  .ab3-dl br{display:none}
+  .ab3-gl{margin-top:44px}
+  .ab3-gl li{padding:30px 26px}
+  .ab3-gl h3{font-size:40px}
+  .ab3-og{margin-top:44px}
+  .ab3-main h3{font-size:28px}
+  .ab3-fs{gap:12px}
+  .ab3-fs li{height:220px}
+  .ab3-fs b{left:16px;bottom:14px;font-size:24px}
+  /* 연간 로드맵 → 세로 목록(계절 · 제목 · 설명, 왼쪽 금색 막대) */
+  .ab3-rm{margin-top:44px;border-top:1px solid var(--d-w6)}
+  .ab3-rm-hd,.ab3-rm-bg{display:none}
+  .ab3-rm ol{display:block;padding:0}
+  .ab3-rm ol li,.ab3-rm ol li.ab3-end{position:relative;padding:20px 0 20px 22px;border-bottom:1px solid var(--d-ln);text-align:left}
+  .ab3-bar,.ab3-end .ab3-bar{position:absolute;left:0;top:22px;bottom:22px;width:2px;height:auto;margin:0}
+  .ab3-ss{display:block;font-family:var(--f-brush);font-size:18px;color:var(--d-gold)}
+  .ab3-rm h3{margin-top:6px;font-size:17px;white-space:normal}
+  .ab3-rm p{margin-top:6px;font-size:14.5px}
+  .wk3-lead h2{font-size:38px}
+  .wk3-tx{font-size:16.5px}
+  .wk3-fw{grid-template-columns:1fr;gap:44px;margin-top:44px}
+  .wk3-ph{height:240px}
+  .wk3-ep{grid-template-columns:1fr;gap:44px;margin-top:50px}
+  .wk3-ep::before{left:50%;right:auto;top:80px;bottom:120px;width:1px;height:auto}
+  .wk3-nx{grid-template-columns:1fr;margin-top:44px}
+  .wk3-nx a{height:320px}
+  .wk3-nx h3{font-size:36px}
+}
+@media(max-width:640px){
+  .boxes.c2,.boxes.c3,.boxes.c4{grid-template-columns:1fr}
+  .gal{grid-template-columns:1fr}
+  .pg-item{flex:0 0 78%;min-width:0}
+  .bbs li a{flex-wrap:wrap;gap:10px}
+  .bbs .t,.bbs .press .t{flex:1 0 100%;white-space:normal}
+  .bbs .press .ext{display:none}
+  .zv-stage{padding:64px 12px 72px}
+  .zv-prev,.zv-next{top:auto;bottom:8px;transform:none;width:60px;height:60px;font-size:44px}
+  #sv h1{font-size:38px}
+  .h-sec{font-size:32px}
+  .rc-cards,.cp-cards,.stay{grid-template-columns:1fr}
+  .stay{padding:36px 26px}
+  .tbl,.tbl tbody,.tbl tr,.tbl th,.tbl td{display:block;width:100%}
+  .tbl th{border-bottom:0;padding-bottom:4px}
+}
+
+/* ============ 시안3 공통 부품 (WBS 11.10, 레퍼런스 ③ · 시안 docs/private/v2/ref3/) ============ */
+/* 송명체 큰 제목 — <h2 class="brush">성장 과정</h2> */
+.brush{font-family:var(--f-brush);font-weight:400;letter-spacing:-.01em}
+/* 번호 밑줄 탭 — <nav class="ntab"><a class="on"><em>01</em>음악</a>…</nav> (지금 칸은 흰 글자 · 흰 밑줄) */
+.ntab{display:flex;justify-content:center;gap:30px}
+.ntab > *{min-width:130px;padding:0 6px 12px;border-bottom:2px solid var(--d-w3);font-size:17px;color:var(--d-w4);text-align:center;background:none;cursor:pointer;transition:color .25s,border-color .25s}
+.ntab em{font-style:normal;font-family:var(--f-brush);margin-right:8px}
+.ntab .on,.ntab > *:hover,.ntab > *:focus-visible{color:#fff;border-color:#fff}
+/* 테두리 네모 단추 — <a class="obtn" href="…">자세히 보기</a>, 금색은 .obtn.gold */
+.obtn{display:inline-flex;align-items:center;justify-content:center;height:42px;padding:0 20px;border:1px solid var(--d-w4);border-radius:4px;font-size:15px;font-weight:300;color:var(--d-w8);transition:background .25s,color .25s,border-color .25s}
+.obtn:hover,.obtn:focus-visible{background:#fff;color:#111;border-color:#fff}
+.obtn.gold{border-color:var(--d-gold);color:var(--d-gold)}.obtn.gold:hover,.obtn.gold:focus-visible{background:var(--d-gold);color:#111}
