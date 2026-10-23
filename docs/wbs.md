@@ -219,9 +219,9 @@
 |---|---|---|---|
 | 11.1 | 미리보기 길 다시 열기 — `build-preview.mjs`(관리자 페이지 제외 · 링크 검사 · robots 한 줄), `check.mjs` · `news-test.mjs`에 PREFIX 옵션 | docs/private/tools/ | 완료 (2026-10-21 세션 B 6차, 로컬 시험 91 · 0 · 39) |
 | 11.2 | [통합] 시안 1 브랜치 · 공통 부품 — `--yel` · `--dash`, `.kick` · `.lnk` · `.mark`, `assets/img/doodles.svg` | home/parkjiheon-p1 | 완료 (2026-10-23) |
-| 11.3 | 시안 1 공통(머리 · 하위 머리 · 탭 · 푸터 · 글꼴) + 사업소개 + 프로그램 음악 — 세션 A | common.css · common.js · about.html · programs.html · 모든 HTML head | 진행 |
-| 11.4 | 시안 1 메인 — 세션 B | index.html · main.css · main.js | 진행 |
-| 11.5 | [통합] 시안 1 합치기 · 점검 · `/home/preview1/` 게시 | main의 preview1/ | 대기 |
+| 11.3 | 시안 1 공통(머리 · 하위 머리 · 탭 · 푸터 · 글꼴) + 사업소개 + 프로그램 음악 — 세션 A | common.css · common.js · about.html · programs.html · 모든 HTML head | 완료 (2026-10-23 세션 A `529bb55` · 머리 SNS 되살림 `f723ff4` — 사용자: 머리 오른쪽 위 SNS는 바꾸면 안 됨, A안 메뉴 │ SNS) |
+| 11.4 | 시안 1 메인 — 세션 B | index.html · main.css · main.js | 완료 (2026-10-23 세션 B `4654915`) |
+| 11.5 | [통합] 시안 1 합치기 · 점검 · `/home/preview1/` 게시 | main의 preview1/ | 완료 (2026-10-23, 통합 `edcbb4c` → preview1/. 로컬 시험: 시안1 공통 88 · 메인 49 · 콘솔 오류 0 · 소식 38/39 — 실패 1건은 메인 소식 제목 모양 변경) |
 | 11.6 | [통합] 시안 2 브랜치 · 공통 부품 — 레퍼런스 ② about.daangn.com: 흰 바탕 · 큰 굵은 제목 · 둥근 사진 · 파스텔 판 · 검정 알약, 청록은 작게(`--ink2` · `--panel2` · `--tint-1~4`, `.bpill` · `.pchip` · `.rcard`). 시안 그림 `docs/private/v2/ref2/` | home/parkjiheon-p2 | 완료 (2026-10-23) |
 | 11.7 | 시안 2 공통 + 사업소개 + 프로그램 음악 — 세션 C | common.css · common.js · about.html · programs.html · HTML head | 진행 |
 | 11.8 | 시안 2 메인 — 세션 D | index.html · main.css · main.js | 진행 |
