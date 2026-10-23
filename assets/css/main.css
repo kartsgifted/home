@@ -74,7 +74,7 @@
 .h-lg:has(img) b{margin-right:12px}
 .h-lg img{display:block;width:auto;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))}
 .h-lg .lg-mcst{height:30px}
-.h-lg .lg-kniga{height:46px;margin:-8px 0}
+.h-lg .lg-kniga{height:24px}   /* 주관 로고 KRIGA(이름 글자 포함, 2026-10-23 교체) */
 /* 분야 탭 — 지금 칸은 흰 굵은 글자 + 산호색 밑줄. 굵어져도 폭이 변하지 않게 굵은 글자 폭을 미리 잡아 둔다(::before) */
 .h-tabs{display:flex;gap:28px}
 .h-tabs[hidden]{display:none}
@@ -175,7 +175,7 @@
   #hero{height:100svh;min-height:600px}
   .hero-in{padding-bottom:44px}
   .h-lg .lg-mcst{height:27px}
-  .h-lg .lg-kniga{height:41px;margin:-7px 0}
+  .h-lg .lg-kniga{height:22px}
   .ab-grid{grid-template-columns:1fr;gap:38px}
   .jr{margin-top:70px;padding-top:60px}
   /* 769~1100: 카드 3장 한 줄 유지, 글 조금 작게 */
@@ -222,7 +222,7 @@
   .h-logos:has(img){gap:10px 20px}
   .h-lg:has(img) b{margin-right:10px}
   .h-lg .lg-mcst{height:24px}
-  .h-lg .lg-kniga{height:36px;margin:-6px 0}
+  .h-lg .lg-kniga{height:19px}
   .h-tabs{gap:20px;max-width:100%;overflow-x:auto;scrollbar-width:none}   /* 한 줄 유지, 좁으면 가로로 넘김 */
   .h-tabs::-webkit-scrollbar{display:none}  .nw li a{flex-wrap:wrap;gap:4px 12px;padding:16px 0}
   .nw li .kind{flex:0 0 auto}

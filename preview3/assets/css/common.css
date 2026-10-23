@@ -402,7 +402,7 @@ html.zv-open{overflow:hidden}
 .ab3-og{display:flex;flex-direction:column;align-items:center;margin-top:70px;text-align:center}
 .ab3-lab{font-size:15px;color:var(--d-gold)}
 .ab3-host img{height:38px;width:auto;margin:14px auto 0}
-.ab3-main img{height:56px;width:auto;margin:12px auto 0}
+.ab3-main img{height:36px;width:auto;max-width:100%;margin:14px auto 0}   /* 주관 KRIGA 흰 로고(이름 글자 포함, 2026-10-23) */
 .ab3-main h3{margin-top:12px;font-family:var(--f-brush);font-size:34px;font-weight:400}
 .ab3-main p:last-child{margin-top:10px;font-size:16px;font-weight:300;color:var(--d-w6)}
 .ab3-vl{display:block;width:1px;height:60px;margin:22px 0;background:linear-gradient(var(--d-gold),rgba(201,169,97,.2))}

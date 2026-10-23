@@ -72,7 +72,7 @@
 .h-lg b{font-size:14px;font-weight:700;color:var(--gray2-lt)}
 .h-lg img{display:block;width:auto}
 .h-lg .lg-mcst{height:28px}
-.h-lg .lg-kniga{height:34px}
+.h-lg .lg-kniga{height:22px}   /* 주관 로고 KRIGA(이름 글자 포함, 2026-10-23 교체) */
 .mn2-orgnm{font-size:15px;font-weight:700;letter-spacing:-.03em;color:var(--ink2)}
 
 /* ============ 소개 — 칠해지는 문단 + 흐르는 사진 줄 ============ */
@@ -199,7 +199,7 @@
   .h-logos{margin-top:20px;gap:10px 22px}
   .h-lg{gap:10px}
   .h-lg .lg-mcst{height:24px}
-  .h-lg .lg-kniga{height:29px}
+  .h-lg .lg-kniga{height:19px}
   .mn2-orgnm{font-size:14px}
   .mn2-intro{padding-top:100px}
   .mn2-paint{font-size:22px}

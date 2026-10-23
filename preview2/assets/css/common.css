@@ -452,6 +452,7 @@ html.zv-open{overflow:hidden}
 .ab2-lab{font-size:15px;font-weight:700;color:var(--gray2-lt)}
 .ab2-nm{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;font-size:26px;font-weight:700;letter-spacing:-.04em}
 .ab2-logo{flex:none;width:auto;height:44px}
+.ab2-kriga{height:32px;max-width:100%}   /* 주관 KRIGA 로고(이름 글자 포함, 2026-10-23) */
 .ab2-ob > .ab2-logo{align-self:flex-start;height:40px}   /* 주최 — 문체부 시그니처(이름 글자 포함). 세로 flex에서 가로로 늘어나지 않게 */
 .ab2-role{margin-top:auto;font-size:15px;color:var(--gray2);letter-spacing:-.02em}
 .ab2-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:16px}
@@ -550,6 +551,7 @@ html.zv-open{overflow:hidden}
   .ab2-ob{min-height:0;padding:28px}
   .ab2-nm{font-size:21px}
   .ab2-logo{height:36px}
+  .ab2-kriga{height:26px}
   .ab2-ob > .ab2-logo{height:34px}
   .ab2-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .ab2-fields li{height:180px;border-radius:16px}

@@ -530,7 +530,7 @@ html.zv-open{overflow:hidden}
 .og-main{padding:32px 44px;background:var(--teal);border-color:var(--teal);color:#fff}
 .og-main .og-lab{color:var(--gold-lt)}
 .og-main h4{font-size:26px}
-.og-main .og-logo{box-sizing:content-box;padding:8px 12px;border-radius:8px;background:#fff}   /* 청록 바탕에서도 원래 색 로고가 보이게 흰 판 */
+.og-main .og-logo{height:32px;max-width:100%;margin:8px 0 4px}   /* 주관 KRIGA 흰 로고(이름 글자 포함) — 청록 상자 위에 판 없이 (2026-10-23) */
 .og-roles{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .og-roles li{padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.14);font-size:14px;letter-spacing:-.02em}
 .og-v{width:2px;height:44px;background:var(--teal)}
