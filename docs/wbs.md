@@ -226,6 +226,10 @@
 | 11.7 | 시안 2 공통 + 사업소개 + 프로그램 음악 — 세션 C | common.css · common.js · about.html · programs.html · HTML head | 완료 (2026-10-23 세션 C `6d62442`, 머리 오른쪽 SNS 유지 포함) |
 | 11.8 | 시안 2 메인 — 세션 D | index.html · main.css · main.js | 완료 (2026-10-23 세션 D `f7bf57d`, 표지 스크롤 넘김은 이 시안에서 멈춤) |
 | 11.9 | [통합] 시안 2 합치기 · 점검 · `/home/preview2/` 게시, 다 되면 작업 폴더(home-p2-pages · home-p2-main) 정리 | main의 preview2/ | 완료 (2026-10-23, 통합 `00b0047` — 1100px 이하 메뉴 판 숨김 수정 → preview2/. 로컬 시험: 메인 38 · 콘솔 오류 0 · 소식 37/39 — 실패 2건은 메인 소식 카드 8장 모양 변경) |
+| 11.10 | [통합] 시안 3 브랜치 · 공통 부품 — 레퍼런스 ③ thehouseconcert.com: 어두운 바탕 · 송명체 제목 · 금색 가는 선 · 번호 밑줄 탭 · 테두리 네모 단추 · 스크롤 효과(나타나기 · 사진 확대 → 원래 크기 · 좌우 칸 엇갈려 움직임). `--d-*` · `--f-brush`, `.brush` · `.ntab` · `.obtn`. 시안 그림 `docs/private/v2/ref3/` | home/parkjiheon-p3 | 완료 (2026-10-23) |
+| 11.11 | 시안 3 공통 + 사업소개 + 프로그램 음악 + 스크롤 효과 공통 기능 — 세션 A | common.css · common.js · about.html · programs.html · HTML head | 진행 |
+| 11.12 | 시안 3 메인 — 세션 B | index.html · main.css · main.js | 진행 |
+| 11.13 | [통합] 시안 3 합치기 · 점검 · `/home/preview3/` 게시 | main의 preview3/ | 대기 |
 
 ---
 
