@@ -24,6 +24,7 @@
   --gold-lt:#E2C46A;    /* 어두운 바탕 위 금색 글자 (WBS 10.7) */
   --gray:#5A6065;  --gray-lt:#6B7075;
   --line:#DDDDDD;  --line-lt:#EAEAEA;  --line-dk:rgba(255,255,255,.22);
+  --yel:#F2C230;  --dash:#DAD7D0;   /* 시안1(WBS 11) — 노랑은 머리글 낙서 · 낱말 밑줄 · 지금 메뉴 · 점선 끝 점에만, 점선은 손그림 길 */
 
   /* ---- 레이아웃 ---- */
   --inner:1540px; --hd:112px; --pad-sec:120px;
@@ -684,3 +685,16 @@ html.zv-open{overflow:hidden}
   .gl-c h4{padding-top:8px;font-size:34px}
   .gl-c + .gl-c::before{left:50%;top:-23px;bottom:auto;margin-left:-6px;transform:rotate(135deg)}
 }
+
+/* ============ 시안1 공통 부품 (WBS 11.2, 레퍼런스 ① · 시안 docs/private/v2/ref1/) ============
+   손그림 모양은 assets/img/doodles.svg의 symbol(#loop · #scr · #sq)을 <svg><use href="assets/img/doodles.svg#…"/></svg>로 씀 */
+/* 작은 머리글 — 글자 뒤 노란 붓 낙서. <span class="kick"><svg aria-hidden="true"><use href="assets/img/doodles.svg#scr"/></svg>STEP 01</span> */
+.kick{position:relative;z-index:0;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;padding:14px 4px 0 2px;color:var(--ink)}
+.kick svg{position:absolute;left:-4px;top:2px;width:72px;height:28px;z-index:-1;overflow:visible}
+/* 고리 화살표 링크 — <a class="lnk" href="…">워크숍 보기<svg aria-hidden="true"><use href="assets/img/doodles.svg#loop"/></svg></a> */
+.lnk{display:inline-flex;align-items:center;gap:14px;font-size:19px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.lnk svg{width:48px;height:22px;flex:none;overflow:visible;transition:transform .25s}
+.lnk:hover svg,.lnk:focus-visible svg{transform:translateX(6px)}
+/* 낱말 노란 밑줄 — <em class="mark">가능성</em> */
+.mark{font-style:normal;position:relative;z-index:0}
+.mark::after{content:"";position:absolute;left:-4px;right:-4px;bottom:4px;height:.32em;background:var(--yel);opacity:.55;border-radius:8px;z-index:-1;transform:rotate(-1deg)}
