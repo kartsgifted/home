@@ -1,0 +1,592 @@
+@charset "utf-8";
+/* ============================================================
+   2026 K예술영재 프로젝트 — common.css
+   전 페이지 공통: 토큰 / 리셋 / 헤더 / 전체메뉴 / 서브비주얼 /
+                  탭 / 본문 공통 컴포넌트 / 푸터
+   디자인 레퍼런스: 대한민국발레축제(bafeko.com)
+   ============================================================ */
+
+:root{
+  /* ---- 컬러 ---- */
+  --teal:#176C86;  --teal-dk:#1C6077;  --teal-dp:#0F4A5C;  --teal-lt:#E7F0F3;
+  --cream:#FAF9F5; --ink:#212326;      --ink-dp:#141413;
+  --coral:#E84958; --gold:#C9A227;     --sand:#EFE3D7;
+  --coral-lt:#F2A88E;   /* 하위 페이지 머리 띠 영문 소제목 (시안 「RECRUITMENT」, WBS 9절) */
+  --coral-bg:#FDECEC;   /* 겨울캠프 갈라공연 아이콘 바탕 */
+  --gold-dp:#B8912A;    /* 새 도식의 작은 금색 강조 — 번호 원 · 화살표 (WBS 10.7) */
+  --gold-lt:#E2C46A;    /* 어두운 바탕 위 금색 글자 (WBS 10.7) */
+  --gray:#5A6065;  --gray-lt:#6B7075;
+  --line:#DDDDDD;  --line-lt:#EAEAEA;  --line-dk:rgba(255,255,255,.22);
+  /* 시안2(WBS 11.6) — 거의 검정 글자 · 회색 판 · 옅은 파스텔 4가지(카드 · 번호 네모 바탕), 청록은 로고 · 작은 글자에만 */
+  --ink2:#1A1C20;  --gray2:#4D5159;  --gray2-lt:#868B94;  --line2:#EAEBEE;  --panel2:#F2F3F5;
+  --tint-1:#E8F3F6;  --tint-2:#EEF0FA;  --tint-3:#F1F6EA;  --tint-4:#FBF1E6;
+
+  /* ---- 레이아웃 ---- 본문 폭 1152(1440 기준 좌우 144) · 머리 68 (시안2 WBS 11.7) */
+  --inner:1152px; --hd:68px; --pad-sec:120px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:18px;color:var(--ink);background:#fff;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+li{list-style:none}
+table{border-collapse:collapse;width:100%}
+button{font-family:inherit}
+.inner{width:min(var(--inner),calc(100% - 128px));margin:0 auto}   /* 1280 이하는 화면 − 좌우 64px */
+.serif,.gm{font-family:inherit}   /* 시안2: 글꼴은 Pretendard 하나 (예전 서체 class는 이름만 남김) */
+.blind{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+section[id]{scroll-margin-top:var(--hd)}
+
+/* ---------- scroll reveal ---------- */
+[data-rv]{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
+[data-rv].on{opacity:1;transform:none}
+[data-rv][data-d="1"]{transition-delay:.10s}[data-rv][data-d="2"]{transition-delay:.20s}
+[data-rv][data-d="3"]{transition-delay:.30s}[data-rv][data-d="4"]{transition-delay:.40s}
+
+/* ============ HEADER (시안2 · WBS 11.7) ============
+   모든 페이지(메인 포함) 흰 바탕 68px · 아래 줄 없음. 왼쪽 로고(청록 작은 네모 「2026」 + 굵은 이름), 오른쪽 메뉴 4개(지금 페이지는 청록).
+   메인 표지 위 투명 머리 · 밝기에 따른 색 바꾸기는 쓰지 않는다. ☰는 1100px 이하에서만 */
+#header{position:fixed;top:0;left:0;width:100%;height:var(--hd);z-index:100;background:#fff}
+#header .hd-in{position:relative;height:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{position:relative;z-index:3;display:flex;align-items:center;gap:8px;color:var(--ink2);line-height:1}
+.logo .yr{padding:4px 7px;border-radius:6px;background:var(--teal);color:#fff;font-size:12px;font-weight:800}
+.logo .nm{font-size:20px;font-weight:800;letter-spacing:-.04em;white-space:nowrap}
+/* 머리 오른쪽 — 메뉴 4개 → 옅은 세로 구분선 → SNS 4개(검정 20px · 간격 16px, 2026-10-23 사용자 결정). ☰는 1100px 이하에서만 */
+#header nav{margin-left:auto}
+.hd-tools{position:relative;z-index:4;display:flex;align-items:center;color:var(--ink2)}
+.hd-sns{display:flex;align-items:center;gap:16px;margin-left:32px;padding-left:32px;position:relative}
+.hd-sns::before{content:"";position:absolute;left:0;top:50%;height:16px;margin-top:-8px;border-left:1px solid #D5D8DD}
+.hd-sns a{display:block;color:inherit;cursor:pointer;transition:opacity .25s,transform .25s}
+.hd-sns a:hover,.hd-sns a:focus-visible{opacity:.65;transform:translateY(-2px)}
+.hd-sns svg{display:block;width:20px;height:20px}
+.hd-tools .ham{display:none}
+#gnb{display:flex;gap:56px}
+#gnb > li > a{display:block;font-size:16px;font-weight:700;color:var(--ink2);letter-spacing:-.02em;padding:6px 0;position:relative;transition:color .3s}
+#gnb > li > a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:currentColor;transition:width .35s ease}
+#gnb > li > a:hover::after{width:100%}
+#gnb > li.on > a{color:var(--teal)}
+/* ---------- 머리 메뉴 판 (common.js · WBS 8.12 → 11.7) ----------
+   PC(1101px 이상)에서 메뉴 줄에 마우스를 올리거나 Tab으로 들어가면 #header.nav-open — 흰 판(.gnb-panel · 둥근 16px · 옅은 테두리, 그림자 없음)이 내려오고,
+   메뉴마다 목록(.gnb-list)이 그 글자 가운데 밑에 놓인다. 메뉴 간격이 56px로 좁아 목록 사이 세로 구분선은 쓰지 않는다(긴 항목이 선에 걸림). 메뉴 줄은 머리 높이 전체라 판으로 내려가도 끊기지 않는다.
+   판 가로 범위 = #gnb 왼쪽 − 48px ~ 오른쪽 + 48px(판이 nav 안에 있음 — 양 끝 메뉴의 긴 목록이 들어가고, 1101px에서도 화면 안), 높이 = #header의 --gnb-panel-h */
+#header nav{position:relative;align-self:stretch;display:flex}
+#gnb{height:100%}
+#gnb > li{position:relative;display:flex;align-items:center}
+.gnb-panel{position:absolute;left:-48px;right:-48px;top:100%;height:var(--gnb-panel-h,0);background:#fff;border:1px solid var(--line2);border-radius:16px;
+  opacity:0;visibility:hidden;transform:translateY(-10px);
+  transition:opacity .3s,visibility .3s,transform .35s cubic-bezier(.22,1,.36,1)}
+.gnb-list{position:absolute;left:50%;top:100%;transform:translate(-50%,-10px);z-index:2;padding:22px 0 24px;text-align:center;
+  opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s,transform .35s cubic-bezier(.22,1,.36,1)}
+.gnb-list a{position:relative;display:block;padding:10px 14px;font-size:15px;font-weight:500;color:var(--gray2);white-space:nowrap;letter-spacing:-.02em;
+  transition:color .2s,text-shadow .2s}
+/* 마우스를 올리면 바탕 없이 글자가 진해지고 가운데에서 밑줄이 그어진다(2026-10-16 사용자 결정 B).
+   굵기는 font-weight 대신 text-shadow로 — 글자 폭이 그대로라 목록이 흔들리지 않는다. 밑줄 폭 = 글자 폭(좌우 14px 뺌) */
+.gnb-list a::after{content:"";position:absolute;left:50%;bottom:5px;width:0;height:1.5px;background:currentColor;transform:translateX(-50%);
+  transition:width .3s cubic-bezier(.22,1,.36,1)}
+.gnb-list a:hover,.gnb-list a:focus-visible{color:var(--ink2);text-shadow:0 0 .6px currentColor,0 0 .6px currentColor;outline:none}
+.gnb-list a:hover::after,.gnb-list a:focus-visible::after{width:calc(100% - 28px)}
+.gnb-list a[aria-current="page"]{color:var(--teal);font-weight:700}
+/* 열릴 때 판 · 목록이 함께 위에서 10px 내려오며 나타나고, 닫힐 때는 살짝 올라가며 사라진다 (2026-10-16 사용자 요청) */
+#header.nav-open .gnb-panel,#header.nav-open .gnb-list{opacity:1;visibility:visible}
+#header.nav-open .gnb-panel{transform:none}
+#header.nav-open .gnb-list{transform:translateX(-50%)}
+.ham{position:relative;display:block;flex:0 0 auto;width:24px;height:18px;padding:0;cursor:pointer;background:none;border:0;color:inherit}
+.ham span{display:block;height:2px;background:currentColor;margin-bottom:6px;transition:transform .3s,opacity .3s}
+.ham span:last-child{margin-bottom:0}
+body.menu-open .ham span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+body.menu-open .ham span:nth-child(2){opacity:0}
+body.menu-open .ham span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+
+/* ---------- 전체메뉴 (☰, 1100px 이하) — 흰 머리 아래 흰 판 ---------- */
+#allmenu{position:fixed;inset:0;background:#fff;z-index:90;opacity:0;pointer-events:none;
+  transition:opacity .4s ease;overflow-y:auto}
+body.menu-open #allmenu{opacity:1;pointer-events:auto}
+#allmenu .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;width:100%;padding:calc(var(--hd) + 40px) 0 40px}
+#allmenu h3{font-size:22px;font-weight:700;color:var(--ink2);letter-spacing:-.03em;padding-bottom:14px;border-bottom:1px solid var(--line2)}
+#allmenu li a{display:block;padding:11px 0;color:var(--gray2);font-size:16px;transition:color .25s}
+#allmenu li a:hover,#allmenu li a:focus-visible{color:var(--ink2)}
+#allmenu ul{margin-top:10px}
+/* 전체메뉴 안 SNS — 푸터와 같은 검정 원 */
+.am-sns{display:flex;gap:12px;padding-bottom:40px}
+
+/* ============ 하위 페이지 머리 (#sv · 시안2 WBS 11.7) — 흰 바탕: 큰 제목 → 설명 한 줄 → 둥근 사진(본문 폭 · 440) → 알약 탭 ============
+   사진은 페이지별 --sv-img · --sv-pos (소식은 사진 없음). 영문 소제목(.en)은 쓰지 않는다 */
+#sv{padding-top:calc(var(--hd) + 110px);background:#fff}
+#sv .in{color:var(--ink2)}
+#sv .en{display:none}
+#sv h1{font-size:64px;font-weight:700;line-height:1.3;letter-spacing:-.045em}
+#sv .desc{margin-top:18px;font-size:19px;line-height:1.6;color:var(--gray2);letter-spacing:-.02em}
+#sv .in::after{content:"";display:block;height:440px;margin-top:60px;border-radius:24px;background:#2A2C30 var(--sv-img,none) var(--sv-pos,center)/cover no-repeat}
+#sv[data-page="about"]    {--sv-img:url("../img/hero-trad.jpg");--sv-pos:center 62%}
+#sv[data-page="programs"] {--sv-img:url("../img/hero-music.jpg");--sv-pos:center 55%}
+#sv[data-page="recruit"]  {--sv-img:url("../img/p1.jpg")}
+#sv[data-page="mentoring"]{--sv-img:url("../img/p3.jpg")}
+#sv[data-page="camp"]     {--sv-img:url("../img/hero-trad.jpg");--sv-pos:center 20%}
+#sv[data-page="news"] .in::after{content:none}
+
+/* ---------- breadcrumb ----------
+   시안2에서는 화면에 보이지 않는다. 높이 0으로 자리만 남김 — news.js가 #crumb 아래 끝을 「탭 바로 위」 위치로 쓴다 */
+#crumb{height:0;overflow:hidden;visibility:hidden}
+#crumb ol{display:flex;align-items:center;gap:10px;height:56px;font-size:14px;color:var(--gray-lt)}
+#crumb ol > li.crumb-menu{position:relative;display:flex;align-items:center}
+.crumb-btn{display:inline-flex;align-items:center;gap:7px;background:none;border:0;padding:6px 0;font:inherit;color:inherit}
+.crumb-caret{display:none}
+.crumb-sub[hidden]{display:none}
+
+/* ---------- sub tabs — 알약 (지금 탭 검정, 나머지 회색 판). 머리 밑에 붙어 따라온다 ---------- */
+#tabs{position:sticky;top:var(--hd);z-index:50;margin-top:32px;padding:12px 0;background:#fff}
+#tabs ul{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+#tabs ul::-webkit-scrollbar{display:none}
+#tabs li{flex:none}
+#tabs button{display:inline-flex;align-items:center;height:46px;padding:0 22px;border:0;border-radius:999px;background:var(--panel2);
+  font-size:16px;font-weight:700;color:var(--gray2-lt);letter-spacing:-.02em;white-space:nowrap;cursor:pointer;transition:background .25s,color .25s}
+#tabs button:hover{color:var(--ink2)}
+#tabs button.on{background:var(--ink2);color:#fff}
+#tabs button:focus-visible{outline:2px solid var(--ink2);outline-offset:2px}
+
+/* ============ 본문 공통 컴포넌트 ============ */
+.panel{display:none;padding:110px 0 0}   /* 아래 여백은 푸터 위 여백(170px)이 맡는다 (시안2) */
+.panel.on{display:block}
+.h-sec{font-size:34px;font-weight:700;letter-spacing:-.02em}
+.h-sec .ko{display:block;font-size:15px;font-weight:500;color:var(--gray-lt);margin-top:10px}
+.h-sub{font-size:24px;font-weight:700;letter-spacing:-.03em;padding-left:16px;position:relative;margin:70px 0 24px}
+.h-sub::before{content:"";position:absolute;left:0;top:6px;width:4px;height:22px;background:var(--teal)}
+.h-sub:first-child{margin-top:0}
+.lead{font-size:clamp(24px,2.2vw,34px);line-height:1.6;letter-spacing:-.02em}
+.lead b{color:var(--teal);font-weight:700}
+.txt{font-size:17px;line-height:1.95;color:#4A4F54;letter-spacing:-.02em}
+.txt p+p{margin-top:16px}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:70px;align-items:start}
+
+/* 정보 테이블 */
+.tbl{border-top:2px solid var(--ink)}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:18px 22px;font-size:17px;text-align:left;letter-spacing:-.02em;vertical-align:top;line-height:1.7}
+.tbl th{background:var(--cream);font-weight:700;width:190px}
+.tbl.center td,.tbl.center th{text-align:center}
+.tbl thead th{background:var(--teal);color:#fff;width:auto;border-bottom:0}
+
+/* 박스 / 카드 */
+.boxes{display:grid;gap:20px}
+.boxes.c2{grid-template-columns:repeat(2,1fr)}
+.boxes.c3{grid-template-columns:repeat(3,1fr)}
+.boxes.c4{grid-template-columns:repeat(4,1fr)}
+.box{border:1px solid var(--line);padding:36px 32px;transition:border-color .35s,transform .35s,box-shadow .35s;background:#fff}
+.box:hover{border-color:var(--teal);transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.06)}
+.box .no{font-size:12px;letter-spacing:.2em;color:var(--teal)}
+.box h4{font-size:20px;font-weight:700;letter-spacing:-.03em;margin-top:12px}
+.box .en{font-size:13px;color:var(--gray-lt);margin-top:4px}
+.box p{font-size:16.5px;line-height:1.8;color:var(--gray);margin-top:14px;letter-spacing:-.02em}
+.box.fill{background:var(--cream);border-color:transparent}
+
+/* 도트 리스트 */
+.dot li{position:relative;padding-left:16px;font-size:17px;line-height:1.95;color:#4A4F54;letter-spacing:-.02em}
+.dot li::before{content:"";position:absolute;left:0;top:13px;width:5px;height:5px;border-radius:50%;background:var(--teal)}
+.dot li+li{margin-top:4px}
+
+/* 안내 배너 */
+.note{background:var(--teal-lt);border-left:3px solid var(--teal);padding:24px 28px;font-size:16.5px;line-height:1.85;color:#2C4A54;letter-spacing:-.02em}
+.note b{color:var(--teal-dp)}
+
+/* 버튼 */
+.btn{display:inline-flex;align-items:center;gap:12px;padding:16px 34px;border:1px solid var(--teal);background:var(--teal);color:#fff;
+  font-size:16px;font-weight:600;letter-spacing:-.02em;cursor:pointer;transition:background .3s,color .3s}
+.btn:hover{background:var(--teal-dp);border-color:var(--teal-dp)}
+.btn.ghost{background:none;color:var(--teal)}
+.btn.ghost:hover{background:var(--teal);color:#fff}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+
+/* 타임라인 */
+.tl{border-left:1px solid var(--line);padding-left:34px}
+.tl li{position:relative;padding-bottom:38px}
+.tl li::before{content:"";position:absolute;left:-40px;top:6px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid var(--teal)}
+.tl li:last-child{padding-bottom:0}
+.tl .d{font-size:14px;letter-spacing:.08em;color:var(--teal);font-weight:600}
+.tl h4{font-size:19px;font-weight:700;margin-top:8px;letter-spacing:-.03em}
+.tl p{font-size:16.5px;color:var(--gray);margin-top:6px;line-height:1.8}
+
+/* 게시판 리스트 */
+.bbs{border-top:2px solid var(--ink)}
+.bbs li a{display:flex;align-items:center;gap:24px;padding:24px 8px;border-bottom:1px solid var(--line-lt);transition:background .3s}
+.bbs li a:hover{background:var(--cream)}
+.bbs .cat{flex:0 0 auto;font-size:12.5px;font-weight:600;color:var(--teal);border:1px solid var(--teal);padding:5px 12px;letter-spacing:-.02em}
+.bbs .t{flex:1;font-size:17px;font-weight:500;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bbs .d{flex:0 0 auto;font-size:14px;color:var(--gray-lt)}
+.bbs li a.empty{cursor:pointer}  /* 내용 없는 공지: 반응은 같고 이동만 없음 */
+/* 언론홍보: 언론사는 분류 자리, 제목 바로 뒤에 새 창 표시 */
+.bbs .press .cat{min-width:86px;text-align:center}   /* 언론사 이름 길이가 달라도 제목 시작 위치를 맞춘다 */
+.bbs .press .t{flex:0 1 auto}
+.bbs .press.empty .ext{visibility:hidden}   /* 자리는 남겨 날짜를 오른쪽에 둔다 */
+.bbs .press .ext{flex:0 0 auto;margin:0 auto 0 -14px;font-size:14px;color:var(--gray-lt)}
+.paging{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:50px}
+.paging button{width:40px;height:40px;display:grid;place-items:center;font-size:15px;color:var(--gray);border:1px solid var(--line);background:#fff;cursor:pointer}
+.paging button:hover{border-color:var(--teal);color:var(--teal)}
+.paging button.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700;cursor:default}
+/* 글이 없음 · 불러오기 실패 (board.js MSG) */
+.bd-msg{border-top:2px solid var(--ink);border-bottom:1px solid var(--line-lt);padding:70px 0;text-align:center;font-size:16px;color:var(--gray-lt);letter-spacing:-.02em}
+
+/* 갤러리 */
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.gal figure{position:relative}
+.gal .th{display:block;width:100%;border:0;padding:0;aspect-ratio:4/3;background:linear-gradient(150deg,#1E6C7E,#0B2F38);overflow:hidden}
+.gal button.th{cursor:pointer}
+.gal button.th::after{content:"";position:absolute;inset:0}  /* 제목·설명을 눌러도 열리게 칸 전체로 넓힘 */
+.gal button.th:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.gal .th img,.gal .th .ph{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.gal .th .ph{background:inherit}  /* 사진 없는 앨범: 그라디언트 칸도 같이 커진다 */
+.gal figure.empty{cursor:pointer}
+.gal figure:hover .th img,.gal figure:hover .th .ph{transform:scale(1.07)}
+.gal figcaption{margin-top:14px;font-size:16px;font-weight:600;letter-spacing:-.02em}
+.gal .m{font-size:13.5px;color:var(--gray-lt);margin-top:5px;}
+
+/* 프로그램 페이지 갤러리 사진 줄 (program-photos.js) — 메인 WORKSHOP 칸과 같은 모양. 사진이 없으면 칸째 숨김 */
+.pg-photos{margin-top:70px}
+.pg-photos[hidden]{display:none}
+.pg-photos-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}
+.pg-photos-head .h-sub{margin:0}
+.pg-arrows{display:flex;gap:10px}
+.pg-arrows button{width:44px;height:44px;border-radius:50%;border:0;background:var(--teal);color:#fff;font-size:16px;cursor:pointer;
+  display:grid;place-items:center;transition:background .3s,transform .3s}
+.pg-arrows button:hover{background:var(--teal-dp);transform:translateY(-2px)}
+.pg-rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px}
+.pg-rail::-webkit-scrollbar{display:none}
+.pg-item{position:relative;flex:0 0 calc((100% - 60px)/4);min-width:250px;scroll-snap-align:start}
+.pg-item .th{display:block;width:100%;border:0;padding:0;aspect-ratio:292/262;overflow:hidden;background:#DDE3E6;cursor:pointer}
+.pg-item .th::after{content:"";position:absolute;inset:0}  /* 제목·설명을 눌러도 열리게 칸 전체로 넓힘 */
+.pg-item .th:focus-visible{outline:3px solid var(--teal);outline-offset:-3px}
+.pg-item img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.pg-item:hover img{transform:scale(1.07)}
+.pg-item figcaption{margin-top:16px;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.pg-item .m{font-size:13.5px;color:var(--gray-lt);margin-top:5px}
+
+/* ============ 4차 시안 (WBS 9절) — 모집 및 선발 · 워크숍 음악 · 겨울캠프 ============ */
+.h-plain{font-size:24px;font-weight:700;letter-spacing:-.03em;margin:110px 0 30px}
+
+/* 모집 및 선발 — 연도 단추(#tabs 탭 코드 · 알약 모양을 그대로 쓰고 폭만 맞춤) */
+#tabs.yr-tabs button{min-width:96px;justify-content:center}
+.rc-head h2{font-size:32px;font-weight:700;letter-spacing:-.03em}
+.rc-head p{margin-top:14px;font-size:17px;color:var(--gray);letter-spacing:-.02em}
+.rc-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:40px}
+.rc-card{border:1px solid var(--line);border-radius:16px;padding:40px 28px 36px}
+.rc-card h3{font-size:22px;font-weight:700;color:var(--teal);letter-spacing:-.03em}
+.rc-card dl{margin-top:24px}
+.rc-card dt{font-size:14px;color:var(--gray);letter-spacing:-.02em}
+.rc-card dd{margin-top:6px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.rc-card dd+dt{margin-top:22px}
+.rc-cards + .h-plain{margin-top:76px}
+.rc-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.rc-steps li{background:var(--cream);border-radius:12px;padding:30px 24px}
+.rc-steps .no{display:block;font-size:14px;font-weight:700;color:var(--coral);letter-spacing:.02em}
+.rc-steps b{display:block;margin-top:10px;font-size:19px;font-weight:700;letter-spacing:-.03em}
+.rc-period{margin-top:30px;font-size:16px;color:var(--gray);letter-spacing:-.02em}
+.rc-wait{font-size:17px;color:var(--gray);letter-spacing:-.02em}
+
+/* 겨울캠프 — 아이콘 카드 4장 · 함께 지내는 캠프 */
+.cp-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.cp-card{border:1px solid var(--line);border-radius:16px;padding:32px 28px 36px}
+.cp-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--teal-lt);color:var(--teal)}
+.cp-ic.coral{background:var(--coral-bg);color:var(--coral)}
+.cp-ic svg{display:block;width:22px;height:22px}
+.cp-card h4{margin-top:28px;font-size:21px;font-weight:700;letter-spacing:-.03em}
+.cp-card p{margin-top:14px;font-size:16px;line-height:1.75;color:var(--gray);letter-spacing:-.02em}
+.stay{display:grid;grid-template-columns:minmax(0,1.8fr) repeat(3,minmax(0,1fr));gap:24px;margin-top:72px;padding:52px 44px;background:var(--cream);border-radius:20px}
+.stay h4{margin-top:4px;font-size:18px;font-weight:700;letter-spacing:-.03em}
+.stay p{margin-top:8px;font-size:16px;line-height:1.7;color:var(--gray);letter-spacing:-.02em}
+.stay .stay-k{margin-top:0;font-size:15px;font-weight:700;color:var(--teal)}
+.stay .stay-t{margin-top:14px;font-size:24px;font-weight:700;line-height:1.45;color:var(--ink);letter-spacing:-.03em}
+
+/* 지도/약도 자리 */
+.mapbox{aspect-ratio:16/7;background:var(--cream);border:1px solid var(--line);display:grid;place-items:center;color:var(--gray-lt);font-size:15px}
+
+/* ============ FOOTER (시안2 · WBS 11.7) — 모든 페이지 흰 바탕 · 위 옅은 줄 · 위 여백 170px ============
+   왼쪽: 메뉴 링크 4개 → 주최 · 주관 · 메일 · ©, 오른쪽: SNS 네 개 검정 원 (머리에서 옮김) */
+#footer{margin-top:170px;border-top:1px solid var(--line2);background:#fff;color:var(--ink2);padding:46px 0 60px;font-size:13px}
+.ft-in{display:flex;align-items:flex-start;justify-content:space-between;gap:28px 40px;flex-wrap:wrap}
+.ft-links{display:flex;flex-wrap:wrap;gap:10px 40px;font-weight:600}
+.ft-links a:hover,.ft-links a:focus-visible{text-decoration:underline;text-underline-offset:3px}
+.ft-org{margin-top:22px;line-height:1.8;color:var(--gray2-lt);letter-spacing:-.01em}
+.ft-org a:hover,.ft-org a:focus-visible{color:var(--ink2);text-decoration:underline;text-underline-offset:3px}
+/* SNS 검정 원 — 푸터 · 전체메뉴(.am-sns) 같은 모양. url이 비면 눌러도 이동하지 않는다 (common.js SITE.sns) */
+.ft-sns{display:flex;gap:12px}
+.ft-sns a,.am-sns a{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--ink2);color:#fff;transition:background .2s,transform .2s}
+.ft-sns a:hover,.ft-sns a:focus-visible,.am-sns a:hover,.am-sns a:focus-visible{background:#000;transform:translateY(-2px)}
+.ft-sns svg,.am-sns svg{display:block;width:16px;height:16px}
+/* 맨 위로 · 맨 아래로 — 흰 원 · 옅은 테두리 · 검정 화살표 (위치 · 동작은 그대로) */
+.top,.go-end{position:fixed;right:28px;width:48px;height:48px;border-radius:50%;background:#fff;color:var(--ink2);border:1px solid var(--line2);
+  cursor:pointer;z-index:60;opacity:0;pointer-events:none;transition:opacity .35s,transform .35s,border-color .25s;font-size:16px}
+.top{bottom:86px}
+.go-end{bottom:28px}   /* 맨 아래로 — 맨 위로 단추 바로 아래 (2026-10-21, 사용자: ↑ 위 · ↓ 아래) */
+.top.on,.go-end.on{opacity:1;pointer-events:auto}
+.top:hover,.go-end:hover{border-color:#C9CCD2}
+.top:hover{transform:translateY(-3px)}
+.go-end:hover{transform:translateY(3px)}
+
+/* ============ 게시글 (board.js — 관리자 미리보기 · 방문자 화면 공용) ============ */
+.post{border-top:2px solid var(--ink)}
+.post-head{padding:30px 0 26px;border-bottom:1px solid var(--line)}
+.post-cat{display:inline-block;font-size:12.5px;font-weight:600;color:var(--teal);border:1px solid var(--teal);padding:4px 11px;letter-spacing:-.02em}
+.post-title{font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1.4;margin-top:14px}
+.post-date{font-size:14px;color:var(--gray-lt);margin-top:10px}
+.post-photos{display:grid;gap:16px;margin-top:36px}
+.post-photos img{width:auto;max-width:100%;height:auto;margin:0 auto}
+.post-body{font-size:17px;line-height:1.95;color:#3A3F44;letter-spacing:-.02em;margin-top:36px;overflow-wrap:anywhere}
+.post-body a{color:var(--teal);text-decoration:underline;text-underline-offset:3px}
+.post-body strong{font-weight:700;color:var(--ink)}
+.em-key{color:var(--teal);font-weight:600}
+.em-warn{color:#C8323F;font-weight:600}
+.post-files{margin-top:44px;background:var(--cream);padding:22px 26px}
+.post-files h4{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.post-files li a{display:flex;flex-wrap:wrap;gap:4px 8px;padding:8px 0;font-size:15.5px;letter-spacing:-.02em}
+.post-files li a:hover .nm{text-decoration:underline;text-underline-offset:3px}
+.post-files .sz{color:var(--gray-lt)}
+.post-zoom{display:block;max-width:100%;margin:0 auto;border:0;padding:0;background:none;cursor:zoom-in}
+.post-foot{margin-top:56px;padding-top:34px;border-top:1px solid var(--line);text-align:center}
+
+/* ============ 사진 확대 보기 (board.js viewer) — 관리자 화면의 .lb(칸 제목)와 겹치지 않게 .zv ============ */
+html.zv-open{overflow:hidden}
+.zv{position:fixed;inset:0;z-index:200;background:rgba(14,14,13,.96)}
+.zv[hidden]{display:none}
+.zv-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:72px 96px 56px}
+.zv-img{width:auto;height:auto;max-width:100%;max-height:calc(100% - 44px);min-height:0;object-fit:contain}
+.zv-cap{color:#fff;font-size:15px;line-height:1.6;margin-top:16px;letter-spacing:-.02em;text-align:center}
+.zv-num{position:absolute;top:26px;left:30px;color:rgba(255,255,255,.72);font-size:15px;letter-spacing:.06em}
+.zv button{position:absolute;border:0;background:none;color:#fff;cursor:pointer;opacity:.75;transition:opacity .25s;line-height:1}
+.zv button:hover,.zv button:focus-visible{opacity:1}
+.zv button:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+.zv-x{top:12px;right:16px;width:56px;height:56px;font-size:40px}
+.zv-prev,.zv-next{top:50%;transform:translateY(-50%);width:72px;height:110px;font-size:60px}
+.zv-prev{left:12px}
+.zv-next{right:12px}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1280px){
+  .gal{grid-template-columns:repeat(3,1fr)}
+  .pg-item{flex:0 0 calc((100% - 40px)/3)}
+}
+@media(max-width:1100px){
+  :root{--pad-sec:80px}
+  .inner{width:calc(100% - 80px)}
+  #gnb,.hd-sns,.gnb-panel{display:none}   /* 메뉴 판도 숨김 — 보이지 않아도 화면 밖으로 삐져 넘침 검사에 걸림(시안 2 통합) */
+  .hd-tools .ham{display:block}
+  #allmenu .cols{grid-template-columns:repeat(2,1fr);gap:30px 24px}
+  #allmenu h3{font-size:19px}
+  #sv .in::after{height:340px}
+  .h-sec{font-size:26px}
+  .split{grid-template-columns:1fr;gap:34px}
+  .boxes.c3,.boxes.c4{grid-template-columns:repeat(2,1fr)}
+  .gal{grid-template-columns:repeat(2,1fr)}
+  .tbl th{width:120px;padding:14px}
+  .tbl td{padding:14px}
+  .h-plain{margin-top:80px}
+  .rc-cards,.rc-steps,.cp-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stay{grid-template-columns:repeat(3,minmax(0,1fr));padding:44px 36px}
+  .stay-head{grid-column:1/-1;margin-bottom:8px}
+}
+@media(max-width:768px){
+  .inner{width:calc(100% - 40px)}
+  .logo .nm{font-size:18px}
+  #allmenu .cols{padding-top:calc(var(--hd) + 24px)}
+  #sv{padding-top:calc(var(--hd) + 56px)}
+  #sv h1{font-size:40px}
+  #sv .desc{margin-top:12px;font-size:16px}
+  #sv .in::after{height:220px;margin-top:36px;border-radius:20px}
+  #tabs{margin-top:20px;padding:10px 0}
+  #tabs ul{margin-right:-20px;padding-right:20px}   /* 알약 줄은 가로로 밀어 본다 — 오른쪽 끝까지 */
+  #tabs button{height:42px;padding:0 18px;font-size:15px}
+  .panel{padding-top:64px}
+  #footer{margin-top:120px;padding:36px 0 48px}
+  .top,.go-end{right:16px;width:44px;height:44px}
+  .top{bottom:72px}
+  .go-end{bottom:20px}
+}
+@media(max-width:640px){
+  .boxes.c2,.boxes.c3,.boxes.c4{grid-template-columns:1fr}
+  .gal{grid-template-columns:1fr}
+  .pg-item{flex:0 0 78%;min-width:0}
+  .bbs li a{flex-wrap:wrap;gap:10px}
+  .bbs .t,.bbs .press .t{flex:1 0 100%;white-space:normal}
+  .bbs .press .ext{display:none}
+  .zv-stage{padding:64px 12px 72px}
+  .zv-prev,.zv-next{top:auto;bottom:8px;transform:none;width:60px;height:60px;font-size:44px}
+  .rc-cards,.cp-cards,.stay{grid-template-columns:1fr}
+  .stay{padding:36px 26px}
+  .tbl,.tbl tbody,.tbl tr,.tbl th,.tbl td{display:block;width:100%}
+  .tbl th{border-bottom:0}
+}
+
+/* ============ 칠해지는 문단 (시안2 · WBS 11.7, common.js) ============
+   <p data-paint>…</p>만 붙이면 처음엔 옅은 회색, 화면에서 읽히는 만큼 앞에서부터 낱말 단위로 검정이 된다.
+   크기는 기본 28px · 700(768px 이하 22px) — 다른 크기가 필요하면 그 문단 class에서 덮어쓴다. JS가 없거나 움직임 줄이기면 처음부터 검정 */
+[data-paint]{font-size:28px;font-weight:700;line-height:1.6;letter-spacing:-.03em;color:var(--ink2)}
+[data-paint] .pw{color:#D1D3D8;transition:color .3s}
+[data-paint] .pw.on{color:var(--ink2)}
+@media(prefers-reduced-motion:reduce){[data-paint] .pw{color:var(--ink2);transition:none}}
+@media(max-width:768px){[data-paint]{font-size:22px}}
+
+/* ============ 시안2 하위 페이지 공통 (WBS 11.7) — 큰 제목 · 회색 설명 · 단락 간격 · 왼쪽 제목 / 오른쪽 내용 두 칸 ============ */
+.s2-sec{margin-top:150px}
+.s2-h{font-size:42px;font-weight:700;line-height:1.38;letter-spacing:-.04em}
+.s2-lead{margin-top:14px;font-size:18px;line-height:1.7;color:var(--gray2);letter-spacing:-.02em}
+.s2-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,570px);gap:40px;align-items:start}
+
+/* ============ 사업소개 (about.html · 시안2 WBS 11.7) — ab2- ============ */
+/* 사업 개요 — 회색 둥근 판 안 줄 목록 */
+.ab2-ov{padding:16px 40px;border-radius:24px;background:var(--panel2)}
+.ab2-ov div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;padding:22px 0;font-size:17px;line-height:1.6;letter-spacing:-.02em}
+.ab2-ov div+div{border-top:1px solid #E1E3E7}
+.ab2-ov dt{font-size:15px;font-weight:700;color:var(--gray2-lt);line-height:1.8}
+/* 추진 목표 — 파스텔 카드 3장, 오른쪽으로 갈수록 높아짐(아래 맞춤) */
+.ab2-gl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:end;margin-top:50px}
+.ab2-gl > li{display:flex;flex-direction:column;padding:32px;border-radius:24px}
+.ab2-gl > li:nth-child(1){height:330px;background:var(--tint-3)}
+.ab2-gl > li:nth-child(2){height:390px;background:var(--tint-1)}
+.ab2-gl > li:nth-child(3){height:450px;background:var(--tint-2)}
+.ab2-gl small{font-size:15px;font-weight:700;color:var(--gray2-lt)}
+.ab2-gl h4{margin-top:8px;font-size:44px;font-weight:700;letter-spacing:-.045em}
+.ab2-gl p{margin-top:auto;padding-top:20px;font-size:16px;line-height:1.7;color:var(--gray2);letter-spacing:-.02em}
+.ab2-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.ab2-tags li{padding:6px 12px;border-radius:999px;background:#fff;font-size:13px;font-weight:700;letter-spacing:-.02em}
+/* 추진 체계 — 기관 판 두 칸 + 분야 사진 카드 4장 */
+.ab2-org{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:50px}
+.ab2-ob{display:flex;flex-direction:column;gap:18px;min-height:220px;padding:36px 40px;border-radius:24px;background:var(--panel2)}
+.ab2-lab{font-size:15px;font-weight:700;color:var(--gray2-lt)}
+.ab2-nm{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;font-size:26px;font-weight:700;letter-spacing:-.04em}
+.ab2-logo{flex:none;width:auto;height:44px}
+.ab2-ob > .ab2-logo{align-self:flex-start;height:40px}   /* 주최 — 문체부 시그니처(이름 글자 포함). 세로 flex에서 가로로 늘어나지 않게 */
+.ab2-role{margin-top:auto;font-size:15px;color:var(--gray2);letter-spacing:-.02em}
+.ab2-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:16px}
+.ab2-fields li{position:relative;height:300px;border-radius:20px;overflow:hidden;background:#2A2C30}
+.ab2-fields img{width:100%;height:100%;object-fit:cover}
+.ab2-fields .pchip{position:absolute;left:18px;bottom:18px}
+/* 운영 흐름 · (워크숍) 교육 포인트 — 테두리 둥근 카드 세로 목록, 왼쪽 파스텔 네모 */
+.ab2-cy > li,.wk2-ep > li{display:flex;align-items:center;gap:24px;padding:24px 30px}
+.ab2-cy > li+li,.wk2-ep > li+li{margin-top:12px}
+.ab2-cy em{flex:none;display:grid;place-items:center;width:72px;height:72px;border-radius:16px;font-style:normal;font-size:28px;font-weight:800}
+.ab2-cy > li:nth-child(1) em,.wk2-ep > li:nth-child(1) em{background:var(--tint-3)}
+.ab2-cy > li:nth-child(2) em,.wk2-ep > li:nth-child(2) em{background:var(--tint-1)}
+.ab2-cy > li:nth-child(3) em,.wk2-ep > li:nth-child(3) em{background:var(--tint-2)}
+.ab2-cy > li:nth-child(4) em{background:var(--tint-4)}
+.ab2-cy > li:nth-child(5) em{background:#F3EEF8}
+.ab2-cy h4{font-size:19px;font-weight:700;letter-spacing:-.035em}
+.ab2-cy p{margin-top:6px;font-size:15px;line-height:1.6;color:var(--gray2);letter-spacing:-.02em}
+.ab2-back{margin-top:16px;font-size:15px;font-weight:700;color:var(--gray2-lt);text-align:right;letter-spacing:-.02em}
+/* 연간 로드맵 — 회색 판: 계절 알약 4칸 + 검정 막대 6줄. 속으로는 12칸(1칸 = 봄 첫 달), --s 시작 칸 · --e 끝 칸(포함 안 함).
+   앞 세 줄은 막대 시작에서 글자 왼쪽 맞춤, 뒤 세 줄(.ab2-end)은 막대 끝에서 글자 오른쪽 맞춤. 768px 이하는 세로 목록 */
+.ab2-rm{margin-top:50px;padding:40px;border-radius:24px;background:var(--panel2)}
+.ab2-rm-hd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ab2-rm-hd li{display:flex;align-items:center;justify-content:center;height:44px;border-radius:999px;background:#fff;font-size:17px;font-weight:700}
+.ab2-rm-rows{margin-top:34px}
+.ab2-rm-rows > li{display:grid;grid-template-columns:repeat(12,minmax(0,1fr))}
+.ab2-rm-rows > li+li{margin-top:26px}
+.ab2-rm-rows > li > *{grid-column:var(--s) / 13}
+.ab2-rm-rows > li.ab2-end > *{grid-column:1 / var(--e);text-align:right}
+.ab2-rm-rows > li > .ab2-bar{grid-column:var(--s) / var(--e)}
+.ab2-rm-rows > li:nth-child(1){--s:1;--e:5}
+.ab2-rm-rows > li:nth-child(2){--s:5;--e:7}
+.ab2-rm-rows > li:nth-child(3){--s:6;--e:8}
+.ab2-rm-rows > li:nth-child(4){--s:8;--e:11}
+.ab2-rm-rows > li:nth-child(5){--s:11;--e:12}
+.ab2-rm-rows > li:nth-child(6){--s:12;--e:13}
+.ab2-ss{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}   /* 계절 — PC는 화면 읽기용(위 계절 알약은 aria-hidden), 768px 이하에서 보임 */
+.ab2-rm h4{font-size:17px;font-weight:700;letter-spacing:-.035em}
+.ab2-bar{display:block;height:12px;margin-top:10px;border-radius:999px;background:var(--ink2)}
+.ab2-rm p{margin-top:8px;font-size:14px;line-height:1.6;color:var(--gray2);letter-spacing:-.02em}
+@media(min-width:1101px){.ab2-rm h4,.ab2-rm p{white-space:nowrap}}
+
+/* ============ 워크숍 음악 (programs.html · 시안2 WBS 11.7) — wk2- ============ */
+.wk2-kk{font-size:18px;font-weight:700;color:var(--teal);letter-spacing:-.02em}
+.wk2-h{margin-top:8px;font-size:48px;font-weight:700;line-height:1.38;letter-spacing:-.04em}
+.wk2-tx{padding-top:52px;font-size:18px;line-height:1.8;color:var(--gray2);letter-spacing:-.02em}
+/* 이렇게 배웁니다 — 둥근 사진 카드 3장, 왼쪽 위 작은 번호 알약 */
+.wk2-fw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:50px}
+.wk2-ph{position:relative;height:340px;border-radius:20px;overflow:hidden;background:#2A2C30}
+.wk2-ph img{width:100%;height:100%;object-fit:cover}
+.wk2-fw > li:nth-child(2) .wk2-ph img{object-position:70% 50%}   /* 앙상블 — 피아노 쪽 */
+.wk2-ph.empty{display:grid;place-items:center;background:var(--panel2);font-size:15px;font-weight:600;color:#A6AAB1}
+.wk2-ph .pchip{position:absolute;left:16px;top:16px;height:36px;padding:0 14px;font-size:14px}
+.wk2-ph.empty .pchip{background:rgba(40,40,44,.35)}
+.wk2-fw h4{margin-top:20px;font-size:22px;font-weight:700;letter-spacing:-.04em}
+.wk2-fw p{margin-top:8px;font-size:16px;line-height:1.65;color:var(--gray2);letter-spacing:-.02em}
+.wk2-also{display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin-top:30px;padding:12px 20px;border-radius:999px;background:var(--panel2);font-size:15px;color:var(--gray2)}
+.wk2-also b{color:var(--ink2)}
+/* 교육 포인트 — 카드 목록, 왼쪽 파스텔 네모 96px 안 짧은 이름 */
+.wk2-ep > li{gap:26px;padding:26px 30px}
+.wk2-ep em{flex:none;display:grid;place-items:center;width:96px;height:96px;border-radius:20px;font-style:normal;font-size:20px;font-weight:800;letter-spacing:-.04em}
+.wk2-ep h4{font-size:21px;font-weight:700;letter-spacing:-.04em}
+.wk2-ep p{margin-top:6px;font-size:16px;line-height:1.6;color:var(--gray2);letter-spacing:-.02em}
+/* 다음 단계 — 카드 2장 + 검정 알약, 오른쪽 아래 둥근 사진 */
+.wk2-nx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:50px}
+.wk2-nx > li{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-height:280px;padding:40px;overflow:hidden}
+.wk2-nx h4{font-size:28px;font-weight:700;line-height:1.4;letter-spacing:-.04em}
+.wk2-nx p{margin-top:10px;font-size:16px;line-height:1.6;color:var(--gray2);letter-spacing:-.02em}
+.wk2-nx .bpill{margin-top:auto}
+.wk2-ic{position:absolute;right:36px;bottom:36px;width:110px;height:110px;border-radius:50%;object-fit:cover}
+
+/* ---------- 시안2 하위 페이지 — 태블릿 · 휴대폰 ---------- */
+@media(max-width:1100px){
+  .s2-sec{margin-top:110px}
+  .s2-two{grid-template-columns:minmax(0,1fr);gap:30px}
+  .s2-h{font-size:36px}
+  .ab2-gl{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ab2-gl > li:nth-child(n){height:auto;min-height:300px}
+  .ab2-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ab2-fields li{height:260px}
+  .ab2-ob{padding:32px}
+  .wk2-tx{padding-top:0}
+  .wk2-fw{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:768px){
+  .s2-sec{margin-top:88px}
+  .s2-h{font-size:30px}
+  .s2-lead{font-size:16px}
+  .ab2-ov{padding:8px 24px}
+  .ab2-ov div{grid-template-columns:minmax(0,1fr);gap:4px;padding:18px 0;font-size:16px}
+  .ab2-gl,.ab2-org,.ab2-fields,.wk2-fw,.wk2-nx{grid-template-columns:minmax(0,1fr)}
+  .ab2-gl{margin-top:32px}
+  .ab2-gl > li{padding:28px}
+  .ab2-gl > li:nth-child(n){min-height:0}
+  .ab2-gl h4{font-size:36px}
+  .ab2-org{margin-top:32px}
+  .ab2-ob{min-height:0;padding:28px}
+  .ab2-nm{font-size:21px}
+  .ab2-logo{height:36px}
+  .ab2-ob > .ab2-logo{height:34px}
+  .ab2-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .ab2-fields li{height:180px;border-radius:16px}
+  .ab2-fields .pchip{left:12px;bottom:12px;height:36px;padding:0 14px;font-size:14px}
+  .ab2-cy > li,.wk2-ep > li{gap:18px;padding:20px}
+  .ab2-cy em{width:56px;height:56px;font-size:22px}
+  .ab2-cy h4{font-size:17px}
+  .ab2-rm{margin-top:32px;padding:8px 24px}
+  .ab2-rm-hd{display:none}
+  .ab2-rm-rows{margin-top:0}
+  .ab2-rm-rows > li{position:relative;display:block;padding:22px 0 22px 20px}
+  .ab2-rm-rows > li+li{margin-top:0;border-top:1px solid #E1E3E7}
+  .ab2-rm-rows > li.ab2-end > *{text-align:left}
+  .ab2-rm-rows > li > .ab2-bar{position:absolute;left:0;top:24px;bottom:24px;width:6px;height:auto;margin:0}
+  .ab2-ss{position:static;display:inline-block;width:auto;height:auto;overflow:visible;clip:auto;margin-bottom:8px;padding:3px 12px;border-radius:999px;background:#fff;font-size:13px;font-weight:700}
+  .wk2-h{font-size:34px}
+  .wk2-tx{font-size:16px}
+  .wk2-fw{margin-top:32px}
+  .wk2-ph{height:240px;border-radius:16px}
+  .wk2-also{border-radius:16px}
+  .wk2-ep em{width:72px;height:72px;font-size:16px;border-radius:16px}
+  .wk2-ep h4{font-size:19px}
+  .wk2-nx{margin-top:32px}
+  .wk2-nx > li{min-height:0;padding:28px}
+  .wk2-nx h4,.wk2-nx p{padding-right:84px}
+  .wk2-nx .bpill{margin-top:24px}
+  .wk2-ic{top:24px;right:24px;bottom:auto;width:72px;height:72px}
+}
+
+/* ============ 시안2 공통 부품 (WBS 11.6, 레퍼런스 ② · 시안 docs/private/v2/ref2/) ============ */
+/* 검정 알약 단추 — <a class="bpill" href="…">겨울캠프 보러 가기</a> (뒤에 → 가 붙음) */
+.bpill{display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 22px;border-radius:999px;background:var(--ink2);color:#fff;font-size:17px;font-weight:600;letter-spacing:-.02em;transition:background .2s}
+.bpill::after{content:"→";font-size:19px;transition:transform .2s}
+.bpill:hover,.bpill:focus-visible{background:#000}
+.bpill:hover::after,.bpill:focus-visible::after{transform:translateX(3px)}
+/* 사진 위 반투명 알약 — <span class="pchip">STEP 01</span> */
+.pchip{display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:999px;background:rgba(40,40,44,.55);color:#fff;font-size:16px;font-weight:700;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.pchip{background:rgba(30,30,34,.78)}}
+/* 테두리만 있는 둥근 카드 — <div class="rcard">…</div> */
+.rcard{border:1px solid var(--line2);border-radius:20px;padding:30px;background:#fff}

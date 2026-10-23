@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta content="noindex, nofollow" name="robots"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>2026 K예술영재 프로젝트</title>
+<meta content="음악·무용·전통예술·미술 네 개 분야 예술영재를 발굴하고 키우는 2026 K예술영재 프로젝트 공식 홍보 사이트" name="description"/>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/gh/webfontworld/gmarket/GmarketSans.css" rel="stylesheet"/>
+<link href="assets/css/common.css" rel="stylesheet"/>
+<link href="assets/css/main.css" rel="stylesheet"/>
+</head>
+<body data-page="index">
+<header id="header"></header>
+<div id="allmenu"></div>
+<!-- ============ 표지 — 큰 문장 + 둥근 사진 (시안 2, WBS 11.8) ============ -->
+<section class="mn2-hero wait" id="hero">
+<div class="mn2-in">
+<h1 class="mn2-title">가능성을 발견하고 키우는&nbsp;1년,<br/>K예술영재 프로젝트</h1>
+<!-- 표지 슬라이드(.slide)와 분야 알약(.h-tabs 안 단추)은 assets/js/main.js가 만든다 — 관리자 페이지 「표지 사진」에서 올린 사진, 없으면 main.css의 기본 사진 -->
+<div aria-label="분야별 표지 사진" class="mn2-ph" role="group">
+<div aria-label="표지 분야" class="h-tabs" role="group"></div>
+</div>
+<!-- 주최 · 주관 + 기관 로고(원래 색) — 로고 img를 지우고 기관 이름 글자를 넣으면 글자 모양으로 돌아간다.
+     교육원 로고는 옆에 기관 이름 글자가 있어 alt=""(두 번 읽히지 않게), 문체부 로고는 이름이 로고 안에만 있어 alt를 둔다 -->
+<div class="h-logos"><span class="h-lg"><b>주최</b><img alt="문화체육관광부" class="lg-mcst" src="assets/img/logo-mcst.png"/></span><span class="h-lg"><b>주관</b><img alt="" class="lg-kniga" src="assets/img/logo-kniga.png"/><strong class="mn2-orgnm">한국예술영재교육연구원</strong></span></div>
+</div>
+</section>
+<!-- ============ 소개 — 칠해지는 문단 + 흐르는 사진 줄 ============ -->
+<section class="mn2-intro" id="about">
+<div class="mn2-in">
+<!-- data-paint: 스크롤에 따라 글자가 회색 → 검정으로 칠해진다(common.js · common.css) -->
+<p class="mn2-paint" data-paint="">K예술영재 프로젝트는 음악 · 무용 · 전통예술 · 미술 네 개 분야의 예술영재를 발굴하고, 분야별 워크숍과 심화 멘토링, 겨울캠프로 이어지는 성장 과정을 운영합니다. 한 해의 성과는 다음 해 교육과정 설계의 근거가 됩니다.</p>
+</div>
+<!-- 사진 줄 — 같은 6장을 두 번 이어 붙여 오른쪽 → 왼쪽으로 끊김 없이 흐른다(main.css mn2-flow). 꾸밈이라 화면 읽기에서 뺀다.
+     --w · --h · --y는 1440 기준 크기 · 위 여백(px), 작은 화면은 main.css --k로 줄인다 -->
+<div aria-hidden="true" class="mn2-strip">
+<div class="mn2-track">
+<img alt="" decoding="async" loading="lazy" src="assets/img/p2.jpg" style="--w:390;--h:250;--y:90"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/p1.jpg" style="--w:270;--h:300;--y:20"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/p4.jpg" style="--w:320;--h:180;--y:60"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/p3.jpg" style="--w:280;--h:380;--y:20"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/hero-trad.jpg" style="--w:300;--h:300;--y:70"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/hero-music.jpg" style="--w:340;--h:240;--y:120"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/p2.jpg" style="--w:390;--h:250;--y:90"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/p1.jpg" style="--w:270;--h:300;--y:20"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/p4.jpg" style="--w:320;--h:180;--y:60"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/p3.jpg" style="--w:280;--h:380;--y:20"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/hero-trad.jpg" style="--w:300;--h:300;--y:70"/>
+<img alt="" decoding="async" loading="lazy" src="assets/img/hero-music.jpg" style="--w:340;--h:240;--y:120"/>
+</div>
+</div>
+</section>
+<!-- ============ 성장 과정 — 화면에 고정된 채 스크롤하면 01 → 02 → 03 (main.js) ============ -->
+<!-- 1100px 이하이거나 「움직임 줄이기」면 고정 없이 세 단계를 사진 + 글로 차례로 쌓는다(main.css). 접힌 설명도 DOM에 있어 화면 읽기에는 모두 읽힌다 -->
+<section class="mn2-st" id="steps">
+<div class="mn2-st-pin">
+<div class="mn2-in mn2-st-grid">
+<div class="mn2-st-l">
+<p class="mn2-kk">성장 과정</p>
+<h2 class="mn2-h2">네 개 분야,<br/>세 단계의 성장 과정</h2>
+<ol class="mn2-st-list">
+<li class="on"><button aria-current="step" class="mn2-st-b" type="button"><small>01</small>워크숍<em>2개월</em></button><div class="mn2-st-d"><p>분야마다 다른 커리큘럼으로 기본기와 표현력을 다지는 정규 과정</p></div></li>
+<li><button class="mn2-st-b" type="button"><small>02</small>심화 멘토링<em>3개월</em></button><div class="mn2-st-d"><p>분야별 전담 멘토가 개인의 목표에 맞춰 이어가는 지도</p></div></li>
+<li><button class="mn2-st-b" type="button"><small>03</small>겨울캠프<em>7일</em></button><div class="mn2-st-d"><p>네 분야가 함께하는 합숙 집중과정과 갈라공연</p></div></li>
+</ol>
+</div>
+<div class="mn2-st-ph">
+<figure class="on"><div class="mn2-st-img"></div><span class="pchip">STEP 01</span><a class="pchip" href="programs.html">워크숍 자세히 보기 <span aria-hidden="true">→</span></a></figure>
+<figure><div class="mn2-st-img"></div><span class="pchip">STEP 02</span><a class="pchip" href="mentoring.html">심화 멘토링 자세히 보기 <span aria-hidden="true">→</span></a></figure>
+<figure><div class="mn2-st-img"></div><span class="pchip">STEP 03</span><a class="pchip" href="camp.html">겨울캠프 자세히 보기 <span aria-hidden="true">→</span></a></figure>
+</div>
+</div>
+</div>
+</section>
+<!-- ============ 모집 안내 — 옅은 청록 판 ============ -->
+<section class="mn2-rc-sec">
+<div class="mn2-in">
+<div class="mn2-rc">
+<div><p class="mn2-kk">모집 및 선발</p><h2>연도별 선발 개요를<br/>한눈에 확인하세요</h2></div>
+<a class="bpill" href="recruit.html">2026 선발 개요 보기</a>
+</div>
+</div>
+</section>
+<!-- ============ 소식 — 카드 가로 줄 ============ -->
+<section class="mn2-news" id="news">
+<div class="mn2-in">
+<div class="mn2-nw-top">
+<h2>최근 소식을 확인하세요</h2>
+<div class="mn2-nw-ctl">
+<div aria-label="소식 넘기기" class="mn2-arw" role="group"><button aria-disabled="true" aria-label="이전 소식" type="button">‹</button><button aria-disabled="true" aria-label="다음 소식" type="button">›</button></div>
+<a class="bpill" href="news.html">소식 보러 가기</a>
+</div>
+</div>
+<!-- 공지사항 · 언론홍보를 섞은 최신 8개는 assets/js/main.js가 data/posts.json으로 채운다 -->
+<ul class="mn2-cards" data-board="latest"></ul>
+</div>
+</section>
+<footer id="footer"></footer>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/board.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

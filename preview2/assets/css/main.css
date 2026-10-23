@@ -1,0 +1,231 @@
+@charset "utf-8";
+/* 2026 K예술영재 프로젝트 — main.css (메인 페이지 전용) */
+/* 메인 = 시안 2(WBS 11.8, 레퍼런스 about.daangn.com) — 큰 문장 + 둥근 표지 · 칠해지는 문단 · 흐르는 사진 줄 · 성장 과정 전환 · 모집 판 · 소식 카드.
+   흰 바탕 · --ink2 글자 · 회색/파스텔 판, 청록은 작은 머리글 글자 · 언론홍보 분류 글자에만. 새 이름은 mn2- 앞붙임 */
+
+:root{
+  /* 주소는 이 파일(assets/css/) 기준 → url("../img/hero1.jpg"). 사진 출처는 docs/decisions.md 2절 */
+  /* 표지 기본 사진 — 관리자 페이지 「표지 사진」에서 올린 사진이 있으면 그 사진이 대신 보인다. 기본 사진이 없는(var(--none)) 칸은 올린 사진이 없으면 건너뜀 */
+  --img-hero-dance:var(--none);                 /* 표지 : 무용 (사진 대기) */
+  --img-hero-music:url("../img/hero-music.jpg"); /* 표지 : 음악 */
+  --img-hero-art  :var(--none);                 /* 표지 : 미술 (사진 대기) */
+  --img-hero-trad :url("../img/hero-trad.jpg");  /* 표지 : 전통예술 */
+  /* 분야 카드 사진 4컷 (900×808) */
+  --img-p1:url("../img/p1.jpg");  /* 무용 */
+  --img-p2:url("../img/p2.jpg");  /* 음악 */
+  --img-p3:url("../img/p3.jpg");  /* 미술 */
+  --img-p4:url("../img/p4.jpg");  /* 전통예술 */
+  /* 성장 과정 사진 — 워크숍 · 심화 멘토링 · 겨울캠프 */
+  --img-step1:var(--img-p2);
+  --img-step2:var(--img-p3);
+  --img-step3:url("../img/hero-trad.jpg");
+}
+
+/* 본문 폭 — 1440 기준 1152(좌우 144), 1280 이하는 화면 − 좌우 64 */
+.mn2-in{width:min(1152px,calc(100% - 128px));margin:0 auto}
+.mn2-kk{font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--ink2)}
+.mn2-h2{margin-top:8px;font-size:42px;font-weight:700;line-height:1.38;letter-spacing:-.04em;color:var(--ink2)}
+
+/* ============ 표지 — 큰 문장 + 둥근 사진 ============ */
+.mn2-hero{padding-top:calc(var(--hd) + 110px);color:var(--ink2)}
+.mn2-title{font-size:64px;font-weight:700;line-height:1.3;letter-spacing:-.045em}
+/* 둥근 틀 — 슬라이드(.slide)는 main.js가 이 틀 맨 앞에 넣는다(nth-of-type 확대 · 축소 번갈아가 맞게) */
+.mn2-ph{position:relative;margin-top:60px;height:600px;border-radius:24px;overflow:hidden;background:var(--ink2);isolation:isolate}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+.slide.on{opacity:1}
+#hero.wait .slide{opacity:0}   /* 사진 목록을 받기 전 (main.js) — 기본 사진이 올린 사진으로 바뀌며 깜박이지 않게 */
+/* 사진 움직임 — 홀수 장은 크게 → 원래(축소), 짝수 장은 원래 → 크게(확대). 크기는 1.08, 시간은 8s를 바꾸면 된다.
+   #hero.ready는 main.js가 첫 화면을 그린 뒤 붙여서 첫 장도 움직이며 시작한다. */
+.slide::before{content:"";position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.08);transition:transform 8s linear}
+.slide:nth-of-type(even)::before{transform:scale(1)}
+#hero.ready .slide.on::before{transform:scale(1)}
+#hero.ready .slide.on:nth-of-type(even)::before{transform:scale(1.08)}
+@media(prefers-reduced-motion:reduce){ .slide::before{transition:none} }
+/* 2.5D 입체 효과 (관리자 페이지에서 켠 칸, main.js addDepth) — 누끼(.fg)를 사진 위에 겹쳐 배경은 1 → 1.06, 인물은 1 → 1.14로 키운다.
+   커진 인물이 원래 윤곽을 덮으므로 배경을 고칠 필요가 없다. 켠 칸은 번갈아 하지 않고 늘 다가오며, 중심(--org)은 main.js가 인물 영역 가운데로 정한다.
+   크기를 바꾸면 admin.css의 미리보기도 맞출 것 (2026-10-15 사용자 결정: 세기 하나로 고정) */
+.slide .fg{position:absolute;inset:0;background-size:cover;background-position:center}
+.slide.pz::before,.slide.pz:nth-of-type(even)::before,.slide.pz .fg{transform:scale(1);transform-origin:var(--org,center);transition:transform 8s cubic-bezier(.25,.1,.25,1)}
+#hero.ready .slide.pz.on::before,#hero.ready .slide.pz.on:nth-of-type(even)::before{transform:scale(1.06)}
+#hero.ready .slide.pz.on .fg{transform:scale(1.14)}
+@media(prefers-reduced-motion:reduce){ #hero .slide.pz::before,#hero .slide.pz .fg{transform:none!important;transition:none} }
+/* 동영상 칸 (2안, main.js prep) — 대기 사진(첫 장면)은 움직이지 않고, 영상이 재생되기 시작하면 그 위로 서서히 보인다 */
+.slide .vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease}
+.slide .vid.on{opacity:1}
+#hero .slide.vd::before,#hero.ready .slide.vd.on::before{transform:none;transition:none}
+/* 세로 화면(휴대폰 등)은 사진 가운데만 보이므로, 표지 사진 규칙(주인공은 가운데~오른쪽)에 맞춰 62% 지점을 중심으로 (2026-10-14 사용자 결정) */
+@media(max-aspect-ratio:1/1){ .slide::before,.slide .fg{background-position:62% center} .slide .vid{object-position:62% center} }
+.s-dance::before{background-image:var(--img-hero-dance),linear-gradient(160deg,#3FB3D9,#1B7EA6 42%,#0E4356)}
+.s-music::before{background-image:var(--img-hero-music),linear-gradient(160deg,#6E8FB8,#2C5C7A 45%,#12303F)}
+.s-art::before{background-image:var(--img-hero-art),linear-gradient(160deg,#9A6AAE,#5E3A78 45%,#241433)}
+.s-trad::before{background-image:var(--img-hero-trad),linear-gradient(160deg,#C97A63,#8A4A46 45%,#2A1E22)}
+/* 분야 알약 — 사진 왼쪽 아래, 지금 분야만 흰 바탕 검정 글자. 사진 위 글자가 없어 덧칠은 두지 않는다 */
+.h-tabs{position:absolute;left:28px;bottom:28px;z-index:5;display:flex;gap:8px}
+.h-tabs[hidden]{display:none}
+.h-tabs .pchip{flex:none;border:0;cursor:pointer;white-space:nowrap;transition:background .3s,color .3s}
+.h-tabs .pchip:hover{background:rgba(40,40,44,.75)}
+.h-tabs .pchip.on{background:#fff;color:var(--ink2)}
+.h-tabs .pchip:focus-visible{outline:2px solid #fff;outline-offset:3px}
+/* 주최 · 주관 — 원래 색 로고(투명 배경). 교육원 로고 옆에 굵은 기관 이름 */
+.h-logos{display:flex;flex-wrap:wrap;align-items:center;gap:10px 34px;margin-top:26px}
+.h-lg{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.h-lg b{font-size:14px;font-weight:700;color:var(--gray2-lt)}
+.h-lg img{display:block;width:auto}
+.h-lg .lg-mcst{height:28px}
+.h-lg .lg-kniga{height:34px}
+.mn2-orgnm{font-size:15px;font-weight:700;letter-spacing:-.03em;color:var(--ink2)}
+
+/* ============ 소개 — 칠해지는 문단 + 흐르는 사진 줄 ============ */
+.mn2-intro{padding-top:190px}
+.mn2-paint{font-size:28px;font-weight:700;line-height:1.6;letter-spacing:-.03em}
+/* 사진 줄 — 같은 6장 두 번(트랙 폭의 절반 = 한 벌)이라 -50%까지 옮기면 처음과 같은 모습. 마우스를 올리면 멈춤 */
+.mn2-strip{--k:1;position:relative;height:calc(420px*var(--k));margin-top:90px;overflow:hidden}
+.mn2-track{display:flex;align-items:flex-start;width:max-content;height:100%;animation:mn2-flow 60s linear infinite}
+.mn2-track img{flex:none;width:calc(var(--w)*var(--k)*1px);height:calc(var(--h)*var(--k)*1px);margin:calc(var(--y)*var(--k)*1px) calc(28px*var(--k)) 0 0;border-radius:16px;object-fit:cover;background:var(--panel2)}
+@keyframes mn2-flow{from{transform:translateX(-40px)}to{transform:translateX(calc(-50% - 40px))}}
+.mn2-strip:hover .mn2-track{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){ .mn2-track{animation:none;transform:translateX(-40px)} }
+
+/* ============ 성장 과정 — 고정된 단계 전환 ============ */
+/* 구역 높이 = 화면 3배. 안쪽(.mn2-st-pin)이 머리 아래에 고정된 채 스크롤 위치에 따라 main.js가 단계(.on)를 바꾼다 */
+.mn2-st{position:relative;height:300vh;margin-top:60px}
+.mn2-st-pin{position:sticky;top:var(--hd);height:calc(100vh - var(--hd));display:flex;align-items:center}
+.mn2-st-grid{display:grid;grid-template-columns:minmax(0,1fr) 570px;gap:40px;align-items:start}
+.mn2-st-list{margin-top:70px}
+.mn2-st-list li{border-top:1px solid var(--line2)}
+.mn2-st-list li:last-child{border-bottom:1px solid var(--line2)}
+.mn2-st-b{display:flex;align-items:baseline;width:100%;padding:22px 0;background:none;border:0;text-align:left;cursor:pointer;
+  font-size:24px;font-weight:700;letter-spacing:-.04em;color:#B0B3BA;transition:color .4s}
+.mn2-st-b small{font-size:14px;font-weight:700;margin-right:10px;letter-spacing:0}
+.mn2-st-b em{font-style:normal;font-size:18px;font-weight:700;color:var(--teal);margin-left:8px;opacity:0;transition:opacity .4s}
+.mn2-st-b:hover{color:var(--gray2-lt)}
+.mn2-st-b:focus-visible{outline:2px solid var(--ink2);outline-offset:4px;border-radius:4px}
+/* 설명 — 접혀 있어도 DOM에 있다(화면 읽기용). 높이 0 ↔ 제 높이로 부드럽게 */
+.mn2-st-d{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.22,1,.36,1)}
+.mn2-st-d p{min-height:0;overflow:hidden;font-size:17px;line-height:1.7;color:var(--gray2);letter-spacing:-.02em}
+.mn2-st-d p::after{content:"";display:block;height:22px}   /* 펼쳤을 때 아래 여백(접히면 함께 사라짐) */
+.mn2-st-list li.on .mn2-st-b{color:var(--ink2);padding-bottom:12px}
+.mn2-st-list li.on .mn2-st-b em{opacity:1}
+.mn2-st-list li.on .mn2-st-d{grid-template-rows:1fr}
+/* 오른쪽 둥근 사진 — 세 장이 겹쳐 있고 지금 단계만 보인다. 낮은 화면에서는 높이를 줄인다 */
+.mn2-st-ph{position:relative;height:min(640px,calc(100vh - var(--hd) - 120px));min-height:420px;border-radius:24px;overflow:hidden;background:var(--ink2);isolation:isolate}
+.mn2-st-ph figure{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .7s ease}
+.mn2-st-ph figure.on{opacity:1;pointer-events:auto;z-index:1}
+.mn2-st-img{position:absolute;inset:0;background-size:cover;background-position:center}
+.mn2-st-ph figure:nth-child(1) .mn2-st-img{background-image:var(--img-step1)}
+.mn2-st-ph figure:nth-child(2) .mn2-st-img{background-image:var(--img-step2)}
+.mn2-st-ph figure:nth-child(3) .mn2-st-img{background-image:var(--img-step3);background-position:center 70%}
+.mn2-st-ph .pchip{position:absolute;left:28px;bottom:28px}
+.mn2-st-ph a.pchip{left:auto;right:28px;gap:6px;transition:background .2s}
+.mn2-st-ph a.pchip:hover{background:rgba(20,20,24,.8)}
+.mn2-st-ph a.pchip:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+/* 쌓기 — 1100px 이하이거나 「움직임 줄이기」: 고정 · 전환 없이 단계마다 사진 → 글. main.js도 같은 조건(STACK)으로 멈춘다.
+   목록 · 사진 묶음을 display:contents로 풀어 한 칸 그리드에서 order로 사진 1 · 글 1 · 사진 2 … 순서를 만든다 */
+@media(max-width:1100px),(prefers-reduced-motion:reduce){
+  .mn2-st{height:auto;margin-top:0;padding-top:120px}
+  .mn2-st-pin{position:static;height:auto;display:block}
+  .mn2-st-grid{grid-template-columns:minmax(0,1fr);gap:0}
+  .mn2-st-l,.mn2-st-list,.mn2-st-ph{display:contents}
+  .mn2-st-list li,.mn2-st-list li:last-child{border:0}
+  .mn2-st-list li:nth-child(1){order:2} .mn2-st-ph figure:nth-child(1){order:1}
+  .mn2-st-list li:nth-child(2){order:4} .mn2-st-ph figure:nth-child(2){order:3}
+  .mn2-st-list li:nth-child(3){order:6} .mn2-st-ph figure:nth-child(3){order:5}
+  .mn2-st-ph figure{position:relative;height:460px;margin-top:48px;border-radius:24px;overflow:hidden;background:var(--ink2);opacity:1;pointer-events:auto;transition:none}
+  .mn2-st-ph figure:first-child{margin-top:40px}
+  .mn2-st-b,.mn2-st-list li .mn2-st-b{padding:22px 0 10px;color:var(--ink2);cursor:default}
+  .mn2-st-b em{opacity:1}
+  .mn2-st-d{grid-template-rows:1fr;transition:none}
+  .mn2-st-d p::after{display:none}
+}
+
+/* ============ 모집 안내 — 옅은 청록 판 ============ */
+.mn2-rc-sec{padding-top:60px}
+.mn2-rc{display:flex;justify-content:space-between;align-items:center;gap:24px 40px;padding:56px 60px;border-radius:24px;background:var(--tint-1)}
+.mn2-rc .mn2-kk{color:var(--teal)}
+.mn2-rc h2{margin-top:10px;font-size:34px;font-weight:700;line-height:1.4;letter-spacing:-.04em;color:var(--ink2)}
+.mn2-rc .bpill{flex:none}
+
+/* ============ 소식 — 카드 가로 줄 ============ */
+.mn2-news{padding:150px 0 20px}
+.mn2-nw-top{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.mn2-nw-top h2{font-size:36px;font-weight:700;letter-spacing:-.04em;color:var(--ink2)}
+.mn2-nw-ctl{display:flex;align-items:center;gap:12px;flex:none}
+/* 이전/다음 — 옅은 테두리 알약 하나 안에 ‹ ›. 끝이면 흐리게(aria-disabled — 초점은 그대로 남게 disabled는 쓰지 않음) */
+.mn2-arw{display:flex;align-items:center;height:50px;padding:0 8px;border:1px solid var(--line2);border-radius:999px}
+.mn2-arw button{width:32px;height:40px;border:0;background:none;border-radius:999px;font-size:22px;line-height:1;color:var(--ink2);cursor:pointer;transition:opacity .2s,background .2s}
+.mn2-arw button:hover:not([aria-disabled="true"]){background:var(--panel2)}
+.mn2-arw button[aria-disabled="true"]{opacity:.25;cursor:default}
+.mn2-arw button:focus-visible{outline:2px solid var(--ink2);outline-offset:1px}
+/* 카드 줄 — 한 화면 4장, 넘치면 안쪽에서만 가로로 넘긴다(main.js ‹ ›, 터치는 손으로) */
+.mn2-cards{--n:4;display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 16px*(var(--n) - 1))/var(--n));gap:16px;margin-top:40px;
+  overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:none}
+.mn2-cards::-webkit-scrollbar{display:none}
+.mn2-cards li{scroll-snap-align:start;min-width:0}
+.mn2-cards a{position:relative;display:flex;flex-direction:column;height:230px;padding:26px 24px;color:var(--ink2);transition:border-color .25s}
+.mn2-cards a[href]:hover,.mn2-cards a[href]:focus-visible{border-color:#B9BDC4}
+.mn2-cards a:focus-visible{outline:2px solid var(--ink2);outline-offset:-2px}
+.mn2-cards a.empty{cursor:default}   /* 내용 없는 공지: 이동 없음 */
+.mn2-cards .kind{align-self:flex-start;max-width:100%;padding:5px 10px;border-radius:8px;background:var(--panel2);font-size:13px;font-weight:700;color:var(--gray2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mn2-cards .kind.mn2-press{background:var(--tint-1);color:var(--teal)}
+.mn2-cards .t{margin-top:16px;font-size:19px;font-weight:700;line-height:1.45;letter-spacing:-.035em;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.mn2-cards .d{margin-top:auto;padding-top:12px;font-size:14px;color:var(--gray2-lt)}
+.mn2-cards .ext{position:absolute;right:24px;bottom:26px;font-size:14px;color:var(--gray2-lt)}   /* 새 창 표시(언론홍보 기사) */
+.mn2-cards.is-msg{display:block}
+.mn2-cards .bd-msg{padding:40px 0;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);font-size:16px;color:var(--gray2);letter-spacing:-.02em}
+
+/* ============ 화면 폭별 ============ */
+@media(max-width:1100px){
+  .mn2-in{width:calc(100% - 96px)}
+  .mn2-title{font-size:48px}
+  .mn2-ph{height:460px}
+  .mn2-intro{padding-top:150px}
+  .mn2-st-ph figure{height:460px}
+  .mn2-h2{font-size:36px}
+  .mn2-cards{--n:2.5}
+  .mn2-news{padding-top:120px}
+}
+@media(max-width:768px){
+  .mn2-in{width:calc(100% - 40px)}
+  .mn2-hero{padding-top:calc(var(--hd) + 56px)}
+  .mn2-title{font-size:34px;line-height:1.32}
+  .mn2-ph{margin-top:32px;height:360px;border-radius:16px}
+  /* 알약 4개는 한 줄 유지, 좁으면 사진 안에서 가로로 넘김 */
+  .h-tabs{left:0;right:0;bottom:16px;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+  .h-tabs::-webkit-scrollbar{display:none}
+  .h-tabs .pchip{height:40px;padding:0 16px;font-size:15px}
+  .h-logos{margin-top:20px;gap:10px 22px}
+  .h-lg{gap:10px}
+  .h-lg .lg-mcst{height:24px}
+  .h-lg .lg-kniga{height:29px}
+  .mn2-orgnm{font-size:14px}
+  .mn2-intro{padding-top:100px}
+  .mn2-paint{font-size:22px}
+  .mn2-strip{--k:.62;margin-top:56px}
+  .mn2-st{padding-top:96px}
+  .mn2-kk{font-size:16px}
+  .mn2-h2{font-size:28px}
+  .mn2-st-ph figure{height:300px;border-radius:16px;margin-top:36px}
+  .mn2-st-ph figure:first-child{margin-top:32px}
+  .mn2-st-ph .pchip{left:16px;bottom:16px;height:38px;padding:0 14px;font-size:14px}
+  .mn2-st-ph a.pchip{left:auto;right:16px}
+  .mn2-st-b{font-size:21px}
+  .mn2-st-d p{font-size:16px}
+  .mn2-rc-sec{padding-top:80px}
+  .mn2-rc{flex-direction:column;align-items:flex-start;padding:36px 28px;border-radius:20px}
+  .mn2-rc .mn2-kk{font-size:16px}
+  .mn2-rc h2{font-size:26px}
+  .mn2-news{padding-top:96px}
+  .mn2-nw-top{flex-wrap:wrap}
+  .mn2-nw-top h2{font-size:28px;flex:1 0 100%}
+  .mn2-nw-ctl{flex:1 0 100%;justify-content:space-between}
+  .mn2-cards{--n:1.2;margin-top:28px}
+  .mn2-cards a{height:210px;padding:22px 20px}
+  .mn2-cards .t{font-size:18px}
+  .mn2-cards .ext{right:20px;bottom:22px}
+}
+@media(max-width:400px){
+  .mn2-st-ph a.pchip{font-size:13px;padding:0 12px}
+}
