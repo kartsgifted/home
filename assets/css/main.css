@@ -89,7 +89,7 @@
 .h-lg b{font-weight:600}
 .h-lg img{display:block;width:auto}
 .h-lg .lg-mcst{height:26px}
-.h-lg .lg-kniga{height:40px;margin:-7px 0}
+.h-lg .lg-kniga{height:24px}   /* 주관 로고 KRIGA(이름 글자 포함, 2026-10-23 교체) */
 
 /* ============ 흐르는 글자 띠 ============ */
 /* 오른쪽 → 왼쪽으로 끊김 없이. 같은 줄(.mn-mq-g 두 벌 ≈ 2500px)을 두 번 이어 붙여 −50%만큼 80초(한 벌에 40초) — 마우스를 올리면 멈추고, 움직임 줄이기면 멈춰 있다 */
@@ -199,10 +199,10 @@
   .h-tabs button{gap:5px}
   .h-tabs button small{width:auto}
   .h-tabs button.on{font-size:15px;margin-bottom:0}
-  .h-logos{left:0;right:auto;bottom:74px;gap:18px;font-size:12px}
+  .h-logos{left:0;right:auto;bottom:74px;gap:10px 18px;font-size:12px;flex-wrap:wrap;max-width:100%}   /* 주관 로고가 길어져(KRIGA) 좁으면 두 줄 */
   .h-lg{gap:8px}
   .h-lg .lg-mcst{height:22px}
-  .h-lg .lg-kniga{height:32px;margin:-5px 0}
+  .h-lg .lg-kniga{height:19px}
   /* 소개 */
   #about{padding:80px 0 64px}
   .mn-lead{font-size:30px}
