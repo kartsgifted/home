@@ -70,8 +70,15 @@ body.menu-open .ham-i span:nth-child(3){transform:translateY(-6px) rotate(-45deg
 .logo .yr{position:relative;z-index:0;display:inline-block;margin-bottom:5px;padding:0 4px;font-size:11px;font-weight:700;letter-spacing:.04em}
 .logo .yr::before{content:"";position:absolute;left:-3px;right:-3px;bottom:0;height:7px;background:var(--yel);border-radius:4px;z-index:-1}
 .logo .nm{display:block;font-size:21px;font-weight:800;letter-spacing:-.04em}
-#header nav{position:relative;align-self:stretch;display:flex}
-#gnb{display:flex;gap:36px;height:100%}
+#header .hd-r{display:flex;align-self:stretch}
+#header nav{position:relative;display:flex}
+#gnb{display:flex;gap:32px;height:100%}
+/* 머리 SNS (2026-10-23 사용자 결정 A안) — 메뉴 오른쪽에 옅은 세로줄(26px 띄움) → 아이콘 4개, 오른쪽 끝 = 본문 폭 끝. 1100px 이하는 전체메뉴 안(.am-sns) */
+.hd-sns{position:relative;display:flex;align-items:center;gap:16px;margin-left:26px;padding-left:26px;color:var(--ink)}
+.hd-sns::before{content:"";position:absolute;left:0;top:50%;width:1px;height:18px;margin-top:-9px;background:#D5D5D5}
+.hd-sns a{display:block;color:inherit;transition:opacity .25s}
+.hd-sns a:hover,.hd-sns a:focus-visible{opacity:.6}
+.hd-sns svg{display:block;width:20px;height:20px}
 #gnb > li{position:relative;display:flex;align-items:center}
 #gnb > li > a{position:relative;z-index:0;display:block;padding:6px 0;font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.02em;transition:opacity .25s}
 #gnb > li > a:hover{opacity:.6}
@@ -560,8 +567,12 @@ html.zv-open{overflow:hidden}
   .p1-lead h2,.ab-gl h3{font-size:clamp(34px,3.2vw,44px)}
   .ft-dl{grid-template-columns:repeat(3,auto)}
 }
+@media(max-width:1200px){
+  #gnb{gap:16px}   /* 메뉴 │ SNS가 가운데 이름에 닿지 않게 메뉴 간격만 줄임 */
+}
 @media(max-width:1100px){
   #gnb{gap:24px}
+  .hd-sns{display:none}
   #sv .in{padding:56px 0 44px}
   #sv h1{font-size:56px}
   #sv::after{height:300px}

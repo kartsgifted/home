@@ -61,7 +61,7 @@ var SITEMAP = [
     return '<li class="'+(on?'on':'')+'"><a href="'+m.href+'">'+m.ko+'</a></li>';
   }).join('');
 
-  /* SNS 아이콘 줄 — 푸터(.ft-sns) · 전체메뉴(.am-sns)에 같은 모양으로 (시안 1: 머리에서 뺌) */
+  /* SNS 아이콘 줄 — 머리(.hd-sns) · 전체메뉴(.am-sns) · 푸터(.ft-sns)에 같은 모양으로 */
   function snsLinks(cls){
     return '<div class="'+cls+'">'+SITE.sns.map(function(s){
       var svg = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">'+SNS_ICON[s.id]+'</svg>';
@@ -71,8 +71,8 @@ var SITEMAP = [
     }).join('')+'</div>';
   }
 
-  /* 머리 (WBS 11.3 시안 1) — 모든 페이지 늘 흰 띠: 왼쪽 「☰ MENU」(전체메뉴), 가운데 이름(작은 2026 + 굵은 이름, 첫 화면으로), 오른쪽 메뉴 4개.
-     768px 이하는 이름 + 오른쪽 ☰만 (common.css) */
+  /* 머리 (WBS 11.3 시안 1) — 모든 페이지 늘 흰 띠: 왼쪽 「☰ MENU」(전체메뉴), 가운데 이름(작은 2026 + 굵은 이름, 첫 화면으로),
+     오른쪽 메뉴 4개 │ SNS 4개(2026-10-23 사용자 결정 A안). 1100px 이하는 SNS를 전체메뉴 안으로, 768px 이하는 이름 + 오른쪽 ☰만 (common.css) */
   var header =
   '<div class="inner hd-in">'+
     '<button class="ham" type="button" aria-label="전체메뉴">'+
@@ -82,7 +82,7 @@ var SITEMAP = [
       '<span class="yr">2026</span>'+
       '<span class="nm">'+SITE.brand+'</span>'+
     '</a>'+
-    '<nav><ul id="gnb">'+gnb+'</ul></nav>'+
+    '<div class="hd-r"><nav><ul id="gnb">'+gnb+'</ul></nav>'+snsLinks('hd-sns')+'</div>'+
   '</div>';
 
   /* 전체메뉴 — 메뉴 이름만(영문 이름표는 같은 말이라 뺌, 시안 1) */
