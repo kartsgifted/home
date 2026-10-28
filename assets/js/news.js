@@ -2,6 +2,10 @@
    2026 K예술영재 프로젝트 — news.js
    소식 페이지: 공지 목록 · 상세(#notice/글ID) · 언론홍보 · 갤러리를 data/posts.json으로 채운다.
    ▣ 글 모양은 board.js(관리자 미리보기와 같은 함수)가 만든다. 운영진이 입력한 값은 textContent로만 넣는다.
+   ▣ 걸러 보기 (WBS 12.2, decisions.md 「6차 피드백 · 시안 1 확정」) — 목록 위 단추 묶음.
+       연도(세 게시판): 전체 + 그 게시판 글 날짜 앞 네 자리(최신이 앞), 처음엔 전체.
+       과정 · 분야(갤러리만): 아래 표의 단추가 늘 보인다. 세 묶음은 함께 걸러지고, 분야를 고르면 field가 빈 앨범(공통 · 지정 안 함)은 빠진다.
+       고르면 1쪽부터. 공지 글 보기에서는 단추를 숨기고, 목록으로 돌아오면 고른 값이 그대로다.
    ============================================================ */
 (function(){
   var NOTICE_PER = 10, PRESS_PER = 10, GALLERY_PER = 8;   // 한 쪽에 보일 개수 (docs/decisions.md 4절)
@@ -13,6 +17,12 @@
   var data = null, nPage = 1, pPage = 1, gPage = 1, view = '', baseTitle = document.title,
       fromList = false, listY = null;   // 목록에서 글을 열었으면 「목록」이 뒤로 가기로 돌아가 보던 자리를 찾는다
 
+  // 갤러리 과정 · 분야 코드 → 단추 · 이름표 글자 (docs/sheet-schema.md 「갤러리 과정 · 분야」). 목록에 없는 코드는 없는 것으로 본다
+  var COURSE = [['workshop', '워크숍'], ['mentoring', '심화 멘토링'], ['camp', '겨울캠프']],
+      FIELD = [['music', '음악'], ['dance', '무용'], ['trad', '전통예술'], ['art', '미술']];
+  // 고른 값 — ''는 전체
+  var pick = { notice:{ year:'' }, press:{ year:'' }, gallery:{ year:'', course:'', field:'' } }, nPick = null;
+
   function el(tag, cls, text){
     var e = document.createElement(tag);
     if(cls) e.className = cls;
@@ -20,6 +30,11 @@
     return e;
   }
   function msg(box, text){ box.textContent = ''; box.appendChild(el('p', 'bd-msg', text)); }
+  function name(list, code){
+    for(var i = 0; i < list.length; i++) if(list[i][0] === code) return list[i][1];
+    return '';
+  }
+  function year(p){ var y = String(p.date || '').slice(0, 4); return /^\d{4}$/.test(y) ? y : ''; }
 
   // 탭 바로 아래로 올린다 (이미 그보다 위면 그대로)
   function toTop(){
@@ -47,12 +62,48 @@
     return box;
   }
 
+  /* ---------- 걸러 보기 단추 ----------
+     groups: [[키, 묶음 이름, [[값, 단추 글자] …]] …] — 첫 단추는 늘 「전체」(''). 누르면 state[키]를 바꾸고 onPick(). 목록 칸 바로 앞에 놓는다 */
+  function picker(box, groups, state, onPick){
+    var wrap = el('div', 'pick'), row = el('div', 'pick-in');
+    groups.forEach(function(g){
+      var grp = el('div', 'pick-g'), btns = el('div', 'pick-b');
+      grp.setAttribute('role', 'group'); grp.setAttribute('aria-label', g[1]);
+      var n = el('span', 'pick-n', g[1]); n.setAttribute('aria-hidden', 'true');
+      grp.appendChild(n);
+      [['', '전체']].concat(g[2]).forEach(function(o){
+        var b = el('button', null, o[1]);
+        b.type = 'button';
+        b.setAttribute('aria-pressed', String(state[g[0]] === o[0]));
+        b.addEventListener('click', function(){
+          if(state[g[0]] === o[0]) return;
+          state[g[0]] = o[0];
+          [].forEach.call(btns.children, function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+          onPick();
+        });
+        btns.appendChild(b);
+      });
+      grp.appendChild(btns);
+      row.appendChild(grp);
+    });
+    wrap.appendChild(row);
+    box.parentNode.insertBefore(wrap, box);
+    return wrap;
+  }
+  function years(list){
+    var seen = {}, out = [];
+    list.forEach(function(p){ var y = year(p); if(y && !seen[y]){ seen[y] = 1; out.push(y); } });
+    return out.sort().reverse().map(function(y){ return [y, y]; });
+  }
+  function byYear(list, y){ return y ? list.filter(function(p){ return year(p) === y; }) : list; }
+
   /* ---------- 공지 ---------- */
   function noticeList(){
-    var list = data.notices;
+    var list = byYear(data.notices, pick.notice.year);
     view = 'list'; fromList = false;
     document.title = baseTitle;
-    if(!list.length) return msg(nBox, Board.MSG.empty);
+    if(nPick) nPick.hidden = false;
+    if(!list.length) return msg(nBox, data.notices.length ? '해당하는 글이 없습니다.' : Board.MSG.empty);
     var pages = Math.ceil(list.length / NOTICE_PER);
     nPage = Math.min(Math.max(1, nPage), pages);
     nBox.textContent = '';
@@ -69,6 +120,7 @@
   function noticeDetail(id){
     var post = data.notices.filter(function(n){ return n.id === id; })[0];
     view = 'detail';
+    if(nPick) nPick.hidden = true;
     nBox.textContent = '';
     if(post){
       nBox.appendChild(Board.renderNotice(post, { onPhoto:function(i){ Board.viewer(post.photos, i, post.title); } }));
@@ -112,8 +164,8 @@
 
   /* ---------- 언론홍보 ---------- 누르면 기사 주소가 새 탭으로 열린다 (사이트 안 상세 화면 없음) */
   function press(){
-    var list = data.press;
-    if(!list.length) return msg(pBox, Board.MSG.empty);
+    var list = byYear(data.press, pick.press.year);
+    if(!list.length) return msg(pBox, data.press.length ? '해당하는 글이 없습니다.' : Board.MSG.empty);
     var pages = Math.ceil(list.length / PRESS_PER);
     pPage = Math.min(Math.max(1, pPage), pages);
     pBox.textContent = '';
@@ -125,19 +177,25 @@
   }
 
   /* ---------- 갤러리 ---------- */
+  // 사진 오른쪽 아래 이름표 — 과정 · 분야 둘 다면 「워크숍 · 음악」, 하나만 있으면 그것만, 둘 다 없으면 이름표 없음
+  function tagText(g){
+    return [name(COURSE, g.course), name(FIELD, g.field)].filter(Boolean).join(' · ');
+  }
   function gallery(){
-    var list = data.gallery;
-    if(!list.length) return msg(gBox, Board.MSG.empty);
+    var f = pick.gallery, list = byYear(data.gallery, f.year).filter(function(g){
+      return (!f.course || g.course === f.course) && (!f.field || g.field === f.field);
+    });
+    if(!list.length) return msg(gBox, data.gallery.length ? '해당하는 사진이 없습니다.' : Board.MSG.empty);
     var pages = Math.ceil(list.length / GALLERY_PER);
     gPage = Math.min(Math.max(1, gPage), pages);
     gBox.textContent = '';
     var grid = el('div', 'gal');
     list.slice((gPage - 1) * GALLERY_PER, gPage * GALLERY_PER).forEach(function(g, k){
-      var fig = el('figure'), th;
+      var fig = el('figure'), th, tag = tagText(g);
       fig.setAttribute('data-rv', ''); fig.setAttribute('data-d', String(k % 4));
       if(g.photos.length){   // 첫 사진이 대표. 누르면 앨범 전체를 확대 보기로
         th = el('button', 'th'); th.type = 'button';
-        th.setAttribute('aria-label', (g.title || '') + ' — 사진 ' + g.photos.length + '장 보기');
+        th.setAttribute('aria-label', (g.title || '') + (tag ? ' (' + tag + ')' : '') + ' — 사진 ' + g.photos.length + '장 보기');
         var img = el('img'); img.src = Board.photoUrl(g.photos[0].fileId, 640); img.alt = ''; img.loading = 'lazy';
         th.appendChild(img);
         th.addEventListener('click', function(){ Board.viewer(g.photos, 0, g.title); });
@@ -145,6 +203,7 @@
         th = el('div', 'th'); th.appendChild(el('i', 'ph')); fig.className = 'empty';
       }
       fig.appendChild(th);
+      if(tag) fig.appendChild(el('span', 'gal-tag', tag));   // 사진 칸과 같은 자리(오른쪽 아래)에 겹쳐 놓는다 — 사진이 커져도 제자리
       fig.appendChild(el('figcaption', null, g.title || ''));
       if(g.desc) fig.appendChild(el('p', 'm', g.desc));
       grid.appendChild(fig);
@@ -155,10 +214,13 @@
     if(window.__rvObserve) window.__rvObserve(gBox);
   }
 
-  /* ---------- 시작 ---------- */
+  /* ---------- 시작 ---------- 글이 하나도 없는 게시판은 단추 없이 안내만 */
   Board.load().then(function(d){
     if(!d){ msg(nBox, Board.MSG.fail); msg(pBox, Board.MSG.fail); msg(gBox, Board.MSG.fail); return; }
     data = d;
+    if(d.notices.length) nPick = picker(nBox, [['year', '연도', years(d.notices)]], pick.notice, function(){ nPage = 1; noticeList(); });
+    if(d.press.length) picker(pBox, [['year', '연도', years(d.press)]], pick.press, function(){ pPage = 1; press(); });
+    if(d.gallery.length) picker(gBox, [['year', '연도', years(d.gallery)], ['course', '과정', COURSE], ['field', '분야', FIELD]], pick.gallery, function(){ gPage = 1; gallery(); });
     var id = hashId();
     if(id !== null) noticeDetail(id); else noticeList();
     press();
