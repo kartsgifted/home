@@ -26,20 +26,21 @@
 <li><button data-tab="gallery" type="button">갤러리</button></li>
 </ul></div></div>
 <main>
+<!-- 시안 1 (WBS 12.2) — 탭마다 제목(.p1-h) → 걸러 보기 단추(.pick, news.js가 만든다) → 목록. 모양은 common.css 「시안 1 소식 · 모집」 -->
 <section class="panel" id="notice"><div class="inner">
-<h2 class="h-sec" data-k="news.notice.4" data-rv="">NOTICE<span class="ko">공지사항</span></h2>
+<div class="p1-h nw-h" data-rv=""><h2 data-k="news.notice.4">공지사항</h2></div>
 <!-- 공지 목록 · 상세는 assets/js/news.js가 data/posts.json으로 채운다 -->
-<div data-board="notice" style="margin-top:44px"></div>
+<div data-board="notice"></div>
 </div></section>
 <section class="panel" id="press"><div class="inner">
-<h2 class="h-sec" data-rv="">NEWS<span class="ko">언론홍보</span></h2>
+<div class="p1-h nw-h" data-rv=""><h2>언론홍보</h2></div>
 <!-- 언론홍보 목록은 assets/js/news.js가 data/posts.json으로 채운다. 누르면 기사가 새 탭으로 열린다 -->
-<div data-board="press" style="margin-top:44px"></div>
+<div data-board="press"></div>
 </div></section>
 <section class="panel" id="gallery"><div class="inner">
-<h2 class="h-sec" data-k="news.gallery.24" data-rv="">GALLERY<span class="ko">현장 갤러리</span></h2>
+<div class="p1-h nw-h" data-rv=""><h2 data-k="news.gallery.24">현장 갤러리</h2></div>
 <!-- 갤러리 앨범은 assets/js/news.js가 data/posts.json으로 채운다 -->
-<div data-board="gallery" style="margin-top:44px"></div>
+<div data-board="gallery"></div>
 </div></section>
 </main>
 <footer id="footer"></footer>
