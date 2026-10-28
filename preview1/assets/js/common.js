@@ -6,7 +6,7 @@
    ============================================================ */
 var SITE = {
   name : "2026 K예술영재 프로젝트",
-  brand: "K예술영재 프로젝트",       /* 로고 · 푸터 첫 줄 (연도는 로고 위 작은 글자) */
+  brand: "K예술영재 프로젝트",       /* 로고 · 푸터 첫 줄 (로고 위 작은 2026은 2026-10-28 차장님 피드백으로 뺌) */
   host : "문화체육관광부",           /* 주최 (WBS 9.8) */
   org  : "한국예술영재교육연구원",   /* 주관 */
   mail : "kgifted2026@naver.com",
@@ -79,7 +79,6 @@ var SITEMAP = [
       '<span class="ham-i" aria-hidden="true"><span></span><span></span><span></span></span><span class="ham-t" aria-hidden="true">MENU</span>'+
     '</button>'+
     '<a href="index.html" class="logo" aria-label="'+SITE.name+' 처음으로">'+
-      '<span class="yr">2026</span>'+
       '<span class="nm">'+SITE.brand+'</span>'+
     '</a>'+
     '<div class="hd-r"><nav><ul id="gnb">'+gnb+'</ul></nav>'+snsLinks('hd-sns')+'</div>'+

@@ -20,7 +20,6 @@
   --img-step1:var(--img-p2);
   --img-step2:var(--img-p3);
   --img-step3:url("../img/hero-trad.jpg");
-  --mq-h:46px;   /* 흐르는 글자 띠 높이 — 표지 높이 계산에 씀 */
 }
 
 /* 메인 본문 폭 — 1440 화면에서 1290(양쪽 75px), 화면이 좁아지면 양쪽 여백만 줄인다 */
@@ -28,9 +27,9 @@
 .mn-in .lnk:focus-visible,.mn-nw-list a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
 
 /* ============ 표지 ============ */
-/* 흰 머리(--hd, 늘 흰색 · common.css) 아래부터. 높이 = 화면 − 머리 − 흐르는 띠(최소 560 · 최대 900) */
-#hero{position:relative;margin-top:var(--hd);height:clamp(560px,calc(100vh - var(--hd) - var(--mq-h)),900px);overflow:hidden;background:#111}
-@supports (height:100svh){ #hero{height:clamp(560px,calc(100svh - var(--hd) - var(--mq-h)),900px)} }
+/* 흰 머리(--hd, 늘 흰색 · common.css) 아래부터. 높이 = 화면 − 머리(최소 560 · 최대 900). 표지 아래 흐르는 글자 띠는 2026-10-28 차장님 피드백으로 뺌 */
+#hero{position:relative;margin-top:var(--hd);height:clamp(560px,calc(100vh - var(--hd)),900px);overflow:hidden;background:#111}
+@supports (height:100svh){ #hero{height:clamp(560px,calc(100svh - var(--hd)),900px)} }
 .slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
 .slide.on{opacity:1}
 #hero.wait .slide{opacity:0}   /* 사진 목록을 받기 전 (main.js) — 기본 사진이 올린 사진으로 바뀌며 깜박이지 않게 */
@@ -67,7 +66,6 @@
 .hero-in{position:relative;z-index:5;height:100%;color:#fff}
 .hero-in .mn-in{height:100%}
 .mn-tt{position:absolute;left:0;top:72px}
-.mn-year{font-size:15px;font-weight:600;opacity:.85}
 .h-title{margin-top:8px;font-size:58px;font-weight:700;line-height:1.15;letter-spacing:-.045em}
 .mn-sub{margin-top:14px;font-size:16px;line-height:1.6;opacity:.9;letter-spacing:-.02em}
 .mn-more{display:inline-flex;align-items:center;gap:8px;margin-top:30px;padding:7px 16px 7px 18px;border:1.5px solid #fff;border-radius:999px;
@@ -90,17 +88,6 @@
 .h-lg img{display:block;width:auto}
 .h-lg .lg-mcst{height:26px}
 .h-lg .lg-kniga{height:24px}   /* 주관 로고 KRIGA(이름 글자 포함, 2026-10-23 교체) */
-
-/* ============ 흐르는 글자 띠 ============ */
-/* 오른쪽 → 왼쪽으로 끊김 없이. 같은 줄(.mn-mq-g 두 벌 ≈ 2500px)을 두 번 이어 붙여 −50%만큼 80초(한 벌에 40초) — 마우스를 올리면 멈추고, 움직임 줄이기면 멈춰 있다 */
-.mn-mq{height:var(--mq-h);display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line-lt);background:#fff}
-.mn-mq-t{display:flex;flex:none;width:max-content;animation:mn-flow 80s linear infinite}
-.mn-mq-g{display:flex;flex:none;align-items:center}
-.mn-mq-g span{margin-right:26px;font-size:15px;font-weight:600;white-space:nowrap;letter-spacing:-.02em}
-.mn-mq-g svg{flex:none;width:26px;height:18px;margin-right:26px;overflow:visible}
-.mn-mq:hover .mn-mq-t{animation-play-state:paused}
-@keyframes mn-flow{ to{transform:translateX(-50%)} }
-@media(prefers-reduced-motion:reduce){ .mn-mq-t{animation:none} }
 
 /* ============ 소개 ============ */
 #about{padding:150px 0 120px;background:#fff}
