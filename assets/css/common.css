@@ -637,3 +637,55 @@ html.zv-open{overflow:hidden}
   .wk-nx b{font-size:22px}
   .wk-nx svg{width:48px;height:22px}
 }
+
+/* ============ 시안 1 프로그램 다른 분야 · 심화 멘토링 · 겨울캠프 (WBS 12.4) ============
+   무용 · 전통예술 · 미술 탭과 두 페이지는 음악 탭 틀(.p1-lead → .p1-sec)을 그대로 쓴다 — 운영 개요는 사업소개 줄 목록(.ab-dl), 교육 포인트는 음악 세 원(.wk-ep, 원 안은 번호).
+   여기는 그 밖의 부품: 물결 점선 단계(.p1-st) · 갤러리 사진 줄 · 겨울캠프 카드와 세 칸 */
+/* 단계 — 칸 수만큼 가로(c5 다섯 칸 · c2 두 칸), 위에 물결 점선 + 칸마다 노란 점(음악 「이렇게 배웁니다」와 같은 선) */
+.p1-st{--wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24' preserveAspectRatio='none'%3E%3Cpath d='M0 12 C30 -2 70 26 100 12' fill='none' stroke='%23DAD7D0' stroke-width='3.5' stroke-dasharray='10 10' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --gap:30px;display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:var(--gap);padding-top:40px}
+.p1-st.c5{--n:5;--gap:24px}
+.p1-st.c2{--n:2}
+.p1-st > li{position:relative;z-index:0}
+.p1-st > li::before{content:"";position:absolute;left:0;top:-28px;width:16px;height:16px;border-radius:50%;background:var(--yel)}
+.p1-st > li::after{content:"";position:absolute;left:8px;top:-32px;z-index:-1;width:calc(100% + var(--gap));height:24px;background:var(--wave) no-repeat 0 0 / 100% 100%}
+.p1-st > li:last-child::after{width:calc(100% - 8px)}
+.p1-st small{display:block;font-size:13px;font-weight:700;color:var(--gray-lt)}
+.p1-st h3{margin-top:6px;font-size:20px;font-weight:700;line-height:1.35;letter-spacing:-.045em}
+.p1-st.c2 h3{font-size:22px}
+.p1-st p{margin-top:10px;font-size:15px;line-height:1.65;color:#333;letter-spacing:-.02em}
+/* 갤러리 사진 줄(program-photos.js) — 오른쪽 칸에 세 장씩, 화살표는 검정 테두리 원(누르면 검정) */
+.pg-photos .p1-h .pg-arrows{margin-top:28px}
+.pg-arrows button{width:48px;height:48px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);font-size:17px;transition:background .25s,color .25s}
+.pg-arrows button:hover,.pg-arrows button:focus-visible{background:var(--ink);color:#fff;transform:none}
+.p1-sec .pg-item{flex-basis:calc((100% - 40px) / 3);min-width:0}
+.pg-item .th{background:#F4F2EC}
+.pg-item .th:focus-visible{outline-color:var(--ink)}
+.pg-item figcaption{font-size:17px}
+/* 겨울캠프 — 둥근 카드 4장(아이콘 원은 옅은 바탕 · 검정 선, 갈라공연만 노랑) · 함께 지내는 캠프 세 칸(칸 위 2px 검정 줄) */
+.cp-ic{background:#F4F2EC;color:var(--ink)}
+.cp-ic.hl{background:var(--yel)}
+.cp-card h3{margin-top:28px;font-size:21px;font-weight:700;letter-spacing:-.03em}
+.cp-st{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px}
+.cp-st li{padding-top:20px;border-top:2px solid var(--ink)}
+.cp-st h3{font-size:20px;font-weight:700;letter-spacing:-.04em}
+.cp-st p{margin-top:10px;font-size:15px;line-height:1.65;color:#333;letter-spacing:-.02em}
+@media(max-width:1280px){
+  .cp-card{padding:28px 22px 30px}
+}
+@media(max-width:1100px){
+  /* 다섯 칸은 세 칸씩 두 줄, 점선은 숨김(두 칸은 그대로) */
+  .p1-st.c5{--n:3;row-gap:40px;padding-top:0}
+  .p1-st.c5 > li::before,.p1-st.c5 > li::after{content:none}
+  .pg-photos .p1-h{display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .pg-photos .p1-h .pg-arrows{margin-top:0}
+}
+@media(max-width:768px){
+  .p1-st,.p1-st.c5{grid-template-columns:minmax(0,1fr);gap:30px;padding-top:0}
+  .p1-st > li::before,.p1-st > li::after{content:none}
+  .cp-st{grid-template-columns:minmax(0,1fr);gap:24px}
+  .pg-arrows button{width:42px;height:42px}
+}
+@media(max-width:640px){
+  .p1-sec .pg-item{flex-basis:78%}
+}
