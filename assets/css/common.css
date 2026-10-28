@@ -65,10 +65,8 @@ section[id]{scroll-margin-top:var(--hd)}
 body.menu-open .ham-i span:nth-child(1){transform:translateY(6px) rotate(45deg)}
 body.menu-open .ham-i span:nth-child(2){opacity:0}
 body.menu-open .ham-i span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-/* 이름 — 작은 2026(노란 밑칠) 위, 굵은 「K예술영재 프로젝트」 아래, 머리 가운데 */
+/* 이름 — 굵은 「K예술영재 프로젝트」, 머리 가운데 (위의 작은 2026은 2026-10-28 차장님 피드백으로 뺌) */
 .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;line-height:1;color:var(--ink);white-space:nowrap}
-.logo .yr{position:relative;z-index:0;display:inline-block;margin-bottom:5px;padding:0 4px;font-size:11px;font-weight:700;letter-spacing:.04em}
-.logo .yr::before{content:"";position:absolute;left:-3px;right:-3px;bottom:0;height:7px;background:var(--yel);border-radius:4px;z-index:-1}
 .logo .nm{display:block;font-size:21px;font-weight:800;letter-spacing:-.04em}
 #header .hd-r{display:flex;align-self:stretch}
 #header nav{position:relative;display:flex}
