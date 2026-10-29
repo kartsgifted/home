@@ -62,7 +62,7 @@ body.menu-open .ham-i span:nth-child(2){opacity:0}
 body.menu-open .ham-i span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 /* 이름 — 굵은 「K예술영재 프로젝트」, 머리 가운데 (위의 작은 2026은 2026-10-28 차장님 피드백으로 뺌) */
 .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;line-height:1;color:var(--ink);white-space:nowrap}
-.logo .nm{display:block;font-size:21px;font-weight:800;letter-spacing:-.04em}
+.logo .nm{display:block;width:auto;height:40px}   /* 로고 그림(K예술영재) — 세로 40, 가로는 비율대로(약 130) */
 #header .hd-r{display:flex;align-self:stretch}
 #header nav{position:relative;display:flex}
 #gnb{display:flex;gap:32px;height:100%}
@@ -620,10 +620,10 @@ html.zv-open{overflow:hidden}
 @media(max-width:900px){
   #gnb{gap:16px}
   #gnb > li > a{font-size:14px}
-  .logo .nm{font-size:18px}
 }
 @media(max-width:768px){
-  /* 머리는 가운데 이름 + 오른쪽 ☰만 */
+  /* 머리는 가운데 로고 + 오른쪽 ☰만 */
+  .logo .nm{height:32px}
   #header nav{display:none}
   .ham{order:2;margin-left:auto}
   .ham-t{display:none}
