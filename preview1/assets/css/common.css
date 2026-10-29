@@ -406,6 +406,7 @@ html.zv-open{overflow:hidden}
   font-size:14.5px;font-weight:600;color:var(--ink);letter-spacing:-.02em;white-space:nowrap;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
 .pick-b button:hover,#tabs.yr-tabs button:hover{background:var(--yel);border-color:var(--yel);color:var(--ink)}
 .pick-b button[aria-pressed="true"],#tabs.yr-tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600;cursor:default}
+.pick-b button[aria-pressed="true"]:not(:first-child){cursor:pointer}   /* 눌린 단추를 다시 누르면 꺼진다(「전체」는 그대로) */
 .pick-b button:focus-visible,#tabs.yr-tabs button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 
 /* 공지 · 언론홍보 목록 — 메인 「소식」 줄과 같은 모양: 위 2px 검정 줄, 분류(굵은 작은 글자) · 제목 · 날짜, 마우스 올리면 제목 밑줄 */
