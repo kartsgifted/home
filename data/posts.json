@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-29T17:37:42+09:00",
+  "updatedAt": "2026-10-29T17:37:49+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -63,6 +63,13 @@
     }
   ],
   "press": [
+    {
+      "id": "P-0010",
+      "source": "월간조선",
+      "title": "영재를 넘어 자신만의 소리를 찾기까지… 국악계 대표 예술가들과 함께한 K예술영재 전통예술 워크숍 열려",
+      "date": "2026-10-16",
+      "url": "https://monthly.chosun.com/news/articleView.html?idxno=71662"
+    },
     {
       "id": "P-0006",
       "source": "월간조선",
