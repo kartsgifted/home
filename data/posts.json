@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-29T17:37:29+09:00",
+  "updatedAt": "2026-10-29T17:37:36+09:00",
   "notices": [
     {
       "id": "N-0008",
@@ -69,6 +69,13 @@
       "title": "\"코드도 시(詩)다\"…MIT 미디어랩 잭 리버먼, 한국 예술영재들 직접 가르친다",
       "date": "2026-08-10",
       "url": "https://monthly.chosun.com/news/articleView.html?idxno=70995"
+    },
+    {
+      "id": "P-0008",
+      "source": "월간조선",
+      "title": "가야금·거문고·해금·판소리·연희·타악 영재들, 한예종에서 5개월 여정… 'K예술영재 프로젝트' 전통예술 워크숍 진행 중",
+      "date": "2026-08-02",
+      "url": "https://monthly.chosun.com/news/articleView.html?idxno=70915"
     },
     {
       "id": "P-0005",
