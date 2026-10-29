@@ -20,8 +20,8 @@
   // 갤러리 과정 · 분야 코드 → 단추 · 이름표 글자 (docs/sheet-schema.md 「갤러리 과정 · 분야」). 목록에 없는 코드는 없는 것으로 본다
   var COURSE = [['workshop', '워크숍'], ['mentoring', '심화 멘토링'], ['camp', '겨울캠프']],
       FIELD = [['music', '음악'], ['dance', '무용'], ['trad', '전통예술'], ['art', '미술']];
-  // 고른 값 — ''는 전체
-  var pick = { notice:{ year:'' }, press:{ year:'' }, gallery:{ year:'', course:'', field:'' } }, nPick = null;
+  // 고른 값 — 묶음마다 여러 개(7차 피드백), 빈 목록은 전체
+  var pick = { notice:{ year:[] }, press:{ year:[] }, gallery:{ year:[], course:[], field:[] } }, nPick = null;
 
   function el(tag, cls, text){
     var e = document.createElement(tag);
@@ -63,7 +63,9 @@
   }
 
   /* ---------- 걸러 보기 단추 ----------
-     groups: [[키, 묶음 이름, [[값, 단추 글자] …]] …] — 첫 단추는 늘 「전체」(''). 누르면 state[키]를 바꾸고 onPick(). 목록 칸 바로 앞에 놓는다 */
+     groups: [[키, 묶음 이름, [[값, 단추 글자] …]] …] — 첫 단추는 늘 「전체」(''). 목록 칸 바로 앞에 놓는다.
+     한 묶음에서 여러 개를 고를 수 있다(7차 피드백): 누르면 켜고, 켜진 것을 다시 누르면 끈다. 하나도 안 켜지면 「전체」.
+     「전체」를 누르면 그 묶음의 고른 것을 모두 끈다. 바뀔 때마다 state[키](고른 값 목록)를 고치고 onPick() */
   function picker(box, groups, state, onPick){
     var wrap = el('div', 'pick'), row = el('div', 'pick-in');
     groups.forEach(function(g){
@@ -71,18 +73,26 @@
       grp.setAttribute('role', 'group'); grp.setAttribute('aria-label', g[1]);
       var n = el('span', 'pick-n', g[1]); n.setAttribute('aria-hidden', 'true');
       grp.appendChild(n);
-      [['', '전체']].concat(g[2]).forEach(function(o){
+      var cur = state[g[0]], opts = [['', '전체']].concat(g[2]);
+      function mark(){
+        [].forEach.call(btns.children, function(x, k){
+          x.setAttribute('aria-pressed', String(k ? cur.indexOf(opts[k][0]) >= 0 : !cur.length));
+        });
+      }
+      opts.forEach(function(o){
         var b = el('button', null, o[1]);
         b.type = 'button';
-        b.setAttribute('aria-pressed', String(state[g[0]] === o[0]));
         b.addEventListener('click', function(){
-          if(state[g[0]] === o[0]) return;
-          state[g[0]] = o[0];
-          [].forEach.call(btns.children, function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+          var i = cur.indexOf(o[0]);
+          if(!o[0]){ if(!cur.length) return; cur.length = 0; }
+          else if(i >= 0) cur.splice(i, 1);
+          else cur.push(o[0]);
+          mark();
           onPick();
         });
         btns.appendChild(b);
       });
+      mark();
       grp.appendChild(btns);
       row.appendChild(grp);
     });
@@ -95,7 +105,9 @@
     list.forEach(function(p){ var y = year(p); if(y && !seen[y]){ seen[y] = 1; out.push(y); } });
     return out.sort().reverse().map(function(y){ return [y, y]; });
   }
-  function byYear(list, y){ return y ? list.filter(function(p){ return year(p) === y; }) : list; }
+  // 고른 것이 없으면 모두, 있으면 그중 하나에 맞는 것
+  function hit(sel, v){ return !sel.length || sel.indexOf(v) >= 0; }
+  function byYear(list, ys){ return list.filter(function(p){ return hit(ys, year(p)); }); }
 
   /* ---------- 공지 ---------- */
   function noticeList(){
@@ -183,7 +195,7 @@
   }
   function gallery(){
     var f = pick.gallery, list = byYear(data.gallery, f.year).filter(function(g){
-      return (!f.course || g.course === f.course) && (!f.field || g.field === f.field);
+      return hit(f.course, g.course) && hit(f.field, g.field);   // 분야가 빈(공통) 앨범은 분야 「전체」일 때만
     });
     if(!list.length) return msg(gBox, data.gallery.length ? '해당하는 사진이 없습니다.' : Board.MSG.empty);
     var pages = Math.ceil(list.length / GALLERY_PER);
