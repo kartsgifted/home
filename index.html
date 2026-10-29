@@ -6,9 +6,6 @@
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>2026 K예술영재 프로젝트</title>
 <meta content="음악·무용·전통예술·미술 네 개 분야 예술영재를 발굴하고 키우는 2026 K예술영재 프로젝트 공식 홍보 사이트" name="description"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=Nanum+Myeongjo:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet"/>
 <link href="https://cdn.jsdelivr.net/gh/webfontworld/gmarket/GmarketSans.css" rel="stylesheet"/>
 <link href="assets/css/common.css" rel="stylesheet"/>
@@ -17,86 +14,91 @@
 <body data-page="index">
 <header id="header"></header>
 <div id="allmenu"></div>
-<!-- ============ HERO (차장님 A안 상단) ============ -->
+<!-- ============ 표지 (시안 1, WBS 11.4) — 흰 머리 아래부터 ============ -->
 <section class="wait" id="hero">
 <h2 class="blind">메인비주얼 슬라이드</h2>
-<!-- 표지 슬라이드(.slide)와 분야 탭(.h-tabs 안 단추)은 assets/js/main.js가 만든다 — 관리자 페이지 「표지 사진」에서 올린 사진, 없으면 main.css의 기본 사진 -->
+<!-- 표지 슬라이드(.slide)와 분야 목록(.h-tabs 안 단추)은 assets/js/main.js가 만든다 — 관리자 페이지 「표지 사진」에서 올린 사진, 없으면 main.css의 기본 사진 -->
 <div class="hero-in">
-<div class="inner">
-<p class="h-fields">음악 · 무용 · 전통예술 · 미술</p>
-<h1 class="h-title"><span>2026</span> K예술영재 프로젝트</h1>
-<p class="h-en" lang="en">K-Arts Gifted Youth Project</p>
-<p class="h-date">2026. 3. 1. – 2027. 1. 30.</p>
-<div class="h-foot">
-<!-- 주최 · 주관 + 기관 로고 (10.13, 2026-10-21 사용자 결정) — 「주최」「주관」 글자 뒤 기관 이름 자리에 흰색 로고(받은 파일, 여백만 자름).
-     로고 img를 지우고 기관 이름 글자를 넣으면 예전 글자 모양으로 돌아간다 -->
-<div class="h-logos"><span class="h-lg"><b>주최</b><img alt="문화체육관광부" class="lg-mcst" src="assets/img/logo-mcst-w.png"/></span><span class="h-lg"><b>주관</b><img alt="한국예술영재교육연구원" class="lg-kniga" src="assets/img/logo-kriga-w.png"/></span></div>
+<div class="mn-in">
+<div class="mn-tt">
+<h1 class="h-title">K예술영재 프로젝트</h1>
+<p class="mn-sub">음악 · 무용 · 전통예술 · 미술, 네 분야 예술영재의 <br/>가능성을 발견하고 키우는 1년의 여정</p>
+<a class="mn-more" href="about.html">자세히 보기 <span aria-hidden="true">›</span></a>
+</div>
 <div aria-label="표지 분야" class="h-tabs" role="group"></div>
-</div>
+<!-- 주최 · 주관 + 흰색 기관 로고 (10.13) -->
+<div class="h-logos"><span class="h-lg"><b>주최</b><img alt="문화체육관광부" class="lg-mcst" src="assets/img/logo-mcst-w.png"/></span><span class="h-lg"><b>주관</b><img alt="한국예술영재교육연구원" class="lg-kniga" src="assets/img/logo-kriga-w.png"/></span></div>
 </div>
 </div>
 </section>
-<!-- ============ ABOUT · 여정 도식 (5차 피드백) ============ -->
+<!-- ============ 소개 ============ -->
 <section id="about">
-<div class="inner">
-<div class="ab-grid">
-<p class="lead" data-k="index.about.9" data-rv="">예술영재의 <b>가능성</b>을<br/>발견하고 <b>키우는</b><br/>가장 긴 호흡의 여정</p>
-<div class="txt" data-d="1" data-rv="">
-<p data-k="index.about.10">K예술영재 프로젝트는 음악·무용·전통예술·미술 네 개 분야의 예술영재를 발굴하고, 분야별 워크숍과 심화 멘토링, 겨울캠프로 이어지는 성장 과정을 운영합니다.</p>
+<div class="mn-in mn-ab">
+<p class="mn-lead" data-k="index.about.9" data-rv="">예술영재의 <em class="mark">가능성</em>을<br/>발견하고 키우는<br/>가장 긴 호흡의 여정</p>
+<div class="mn-ab-tx" data-d="1" data-rv="">
+<p data-k="index.about.10">K예술영재 프로젝트는 음악 · 무용 · 전통예술 · 미술 네 개 분야의 예술영재를 발굴하고, 분야별 워크숍과 심화 멘토링, 겨울캠프로 이어지는 성장 과정을 운영합니다.</p>
 <p data-k="index.about.11">한 해의 성과는 다음 해 교육과정 설계의 근거가 됩니다.</p>
-<div class="btns"><a class="ab-btn" data-k="index.about.12" href="about.html">사업소개 자세히 보기</a></div>
+<a class="lnk" href="about.html">사업소개 보기<svg aria-hidden="true"><use href="assets/img/doodles.svg#loop"></use></svg></a>
 </div>
 </div>
-<!-- 여정 도식 (10.2) — 네 분야 → 곡선이 한 점으로 모임 → 단계별 성장 과정 카드 3장. 곡선은 화면에 들어오면 그려진다(main.css 「여정 도식」, 공통 등장 효과 .on) -->
-<div class="jr">
-<div class="jr-map" data-rv="">
-<p class="jr-k" lang="en">ONE YEAR JOURNEY</p>
-<h2 class="jr-t">네 개 분야, 세 단계의 성장 과정</h2>
-<ul class="jr-fields">
-<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg></i><b>음악</b></li>
-<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6l-3 7M12 13l3 7M5 6l7 3 7-4"/></svg></i><b>무용</b></li>
-<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><ellipse cx="6" cy="12" rx="3" ry="6"/><ellipse cx="18" cy="12" rx="3" ry="6"/><path d="M6 6h12M6 18h12M9 6l6 12M15 6l-6 12"/></svg></i><b>전통예술</b></li>
-<li><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-1.3-1-1.6-1-2.6 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg></i><b>미술</b></li>
-</ul>
-<!-- 곡선: 원 줄(.jr-fields)과 같은 폭 · 같은 4칸(가운데 95 · 285 · 475 · 665)으로 늘어난다. 선 굵기 · 끝점은 늘어나도 그대로 -->
-<svg aria-hidden="true" class="jr-wire" fill="none" preserveAspectRatio="none" viewBox="0 0 760 110">
-<path d="M95 0C95 60 380 40 380 96" pathLength="1"/>
-<path d="M285 0C285 50 380 50 380 96" pathLength="1"/>
-<path d="M475 0C475 50 380 50 380 96" pathLength="1"/>
-<path d="M665 0C665 60 380 40 380 96" pathLength="1"/>
-<path class="jr-dot" d="M380 100h0"/>
-</svg>
-<p class="jr-badge">단계별 성장 과정</p>
+</section>
+<!-- ============ 여정 — 지그재그 세 단계 (시안 1). 사진 · 제목 · 링크 모두 그 페이지로, 키보드는 링크(.lnk)로만 멈춘다 ============ -->
+<section id="journey">
+<h2 class="blind">세 단계의 성장 과정</h2>
+<div class="mn-in mn-jy">
+<!-- 손그림 점선 길 — 1 → 2, 2 → 3. 좌표는 1440 화면의 여정 칸(1290 × 1440) 기준이고 칸 크기에 맞춰 늘어난다 -->
+<svg aria-hidden="true" class="mn-path mn-path-1" data-rv="" preserveAspectRatio="none" viewBox="855 320 385 190"><path d="M870 330C860 390 930 420 965 385C995 355 955 325 940 360C920 410 1020 455 1110 440C1180 428 1200 470 1215 488"></path><path class="mn-dot" d="M1222 494h0"></path></svg>
+<svg aria-hidden="true" class="mn-path mn-path-2" data-rv="" preserveAspectRatio="none" viewBox="195 820 390 200"><path d="M215 830C205 890 275 925 310 890C340 860 300 830 285 865C265 915 365 960 455 950C525 942 545 980 560 1000"></path><path class="mn-dot" d="M567 1006h0"></path></svg>
+<div class="mn-step" data-rv="">
+<a aria-hidden="true" class="mn-ph" href="programs.html" tabindex="-1"><i></i></a>
+<div class="mn-tx">
+<span class="kick"><svg aria-hidden="true"><use href="assets/img/doodles.svg#scr"></use></svg>STEP 01</span>
+<h3><a href="programs.html" tabindex="-1">워크숍<span>2개월</span></a></h3>
+<p>분야마다 다른 커리큘럼으로 <br/>기본기와 표현력을 다지는 정규 과정</p>
+<a class="lnk" href="programs.html">워크숍 보기<svg aria-hidden="true"><use href="assets/img/doodles.svg#loop"></use></svg></a>
 </div>
-<div class="jr-steps">
-<a class="jr-s" data-rv="" href="programs.html"><div class="jr-ph"></div><div class="jr-bd">
-<div class="jr-hd"><span class="jr-no">STEP 01</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M3 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H3zM21 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg></i></div>
-<h3>워크숍</h3><p class="jr-n">2<small>개월</small></p><p class="jr-tx">분야마다 다른 커리큘럼으로 기본기와 표현력을 다지는 정규 과정</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
-<div aria-hidden="true" class="jr-arr"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
-<a class="jr-s" data-d="1" data-rv="" href="mentoring.html"><div class="jr-ph"></div><div class="jr-bd">
-<div class="jr-hd"><span class="jr-no">STEP 02</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M13.5 20a3.6 3.6 0 0 1 7.2 0"/></svg></i></div>
-<h3>심화 멘토링</h3><p class="jr-n">3<small>개월</small></p><p class="jr-tx">분야별 전담 멘토가 개인의 목표에 맞춰 이어가는 지도</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
-<div aria-hidden="true" class="jr-arr"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
-<a class="jr-s" data-d="2" data-rv="" href="camp.html"><div class="jr-ph"></div><div class="jr-bd">
-<div class="jr-hd"><span class="jr-no">STEP 03</span><i><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 3v17M8 20l4-6 4 6"/></svg></i></div>
-<h3>겨울캠프</h3><p class="jr-n">7<small>일</small></p><p class="jr-tx">네 분야가 함께하는 합숙 집중과정과 갈라공연</p><span class="jr-more">자세히 보기 <span aria-hidden="true">→</span></span></div></a>
+</div>
+<div class="mn-step mn-r" data-rv="">
+<a aria-hidden="true" class="mn-ph" href="mentoring.html" tabindex="-1"><i></i></a>
+<div class="mn-tx">
+<span class="kick"><svg aria-hidden="true"><use href="assets/img/doodles.svg#scr"></use></svg>STEP 02</span>
+<h3><a href="mentoring.html" tabindex="-1">심화 멘토링<span>3개월</span></a></h3>
+<p>분야별 전담 멘토가 개인의 목표에 맞춰 <br/>이어가는 지도</p>
+<a class="lnk" href="mentoring.html">심화 멘토링 보기<svg aria-hidden="true"><use href="assets/img/doodles.svg#loop"></use></svg></a>
+</div>
+</div>
+<div class="mn-step" data-rv="">
+<a aria-hidden="true" class="mn-ph" href="camp.html" tabindex="-1"><i></i></a>
+<div class="mn-tx">
+<span class="kick"><svg aria-hidden="true"><use href="assets/img/doodles.svg#scr"></use></svg>STEP 03</span>
+<h3><a href="camp.html" tabindex="-1">겨울캠프<span>7일</span></a></h3>
+<p>네 분야가 함께하는 <br/>합숙 집중과정과 갈라공연</p>
+<a class="lnk" href="camp.html">겨울캠프 보기<svg aria-hidden="true"><use href="assets/img/doodles.svg#loop"></use></svg></a>
 </div>
 </div>
 </div>
 </section>
-<!-- ============ 청록 띠 — 모집 및 선발 · 소식 (B안) ============ -->
-<section id="news">
-<div class="inner news-grid">
-<div class="recruit" data-rv="">
-<p class="kicker">모집 및 선발</p>
+<!-- ============ 모집 띠 — 사진 + 흰 반투명 판 ============ -->
+<section id="recruit">
+<div class="mn-in">
+<div class="mn-rc-pn" data-rv="">
+<span class="kick"><svg aria-hidden="true"><use href="assets/img/doodles.svg#scr"></use></svg>모집 및 선발</span>
 <h2>연도별 선발 개요를<br/>한눈에 확인하세요</h2>
-<a class="go" href="recruit.html">2026 선발 개요 보기</a>
+<p>분야별 모집 인원과 선발 절차, 일정을 안내합니다.</p>
+<a class="lnk" href="recruit.html">2026 선발 개요 보기<svg aria-hidden="true"><use href="assets/img/doodles.svg#loop"></use></svg></a>
 </div>
-<div class="nw" data-d="1" data-rv="">
-<h3>소식 <a href="news.html">더보기</a></h3>
+</div>
+</section>
+<!-- ============ 소식 ============ -->
+<section id="news">
+<div class="mn-in mn-nw">
+<div class="mn-nw-hd" data-rv="">
+<span class="kick"><svg aria-hidden="true"><use href="assets/img/doodles.svg#scr"></use></svg>공지 · 언론홍보</span>
+<h2>소식</h2>
+<a class="lnk" href="news.html">전체 보기<svg aria-hidden="true"><use href="assets/img/doodles.svg#loop"></use></svg></a>
+</div>
 <!-- 공지사항 · 언론홍보를 섞은 최신 4개는 assets/js/main.js가 data/posts.json으로 채운다 -->
-<ul data-board="latest"></ul>
-</div>
+<ul class="mn-nw-list" data-board="latest" data-d="1" data-rv=""></ul>
 </div>
 </section>
 <footer id="footer"></footer>

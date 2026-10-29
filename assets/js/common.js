@@ -6,7 +6,7 @@
    ============================================================ */
 var SITE = {
   name : "2026 K예술영재 프로젝트",
-  brand: "K예술영재 프로젝트",       /* 로고 · 푸터 첫 줄 (연도는 로고 위 작은 글자) */
+  brand: "K예술영재 프로젝트",       /* 로고 · 푸터 첫 줄 (로고 위 작은 2026은 2026-10-28 차장님 피드백으로 뺌) */
   host : "문화체육관광부",           /* 주최 (WBS 9.8) */
   org  : "한국예술영재교육연구원",   /* 주관 */
   mail : "kgifted2026@naver.com",
@@ -61,7 +61,7 @@ var SITEMAP = [
     return '<li class="'+(on?'on':'')+'"><a href="'+m.href+'">'+m.ko+'</a></li>';
   }).join('');
 
-  /* SNS 아이콘 줄 — 머리(.hd-sns) · 전체메뉴(.am-sns)에 같은 모양으로 */
+  /* SNS 아이콘 줄 — 머리(.hd-sns) · 전체메뉴(.am-sns) · 푸터(.ft-sns)에 같은 모양으로 */
   function snsLinks(cls){
     return '<div class="'+cls+'">'+SITE.sns.map(function(s){
       var svg = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">'+SNS_ICON[s.id]+'</svg>';
@@ -71,33 +71,40 @@ var SITEMAP = [
     }).join('')+'</div>';
   }
 
-  /* 로고 = 작은 연도 + 서체 「K예술영재 프로젝트」 (WBS 9.6 — 리본 로고 교체) */
+  /* 머리 (WBS 11.3 시안 1) — 모든 페이지 늘 흰 띠: 왼쪽 「☰ MENU」(전체메뉴), 가운데 이름(작은 2026 + 굵은 이름, 첫 화면으로),
+     오른쪽 메뉴 4개 │ SNS 4개(2026-10-23 사용자 결정 A안). 1100px 이하는 SNS를 전체메뉴 안으로, 768px 이하는 이름 + 오른쪽 ☰만 (common.css) */
   var header =
   '<div class="inner hd-in">'+
+    '<button class="ham" type="button" aria-label="전체메뉴">'+
+      '<span class="ham-i" aria-hidden="true"><span></span><span></span><span></span></span><span class="ham-t" aria-hidden="true">MENU</span>'+
+    '</button>'+
     '<a href="index.html" class="logo" aria-label="'+SITE.name+' 처음으로">'+
-      '<span class="yr">2026</span>'+
       '<span class="nm">'+SITE.brand+'</span>'+
     '</a>'+
-    '<nav><ul id="gnb">'+gnb+'</ul></nav>'+
-    '<div class="hd-tools">'+snsLinks('hd-sns')+
-      '<button class="ham" type="button" aria-label="전체메뉴"><span></span><span></span><span></span></button>'+
-    '</div>'+
+    '<div class="hd-r"><nav><ul id="gnb">'+gnb+'</ul></nav>'+snsLinks('hd-sns')+'</div>'+
   '</div>';
 
+  /* 전체메뉴 — 메뉴 이름만(영문 이름표는 같은 말이라 뺌, 시안 1) */
   var cols = SITEMAP.map(function(m){
-    return '<div class="col"><h3><span>'+m.en+'</span>'+m.ko+'</h3><ul>'+
+    return '<div class="col"><h3>'+m.ko+'</h3><ul>'+
       m.sub.map(function(s){return '<li><a href="'+s.h+'">'+s.t+'</a></li>'}).join('')+
     '</ul></div>';
   }).join('');
   var allmenu = '<div class="inner"><div class="cols">'+cols+'</div>'+snsLinks('am-sns')+'</div>';
 
-  /* 간단 푸터 (WBS 9.9 · 9.8 — 시안 B안): 이름 / 주최 · 주관 · 메일, 오른쪽 © */
+  /* 푸터 (WBS 11.3 시안 1) — 검정 띠: 왼쪽 이름 · 주최 · 주관, 오른쪽 문의 · 운영 · SNS 아이콘, 아래 © */
   var footer =
   '<div class="inner ft-in">'+
-    '<div class="ft-info">'+
-      '<p class="ft-name">'+SITE.brand+'</p>'+
-      '<p class="ft-org">주최 '+SITE.host+' · 주관 '+SITE.org+' · '+
-        '<a href="mailto:'+SITE.mail+'" data-site="mail">'+SITE.mail+'</a></p>'+
+    '<div class="ft-top">'+
+      '<div class="ft-info">'+
+        '<p class="ft-name">'+SITE.brand+'</p>'+
+        '<p class="ft-org">주최 '+SITE.host+' · 주관 '+SITE.org+'</p>'+
+      '</div>'+
+      '<dl class="ft-dl">'+
+        '<div><dt>문의</dt><dd><a href="mailto:'+SITE.mail+'" data-site="mail">'+SITE.mail+'</a></dd></div>'+
+        '<div><dt>운영</dt><dd>'+SITE.org+'</dd></div>'+
+        '<div><dt>SNS</dt><dd>'+snsLinks('ft-sns')+'</dd></div>'+
+      '</dl>'+
     '</div>'+
     '<p class="ft-copy">&copy; '+SITE.name+'</p>'+
   '</div>';
@@ -132,15 +139,15 @@ var SITEMAP = [
     });
   };
 
-  /* ---------- 머리 메뉴 판 (WBS 8.12) — PC(1101px 이상)에서 메뉴 줄에 마우스를 올리거나 Tab으로 들어가면
-     메뉴 범위(#gnb ±56px) 판이 내려오고, 메뉴마다 목록이 그 글자 밑에 놓인다. 메뉴 줄 · 판 밖으로 나가거나 Esc · 항목을 누르면 닫힌다 ---------- */
+  /* ---------- 머리 메뉴 판 (WBS 8.12 → 11.3) — PC(1101px 이상)에서 메뉴 줄에 마우스를 올리거나 Tab으로 들어가면
+     머리 아래 흰 판(전체 폭, common.css)이 내려오고, 메뉴마다 목록이 그 글자 밑에 놓인다. 메뉴 줄 · 판 밖으로 나가거나 Esc · 항목을 누르면 닫힌다 ---------- */
   var hdEl=document.getElementById('header'), nav=hdEl.querySelector('nav'),
       panel=document.createElement('div'), pc=window.matchMedia('(min-width:1101px)'),
       shut=false, leaveT=null;   /* shut: Esc · 항목 누름으로 닫은 뒤 마우스가 한 번 나갈 때까지 다시 열지 않음 */
   var gnbItems=document.querySelectorAll('#gnb > li');
   SITEMAP.forEach(function(m,i){ gnbItems[i].appendChild(subList(m,'gnb-list')); });
   panel.className='gnb-panel'; panel.setAttribute('aria-hidden','true');
-  nav.appendChild(panel);   /* nav 안 — 판 가로 범위가 #gnb ±56px로 따라간다 (8.15, common.css) */
+  nav.appendChild(panel);   /* nav 안 — 마우스가 판 위에 있어도 메뉴 줄 안으로 친다 */
   function panelHeight(){   /* 판 높이 = 가장 긴 목록. 구분선 길이도 이 값을 쓴다 */
     var h=0; document.querySelectorAll('.gnb-list').forEach(function(u){ h=Math.max(h,u.offsetHeight); });
     hdEl.style.setProperty('--gnb-panel-h',h+'px');
@@ -194,11 +201,11 @@ var SITEMAP = [
   }
 
   /* ---------- 인터랙션 ---------- */
-  var hd=document.getElementById('header'), topBtn=document.querySelector('.top'),
+  /* 시안 1: 머리는 늘 흰 띠 — 메인 표지 위 투명 머리(.solid 바꾸기)는 쓰지 않는다 */
+  var topBtn=document.querySelector('.top'),
       endBtn=document.querySelector('.go-end'), hero=document.getElementById('hero');
   function onScroll(){
     var y=window.scrollY, max=document.documentElement.scrollHeight-window.innerHeight;
-    if(hero) hd.classList.toggle('solid', y > hero.offsetHeight-120);
     topBtn.classList.toggle('on', y>600);
     endBtn.classList.toggle('on', max>600 && y<max-200 && !(hero && y<hero.offsetHeight-120));   /* 메인 표지 위에서는 숨김(오른쪽 아래 분야 탭과 겹침) */
   }
