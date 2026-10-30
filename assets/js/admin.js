@@ -21,7 +21,7 @@
   /* 표지 기본 사진 — main.css의 --img-hero-*와 맞출 것. 올린 사진이 없으면 사이트는 이 사진을, 이것도 없으면 그 칸을 건너뛴다 */
   var HERO_DEFAULT = { music:'assets/img/hero-music.jpg', trad:'assets/img/hero-trad.jpg' };
   /* 표지 동영상이 올라가는 영상 전용 저장소(GitHub Pages) — main.js의 MEDIA_BASE와 맞출 것. 관문은 경로(hero/A-00123.mp4)만 준다 (2안 WBS 8.6) */
-  var MEDIA_BASE = 'https://kartsgifted.github.io/home-media/';
+  var MEDIA_BASE = 'https://kartsproject.github.io/home-media/';
   /* 갤러리 앨범 과정 · 분야 — 관문 GALLERY_COURSES_ · GALLERY_FIELDS_(Setup.js)와 같은 코드. 프로그램 페이지가 이 코드로 공개 앨범 사진을 모은다.
      분야 ''(공통)은 그 과정 전체, 과정 ''은 지정 안 함 (WBS 8.10) */
   var GALLERY_COURSES = [['workshop', '워크숍'], ['mentoring', '심화멘토링'], ['camp', '겨울캠프']];

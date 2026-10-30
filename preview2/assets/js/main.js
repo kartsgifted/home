@@ -12,7 +12,7 @@
   var hero=document.getElementById('hero');
   if(!hero) return;
   var SLOTS=['music','dance','trad','art'], NAMES={ dance:'무용', music:'음악', art:'미술', trad:'전통예술' },
-      MEDIA_BASE='https://kartsgifted.github.io/home-media/',   /* admin.js의 MEDIA_BASE와 맞출 것 */
+      MEDIA_BASE='https://kartsproject.github.io/home-media/',   /* admin.js의 MEDIA_BASE와 맞출 것 */
       PHOTO_MS=6000, VIDEO_MIN=6, VIDEO_MAX=20, VIDEO_WAIT=3000,   /* 사진 칸 6초, 영상 칸은 영상 길이(6~20초), 3초 안에 시작 못 하면 사진처럼 */
       frame=hero.querySelector('.mn2-ph'), tabsBox=hero.querySelector('.h-tabs'),
       slides=[], tabs=[], idx=0, timer, shown=false;

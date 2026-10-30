@@ -142,8 +142,8 @@ function setupScriptProperties_() {
   // 발행 대상 기본값. 개발 중에는 data-test, 운영 전환 때 GITHUB_BRANCH만 main으로 바꾼다 (docs/decisions.md 3절).
   // MEDIA_*: 표지 동영상을 올리는 영상 전용 공개 저장소(GitHub Pages, 2안 WBS 8.6 — Media.js). 토큰은 GITHUB_TOKEN이
   // 이 저장소에도 쓰기 권한이 있으면 그대로 쓰고, 따로 만들었으면 MEDIA_GITHUB_TOKEN에 넣는다
-  var defaults = { GITHUB_REPO: 'kartsgifted/home', GITHUB_BRANCH: 'data-test', GITHUB_PATH: 'data/posts.json',
-                   MEDIA_REPO: 'kartsgifted/home-media', MEDIA_BRANCH: 'main' };
+  var defaults = { GITHUB_REPO: 'kartsproject/home', GITHUB_BRANCH: 'data-test', GITHUB_PATH: 'data/posts.json',
+                   MEDIA_REPO: 'kartsproject/home-media', MEDIA_BRANCH: 'main' };
   Object.keys(defaults).forEach(function (key) {
     if (!props.getProperty(key)) { props.setProperty(key, defaults[key]); Logger.log(key + ': ' + defaults[key]); }
   });

@@ -168,11 +168,11 @@
 
 | Script Properties | 값 |
 |---|---|
-| `GITHUB_TOKEN` | Fine-grained 토큰 (`kartsgifted/home` Contents 읽기·쓰기) |
-| `GITHUB_REPO` | `kartsgifted/home` |
+| `GITHUB_TOKEN` | Fine-grained 토큰 (`kartsproject/home` · `kartsproject/home-media` Contents 읽기·쓰기, 2026-10-30 저장소 이전 뒤 kartsproject 계정 발급) |
+| `GITHUB_REPO` | `kartsproject/home` (2026-10-30 전에는 `kartsgifted/home`) |
 | `GITHUB_BRANCH` | 발행 대상 브랜치. 개발 중 `data-test`, **2026-10-14부터 `main`** |
 | `GITHUB_PATH` | `data/posts.json` |
-| `MEDIA_REPO` · `MEDIA_BRANCH` | 표지 동영상을 올리는 영상 전용 공개 저장소(GitHub Pages) · 브랜치. `setup()`이 기본값 `kartsgifted/home-media` · `main`을 넣는다 (2026-10-16 2안). 커밋 메시지 `[Media]: 표지 동영상 올림 - {이름}` · `[Media]: 표지 동영상 내림` |
+| `MEDIA_REPO` · `MEDIA_BRANCH` | 표지 동영상을 올리는 영상 전용 공개 저장소(GitHub Pages) · 브랜치. `setup()`이 기본값 `kartsproject/home-media` · `main`을 넣는다 (2026-10-16 2안). 커밋 메시지 `[Media]: 표지 동영상 올림 - {이름}` · `[Media]: 표지 동영상 내림` |
 | `MEDIA_GITHUB_TOKEN` | (선택) 영상 저장소용 토큰. 없으면 `GITHUB_TOKEN`을 쓴다 — 그 토큰에 영상 저장소 Contents 읽기 · 쓰기를 더해야 함 |
 
 - 동시에 두 사람이 저장해도 커밋이 엇갈리지 않게 `LockService`로 한 번에 하나만 발행한다.
